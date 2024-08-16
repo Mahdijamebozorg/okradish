@@ -33,7 +33,7 @@ class Weighing extends StatelessWidget {
                         onTap: () async {
                           showDialog(
                             context: context,
-                            builder: (context) => ChooseFood(),
+                            builder: (context) => ChooseFood(key: UniqueKey()),
                           ).then((food) => _selectedFood.value = food as Food?);
                         },
                         child: const Hero(
@@ -133,7 +133,8 @@ class Weighing extends StatelessWidget {
                         } else {
                           showDialog<Meal>(
                             context: context,
-                            builder: (context) => MealDetial(meal: _meal.value),
+                            builder: (context) =>
+                                MealDetial(meal: _meal.value, key: UniqueKey()),
                           ).then((meal) => _meal.update(
                                 (val) => val!.foodItems = meal!.foodItems,
                               ));

@@ -150,16 +150,21 @@ class ChooseFood extends StatelessWidget {
   }
 }
 
-class MyTabBar extends StatelessWidget {
+class MyTabBar extends StatefulWidget {
   final List<List<Food>> foodList;
   final void Function(Food?) setFood;
-  MyTabBar({
+  const MyTabBar({
     required this.foodList,
     required this.setFood,
     super.key,
   });
 
-  final RxMap<int, int> tabsState = {
+  @override
+  State<MyTabBar> createState() => _MyTabBarState();
+}
+
+class _MyTabBarState extends State<MyTabBar> {
+  final Map<int, int> tabsState = {
     0: -1,
     1: -1,
     2: -1,
@@ -174,7 +179,8 @@ class MyTabBar extends StatelessWidget {
         tabsState[key] = -1;
       }
     }
-    setFood(foodList[tab][index]);
+    widget.setFood(widget.foodList[tab][index]);
+    setState(() {});
   }
 
   @override
@@ -194,43 +200,41 @@ class MyTabBar extends StatelessWidget {
             ],
           ),
           Expanded(
-            child: Obx(
-              () => TabBarView(
-                children: [
-                  FoodList(
-                    key: const Key("t0"),
-                    selectedIndex: tabsState[0]!,
-                    foodList: foodList[0],
-                    setIndex: (int index) {
-                      selectFood(0, index);
-                    },
-                  ),
-                  FoodList(
-                    key: const Key("t1"),
-                    selectedIndex: tabsState[1]!,
-                    foodList: foodList[1],
-                    setIndex: (int index) {
-                      selectFood(1, index);
-                    },
-                  ),
-                  FoodList(
-                    key: const Key("t2"),
-                    selectedIndex: tabsState[2]!,
-                    foodList: foodList[2],
-                    setIndex: (int index) {
-                      selectFood(2, index);
-                    },
-                  ),
-                  FoodList(
-                    key: const Key("t3"),
-                    selectedIndex: tabsState[3]!,
-                    foodList: foodList[3],
-                    setIndex: (int index) {
-                      selectFood(3, index);
-                    },
-                  ),
-                ],
-              ),
+            child: TabBarView(
+              children: [
+                FoodList(
+                  key: const Key("t0"),
+                  selectedIndex: tabsState[0]!,
+                  foodList: widget.foodList[0],
+                  setIndex: (int index) {
+                    selectFood(0, index);
+                  },
+                ),
+                FoodList(
+                  key: const Key("t1"),
+                  selectedIndex: tabsState[1]!,
+                  foodList: widget.foodList[1],
+                  setIndex: (int index) {
+                    selectFood(1, index);
+                  },
+                ),
+                FoodList(
+                  key: const Key("t2"),
+                  selectedIndex: tabsState[2]!,
+                  foodList: widget.foodList[2],
+                  setIndex: (int index) {
+                    selectFood(2, index);
+                  },
+                ),
+                FoodList(
+                  key: const Key("t3"),
+                  selectedIndex: tabsState[3]!,
+                  foodList: widget.foodList[3],
+                  setIndex: (int index) {
+                    selectFood(3, index);
+                  },
+                ),
+              ],
             ),
           ),
         ],

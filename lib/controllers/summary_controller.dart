@@ -4,8 +4,7 @@ import 'package:okradish/model/daily.dart';
 
 class SummaryController extends GetxController {
   RxList<DailyEntry> entries;
-  SummaryController.value(List<DailyEntry> ent) : entries = ent.obs;
-  SummaryController.create() : entries = RxList();
+  SummaryController() : entries = RxList();
 
   @override
   void onInit() {

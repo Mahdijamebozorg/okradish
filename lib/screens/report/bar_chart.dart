@@ -1,6 +1,5 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:okradish/component/button_style.dart';
 import 'package:okradish/component/text_style.dart';
 import 'package:okradish/constants/colors.dart';
@@ -33,7 +32,6 @@ extension _EnumFromIndex on int {
   }
 }
 
-
 // Barchart
 class MyBarChart extends StatefulWidget {
   final List<DailyEntry> entries;
@@ -44,7 +42,7 @@ class MyBarChart extends StatefulWidget {
 }
 
 class MyBarChartState extends State<MyBarChart> {
-  final Rx<_Nutrient> _nutrient = _Nutrient.carbo.obs;
+  var _nutrient = _Nutrient.carbo;
 
   _BarType get _barType {
     if (widget.entries.length == 1) {
@@ -79,119 +77,120 @@ class MyBarChartState extends State<MyBarChart> {
           final barsWidth = (constraints.maxWidth / itemsLen) * 0.85;
 
           // update bases on seleceted nutrient
-          return Obx(
-            () => Column(
-              children: [
-                Expanded(
-                  child: BarChart(
-                    BarChartData(
-                      alignment: BarChartAlignment.center,
-                      barTouchData: BarTouchData(
-                        enabled: true,
-                        touchTooltipData: BarTouchTooltipData(
-                          getTooltipColor: (group) => AppColors.greyBack,
-                          getTooltipItem: (group, groupIndex, rod, rodIndex) {
-                            return BarTooltipItem(
-                              parseCalory(rod.toY),
-                              AppTextStyles.bodySmall,
+          return Column(
+            children: [
+              Expanded(
+                child: BarChart(
+                  BarChartData(
+                    alignment: BarChartAlignment.center,
+                    barTouchData: BarTouchData(
+                      enabled: true,
+                      touchTooltipData: BarTouchTooltipData(
+                        getTooltipColor: (group) => AppColors.greyBack,
+                        getTooltipItem: (group, groupIndex, rod, rodIndex) {
+                          return BarTooltipItem(
+                            parseCalory(rod.toY),
+                            AppTextStyles.bodySmall,
+                          );
+                        },
+                      ),
+                    ),
+                    barGroups: barGroups(
+                      _barType,
+                      barsWidth,
+                      barsSpace,
+                    ),
+
+                    //
+                    titlesData: FlTitlesData(
+                      show: true,
+
+                      // bellow the chart
+                      bottomTitles: AxisTitles(
+                        drawBelowEverything: false,
+                        sideTitles: SideTitles(
+                          showTitles: true,
+                          getTitlesWidget: (value, meta) {
+                            if (!(value.round() % 6 == 0 ||
+                                    value.round() == itemsLen - 1) &&
+                                _barType != _BarType.weekly) {
+                              return Container();
+                            }
+                            return Text(
+                              _barType == _BarType.daily
+                                  ? value.round().toString()
+                                  : (value.round() + 1).toString(),
+                              style: AppTextStyles.bodySmall,
                             );
                           },
                         ),
                       ),
-                      barGroups: barGroups(
-                        _barType,
-                        barsWidth,
-                        barsSpace,
-                      ),
 
-                      //
-                      titlesData: FlTitlesData(
-                        show: true,
-
-                        // bellow the chart
-                        bottomTitles: AxisTitles(
-                          drawBelowEverything: false,
-                          sideTitles: SideTitles(
-                            showTitles: true,
-                            getTitlesWidget: (value, meta) {
-                              if (!(value.round() % 6 == 0 ||
-                                      value.round() == itemsLen - 1) &&
-                                  _barType != _BarType.weekly) {
-                                return Container();
-                              }
-                              return Text(
-                                _barType == _BarType.daily
-                                    ? value.round().toString()
-                                    : (value.round() + 1).toString(),
-                                style: AppTextStyles.bodySmall,
-                              );
-                            },
+                      // left of chart
+                      leftTitles: AxisTitles(
+                        sideTitles: SideTitles(
+                          showTitles: true,
+                          reservedSize: 30,
+                          getTitlesWidget: (value, meta) => Text(
+                            value == meta.max ? "" : meta.formattedValue,
+                            style: AppTextStyles.bodySmall,
                           ),
                         ),
-
-                        // left of chart
-                        leftTitles: AxisTitles(
-                          sideTitles: SideTitles(
-                            showTitles: true,
-                            reservedSize: 30,
-                            getTitlesWidget: (value, meta) => Text(
-                              value == meta.max ? "" : meta.formattedValue,
-                              style: AppTextStyles.bodySmall,
-                            ),
-                          ),
-                        ),
-                        topTitles: const AxisTitles(
-                          sideTitles: SideTitles(showTitles: false),
-                        ),
-                        rightTitles: const AxisTitles(
-                          sideTitles: SideTitles(showTitles: false),
-                        ),
                       ),
-
-                      //
-
-                      gridData: FlGridData(
-                        show: true,
-                        // checkToShowHorizontalLine: (value) => value % 10 == 0,
-                        getDrawingHorizontalLine: (value) => const FlLine(
-                          color: AppColors.trunks,
-                          strokeWidth: 0.3,
-                        ),
-                        // TODO: fix vertical lines
-                        // checkToShowVerticalLine: (value) =>
-                        //     (value % 6 == 0 || value == itemsLen - 1),
-                        // getDrawingVerticalLine: (value) {
-                        //   return const FlLine(
-                        //     color: AppColors.trunks,
-                        //     strokeWidth: 0.3,
-                        //   );
-                        // },
+                      topTitles: const AxisTitles(
+                        sideTitles: SideTitles(showTitles: false),
                       ),
-
-                      //
-                      borderData: FlBorderData(show: false),
+                      rightTitles: const AxisTitles(
+                        sideTitles: SideTitles(showTitles: false),
+                      ),
                     ),
+
+                    //
+
+                    gridData: FlGridData(
+                      show: true,
+                      // checkToShowHorizontalLine: (value) => value % 10 == 0,
+                      getDrawingHorizontalLine: (value) => const FlLine(
+                        color: AppColors.trunks,
+                        strokeWidth: 0.3,
+                      ),
+                      // TODO: fix vertical lines
+                      // checkToShowVerticalLine: (value) =>
+                      //     (value % 6 == 0 || value == itemsLen - 1),
+                      // getDrawingVerticalLine: (value) {
+                      //   return const FlLine(
+                      //     color: AppColors.trunks,
+                      //     strokeWidth: 0.3,
+                      //   );
+                      // },
+                    ),
+
+                    //
+                    borderData: FlBorderData(show: false),
+                  ),
+                  swapAnimationDuration: const Duration(milliseconds: 500),
+                ),
+              ),
+              const SizedBox(height: Sizes.small),
+              SizedBox(
+                height: Sizes.smallBtnH,
+                width: MediaQuery.sizeOf(context).width * 0.9,
+                child: TextButton(
+                  onPressed: () {
+                    showDialog<int>(
+                            context: context,
+                            builder: (context) =>
+                                _ChooseNutrient(key: UniqueKey()))
+                        .then((index) => _nutrient = index!.toNutrient);
+                    setState(() {});
+                  },
+                  style: AppButtonStyles.textButtonBorder,
+                  child: const Text(
+                    Strings.chooseD,
                   ),
                 ),
-                const SizedBox(height: Sizes.small),
-                SizedBox(
-                  height: Sizes.smallBtnH,
-                  width: MediaQuery.sizeOf(context).width * 0.9,
-                  child: TextButton(
-                    onPressed: () {
-                      showDialog<int>(
-                              context: context,
-                              builder: (context) => _ChooseNutrient())
-                          .then((index) => _nutrient.value = index!.toNutrient);
-                    },
-                    style: AppButtonStyles.textButtonBorder,
-                    child: const Text(
-                      Strings.chooseD,
-                    ),
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           );
         },
       ),
@@ -201,7 +200,7 @@ class MyBarChartState extends State<MyBarChart> {
   List<BarChartGroupData> barGroups(
       _BarType type, double barsWidth, double barsSpace) {
     double getMealNutrien(Meal meal) {
-      switch (_nutrient.value) {
+      switch (_nutrient) {
         case _Nutrient.carbo:
           return meal.totalCarboCalory;
         case _Nutrient.protein:
@@ -218,7 +217,7 @@ class MyBarChartState extends State<MyBarChart> {
     }
 
     double getEntryNutrien(DailyEntry entry) {
-      switch (_nutrient.value) {
+      switch (_nutrient) {
         case _Nutrient.carbo:
           return entry.totalCarboCalory;
         case _Nutrient.protein:
@@ -281,7 +280,7 @@ class MyBarChartState extends State<MyBarChart> {
 
 // dialog
 class _ChooseNutrient extends StatelessWidget {
-  final RxInt index = 0.obs;
+  const _ChooseNutrient({super.key});
   @override
   Widget build(BuildContext context) {
     void onPressed(int value) {

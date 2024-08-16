@@ -195,7 +195,9 @@ class _MealDetialState extends State<MealDetial> {
             width: size.width * 0.9,
             child: ElevatedButton(
               style: AppButtonStyles.blackBtnStyle,
-              onPressed: () => Navigator.pop(context, widget.meal),
+              onPressed: () {
+                Navigator.pop(context, widget.meal);
+              },
               child: const Text(
                 Strings.back,
                 style: AppTextStyles.blackBtn,

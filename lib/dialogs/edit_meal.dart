@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:okradish/component/button_style.dart';
 import 'package:okradish/component/text_style.dart';
@@ -11,11 +10,17 @@ import 'package:okradish/model/meal.dart';
 import 'package:okradish/utils/calory.dart';
 import 'package:okradish/widgets/app_card.dart';
 
-class EditMeal extends StatelessWidget {
-  final RxList<Meal> meals;
-  EditMeal(List<Meal> mls, {super.key}) : meals = mls.obs;
+class EditMeal extends StatefulWidget {
+  final List<Meal> meals;
+  const EditMeal(this.meals, {super.key});
 
-  final RxInt selectedIndex = 0.obs;
+  @override
+  State<EditMeal> createState() => _EditMealState();
+}
+
+class _EditMealState extends State<EditMeal> {
+  int selectedIndex = 0;
+  List<String> editedMealsIds = [];
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +30,6 @@ class EditMeal extends StatelessWidget {
         children: [
           // Table
           Expanded(
-            // Background
             child: Container(
               decoration: const BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(8.0)),
@@ -73,20 +77,22 @@ class EditMeal extends StatelessWidget {
                   ),
                   // List
                   Expanded(
-                      child: ListView.separated(
-                    physics: const BouncingScrollPhysics(),
-                    itemCount: meals.length,
-                    separatorBuilder: (context, index) =>
-                        const SizedBox(height: Sizes.tiny),
-                    itemBuilder: (context, index) {
-                      return Obx(
-                        () => GestureDetector(
-                          onTap: () => selectedIndex.value = index,
+                    child: ListView.separated(
+                      physics: const BouncingScrollPhysics(),
+                      itemCount: widget.meals.length,
+                      separatorBuilder: (context, index) =>
+                          const SizedBox(height: Sizes.tiny),
+                      itemBuilder: (context, index) {
+                        return GestureDetector(
+                          onTap: () {
+                            selectedIndex = index;
+                            setState(() {});
+                          },
                           child: Container(
                             decoration: BoxDecoration(
                               borderRadius:
                                   const BorderRadius.all(Radius.circular(8.0)),
-                              color: selectedIndex.value == index
+                              color: selectedIndex == index
                                   ? AppColors.orange
                                   : AppColors.white,
                             ),
@@ -96,10 +102,10 @@ class EditMeal extends StatelessWidget {
                               children: [
                                 // Index
                                 SizedBox(
-                                  width: 5,
+                                  width: 25,
                                   child: Text(
                                     (index + 1).toString(),
-                                    style: AppTextStyles.borderBtn,
+                                    style: AppTextStyles.bodyMeduim,
                                   ),
                                 ),
                                 const SizedBox(width: Sizes.medium),
@@ -107,52 +113,66 @@ class EditMeal extends StatelessWidget {
                                 SizedBox(
                                   width: 80,
                                   child: Text(
-                                    DateFormat.yMd().format(meals[index].date),
+                                    DateFormat.yMd()
+                                        .format(widget.meals[index].date),
                                     style: AppTextStyles.borderBtn,
                                   ),
                                 ),
                                 const SizedBox(width: Sizes.medium),
                                 // Time
                                 SizedBox(
-                                  width: 40,
+                                  width: 45,
                                   child: Text(
-                                    DateFormat.Hm().format(meals[index].date),
+                                    DateFormat.Hm()
+                                        .format(widget.meals[index].date),
                                     style: AppTextStyles.borderBtn,
                                   ),
                                 ),
                                 const SizedBox(width: Sizes.medium),
-                                // Callory
+                                // Calory
                                 SizedBox(
                                   width: 80,
                                   child: Text(
-                                    parseCalory(meals[index].totalCalories),
+                                    parseCalory(
+                                        widget.meals[index].totalCalories),
                                     style: AppTextStyles.borderBtn,
                                   ),
                                 ),
                               ],
                             ),
                           ),
-                        ),
-                      );
-                    },
-                  ))
+                        );
+                      },
+                    ),
+                  )
                 ],
               ),
             ),
           ),
           const SizedBox(height: Sizes.medium),
-
           // Overview
           SizedBox(
             height: Sizes.bigBtnH,
             width: size.width * 0.9,
             child: ElevatedButton(
               onPressed: () async {
-                showDialog(
+                showDialog<Meal>(
                   context: context,
-                  builder: (context) =>
-                      MealDetial(meal: meals[selectedIndex.value]),
-                ).then((value) => meals[selectedIndex.value] = value);
+                  builder: (context) => MealDetial(
+                      meal: widget.meals[selectedIndex], key: UniqueKey()),
+                ).then((meal) {
+                  // note edited meal
+                  if (!editedMealsIds.contains(meal!.id)) {
+                    editedMealsIds.add(meal.id);
+                  }
+                  // update meal
+                  if (meal.foodItems.isEmpty) {
+                    widget.meals.remove(widget.meals[selectedIndex]);
+                  } else {
+                    widget.meals[selectedIndex] = meal;
+                  }
+                  setState(() {});
+                });
               },
               style: AppButtonStyles.highlightBtn,
               child: const Text(
@@ -162,14 +182,19 @@ class EditMeal extends StatelessWidget {
             ),
           ),
           const SizedBox(height: Sizes.medium),
-
           // Back
           SizedBox(
             height: Sizes.smallBtnH,
             width: size.width * 0.9,
             child: ElevatedButton(
               style: AppButtonStyles.blackBtnStyle,
-              onPressed: () => Navigator.pop(context, meals),
+              onPressed: () {
+                Navigator.pop(
+                    context,
+                    widget.meals
+                        .where((meal) => editedMealsIds.contains(meal.id))
+                        .toList());
+              },
               child: const Text(
                 Strings.back,
                 style: AppTextStyles.blackBtn,

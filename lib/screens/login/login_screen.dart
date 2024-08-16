@@ -102,7 +102,7 @@ class LoginScreen extends StatelessWidget {
         children: [
           Positioned.fill(child: Assets.png.background.image(fit: BoxFit.fill)),
           Positioned(
-            bottom: MediaQuery.viewInsetsOf(context).bottom >10 ? 0 : 80,
+            bottom: MediaQuery.viewInsetsOf(context).bottom > 10 ? 0 : 80,
             left: 0,
             right: 0,
             top: 0,

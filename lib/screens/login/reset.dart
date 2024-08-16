@@ -8,17 +8,28 @@ import 'package:okradish/constants/colors.dart';
 import 'package:okradish/constants/data.dart';
 import 'package:okradish/constants/sizes.dart';
 import 'package:okradish/constants/strings.dart';
+import 'package:okradish/controllers/auth_controller.dart';
 import 'package:okradish/route/screens.dart';
+import 'package:okradish/utils/validator.dart';
 import 'package:okradish/widgets/app_text_field.dart';
 
 class ResetPwd extends StatelessWidget {
   final GlobalKey<FormState> _formState;
-  const ResetPwd(this._formState, {super.key});
+  ResetPwd(this._formState, {super.key});
 
-  void saveForm() {
+  final auth = Get.find<AuthController>();
+  final RxBool waiting = RxBool(false);
+
+  void saveForm() async {
     final valid = _formState.currentState!.validate();
-    if (valid) {
-      Get.toNamed(Screens.home);
+    if (valid && !waiting.value) {
+      waiting.value = true;
+      _formState.currentState!.save();
+      await auth.resetPws();
+      waiting.value = true;
+      if (valid) {
+        Get.toNamed(Screens.home);
+      }
     }
   }
 
@@ -40,23 +51,31 @@ class ResetPwd extends StatelessWidget {
               inputType: TextInputType.visiblePassword,
               isPasword: true,
               inputAction: TextInputAction.done,
-              onSaved: (String? val) {},
+              validator:
+                  AppValidator.textValidator(TextInputType.visiblePassword),
+              onSaved: (String? val) {
+                auth.password = val ?? "";
+              },
             ),
           ),
           SizedBox(
             height:
                 max(Sizes.large, MediaQuery.viewInsetsOf(context).bottom - 56),
           ),
-          SizedBox(
-            width: size.width * 0.9,
-            height: 56,
-            child: ElevatedButton(
-              style: AppButtonStyles.yellowBtn,
-              onPressed: () {
-                saveForm();
-              },
-              child:
-                  const Text(Strings.resetPass, style: AppTextStyles.colorBtn),
+          Obx(
+            () => SizedBox(
+              width: size.width * 0.9,
+              height: 56,
+              child: ElevatedButton(
+                style: AppButtonStyles.yellowBtn,
+                onPressed: () {
+                  saveForm();
+                },
+                child: waiting.value
+                    ? const Center(child: CircularProgressIndicator())
+                    : const Text(Strings.resetPass,
+                        style: AppTextStyles.colorBtn),
+              ),
             ),
           ),
         ],

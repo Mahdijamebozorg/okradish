@@ -6,9 +6,39 @@ import 'package:okradish/model/daily.dart';
 import 'package:okradish/model/food.dart';
 import 'package:okradish/model/meal.dart';
 
+List<FoodQuantity> getRandomFoodItems(List<Food> dummyFoods) {
+  final foods =
+      dummyFoods.getRange(0, 1 + Random().nextInt(dummyFoods.length - 2));
+  return foods
+      .map(
+        (e) => FoodQuantity(
+          id: Random().nextInt(50).toString(),
+          food: e,
+          weight: getRandomWeight(),
+        ),
+      )
+      .toList();
+}
+
+double getRandomWeight() {
+  return Random(Random().nextInt(500)).nextInt(100) + 1;
+}
+
+int randomHour() {
+  return Random(Random().nextInt(500)).nextInt(23);
+}
+
+int randomDay() {
+  return Random(Random().nextInt(500)).nextInt(29) + 1;
+}
+
+String randomId() {
+  return Random(Random().nextInt(500)).nextInt(500).toString();
+}
+
 class DummyData {
   DummyData._();
-  static List<Food> dummyFoods = [
+  static final List<Food> dummyFoods = [
     Food(
       id: 'f1',
       name: 'قرمه سبزی',
@@ -99,77 +129,54 @@ class DummyData {
     ),
   ];
 
-  static final dummyDay = DailyEntry(
-      id: "id",
-      meals: List.generate(10, (index) {
-        dummyFoods.shuffle();
-        final foods =
-            dummyFoods.getRange(0, 1 + Random().nextInt(dummyFoods.length - 2));
-        return Meal(
-          id: "id",
-          date: DateTime.now().copyWith(hour: Random().nextInt(23)),
-          foodItems: foods
-              .map(
-                (e) => FoodQuantity(
-                  id: index.toString(),
-                  food: e,
-                  weight: Random(0).nextInt(100) + 1,
-                ),
-              )
-              .toList(),
-        );
-      }),
-      date: DateTime.now());
-
-  static final dummyWeek = List.generate(
-    7,
-    (index) => DailyEntry(
-      id: index.toString(),
-      date: DateTime.now().copyWith(day: Random().nextInt(7)),
-      meals: List.generate(Random().nextInt(20), (index) {
-        dummyFoods.shuffle();
-        final foods =
-            dummyFoods.getRange(0, 1 + Random().nextInt(dummyFoods.length - 2));
-        return Meal(
-          date: DateTime.now(),
-          id: index.toString(),
-          foodItems: foods
-              .map(
-                (e) => FoodQuantity(
-                  id: index.toString(),
-                  food: e,
-                  weight: Random(1).nextInt(100) + 1,
-                ),
-              )
-              .toList(),
-        );
-      }),
-    ),
+  static final dummyDay = List.generate(
+    1,
+    (index) {
+      final date = DateTime.now().copyWith(day: randomDay());
+      return DailyEntry(
+        id: randomId(),
+        date: date,
+        meals: List.generate(1 + Random().nextInt(4), (index) {
+          dummyFoods.shuffle();
+          return Meal(
+            id: randomId(),
+            date: date.copyWith(hour: randomHour()),
+            foodItems: getRandomFoodItems(dummyFoods),
+          );
+        }),
+      );
+    },
   );
 
-  static final dummyMonth = List.generate(
-    30,
-    (index) => DailyEntry(
-      id: index.toString(),
-      date: DateTime.now().copyWith(day: Random().nextInt(30)),
-      meals: List.generate(Random().nextInt(20), (index) {
+  static final dummyWeek = List.generate(7, (index) {
+    final date = DateTime.now().copyWith(day: randomDay());
+    return DailyEntry(
+      id: randomId(),
+      date: date,
+      meals: List.generate(7 + Random().nextInt(30), (index) {
         dummyFoods.shuffle();
-        final foods =
-            dummyFoods.getRange(0, 1 + Random().nextInt(dummyFoods.length - 2));
         return Meal(
-          date: DateTime.now(),
-          id: index.toString(),
-          foodItems: foods
-              .map(
-                (e) => FoodQuantity(
-                  id: index.toString(),
-                  food: e,
-                  weight: Random(2).nextInt(100) + 1,
-                ),
-              )
-              .toList(),
+          date: date.copyWith(hour: randomHour()),
+          id: randomId(),
+          foodItems: getRandomFoodItems(dummyFoods),
         );
       }),
-    ),
-  );
+    );
+  });
+
+  static final dummyMonth = List.generate(30, (index) {
+    final date = DateTime.now().copyWith(day: randomDay());
+    return DailyEntry(
+      id: randomId(),
+      date: date,
+      meals: List.generate(30 + Random().nextInt(120), (index) {
+        dummyFoods.shuffle();
+        return Meal(
+          id: randomId(),
+          date: date.copyWith(hour: randomHour()),
+          foodItems: getRandomFoodItems(dummyFoods),
+        );
+      }),
+    );
+  });
 }

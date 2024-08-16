@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:okradish/component/button_style.dart';
 import 'package:okradish/component/text_style.dart';
@@ -9,17 +8,28 @@ import 'package:okradish/constants/colors.dart';
 import 'package:okradish/constants/data.dart';
 import 'package:okradish/constants/sizes.dart';
 import 'package:okradish/constants/strings.dart';
+import 'package:okradish/controllers/auth_controller.dart';
 import 'package:okradish/route/screens.dart';
+import 'package:okradish/utils/validator.dart';
 import 'package:okradish/widgets/app_text_field.dart';
 
 class Signin extends StatelessWidget {
   final GlobalKey<FormState> _formState;
-  const Signin(this._formState, {super.key});
+  Signin(this._formState, {super.key});
 
-  void saveForm() {
+  final auth = Get.find<AuthController>();
+  final RxBool waiting = RxBool(false);
+
+  void saveForm() async {
     final valid = _formState.currentState!.validate();
-    if (valid) {
-      Get.toNamed(Screens.home);
+    if (valid && !waiting.value) {
+      waiting.value = true;
+      _formState.currentState!.save();
+      await auth.signIn();
+      waiting.value = false;
+      if (valid) {
+        Get.toNamed(Screens.home);
+      }
     }
   }
 
@@ -39,7 +49,10 @@ class Signin extends StatelessWidget {
               color: AppColors.white,
               lable: Strings.username,
               maxLength: Data.usernameMaxLen,
-              onSaved: (String? val) {},
+              validator: AppValidator.textValidator(TextInputType.name),
+              onSaved: (String? val) {
+                auth.username = val ?? "";
+              },
             ),
           ),
 
@@ -55,7 +68,11 @@ class Signin extends StatelessWidget {
               inputType: TextInputType.visiblePassword,
               isPasword: true,
               inputAction: TextInputAction.done,
-              onSaved: (String? val) {},
+              validator:
+                  AppValidator.textValidator(TextInputType.visiblePassword),
+              onSaved: (String? val) {
+                auth.password = val ?? "";
+              },
             ),
           ),
 
@@ -64,15 +81,19 @@ class Signin extends StatelessWidget {
                 max(Sizes.large, MediaQuery.viewInsetsOf(context).bottom - 56),
           ),
           // button
-          SizedBox(
-            width: size.width * 0.9,
-            height: 56,
-            child: ElevatedButton(
-              style: AppButtonStyles.yellowBtn,
-              onPressed: () {
-                saveForm();
-              },
-              child: const Text(Strings.login, style: AppTextStyles.colorBtn),
+          Obx(
+            () => SizedBox(
+              width: size.width * 0.9,
+              height: 56,
+              child: ElevatedButton(
+                style: AppButtonStyles.yellowBtn,
+                onPressed: () {
+                  saveForm();
+                },
+                child: waiting.value
+                    ? const Center(child: CircularProgressIndicator())
+                    : const Text(Strings.login, style: AppTextStyles.colorBtn),
+              ),
             ),
           ),
         ],

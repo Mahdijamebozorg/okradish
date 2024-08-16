@@ -124,14 +124,15 @@ class _PieDiagramState extends State<PieDiagram> {
           PieChartSectionData(
             title: touchedIndex == 0
                 ? ((widget.entry.totalCarboCalory /
-                            widget.entry.totalCalories) *
+                            widget.entry.totalCalories+double.minPositive) *
                         100)
                     .round()
                     .toString()
                 : "",
             titleStyle: AppTextStyles.blackBtn,
             color: AppColors.trunks,
-            value: widget.entry.totalCarboCalory / widget.entry.totalCalories,
+            value: widget.entry.totalCarboCalory /
+                (widget.entry.totalCalories + double.minPositive),
             radius: touchedIndex == 0 ? 90 : 70,
           ),
 
@@ -146,21 +147,24 @@ class _PieDiagramState extends State<PieDiagram> {
                 : "",
             titleStyle: AppTextStyles.blackBtn,
             color: AppColors.primaryColor,
-            value: widget.entry.totalProteinCalory / widget.entry.totalCalories,
+            value: widget.entry.totalProteinCalory /
+                (widget.entry.totalCalories + double.minPositive),
             radius: touchedIndex == 1 ? 90 : 70,
           ),
 
           // Fat
           PieChartSectionData(
             title: touchedIndex == 2
-                ? ((widget.entry.totalFatCalory / widget.entry.totalCalories) *
+                ? ((widget.entry.totalFatCalory /
+                            (widget.entry.totalCalories + double.minPositive)) *
                         100)
                     .round()
                     .toString()
                 : "",
             titleStyle: AppTextStyles.blackBtn,
             color: AppColors.orange,
-            value: widget.entry.totalFatCalory / widget.entry.totalCalories,
+            value: widget.entry.totalFatCalory /
+                (widget.entry.totalCalories + double.minPositive),
             radius: touchedIndex == 2 ? 90 : 70,
           ),
 
@@ -175,11 +179,13 @@ class _PieDiagramState extends State<PieDiagram> {
                 : "",
             titleStyle: AppTextStyles.blackBtn,
             color: AppColors.grey,
-            value: widget.entry.totalFiberCalory / widget.entry.totalCalories,
+            value: widget.entry.totalFiberCalory /
+                (widget.entry.totalCalories + double.minPositive),
             radius: touchedIndex == 3 ? 90 : 70,
           ),
         ],
       ),
+      swapAnimationDuration: const Duration(milliseconds: 500),
     );
   }
 }
