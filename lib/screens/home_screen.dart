@@ -81,7 +81,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 bottom: Sizes.large +
                     Sizes.btmNavH +
                     Sizes.medium +
-                    MediaQuery.viewInsetsOf(context).bottom +
                     MediaQuery.of(context).systemGestureInsets.bottom,
                 child: PageView(
                   allowImplicitScrolling: false,
@@ -111,8 +110,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               // bottom navigation bar
               Positioned(
-                bottom: Sizes.medium +
-                    MediaQuery.of(context).systemGestureInsets.bottom,
+                bottom: Sizes.medium + MediaQuery.of(context).systemGestureInsets.bottom,
                 child: AppBottomNav(changeIndex: changeIndex),
               )
             ],

@@ -6,6 +6,7 @@ import 'package:okradish/component/text_style.dart';
 import 'package:okradish/constants/sizes.dart';
 import 'package:okradish/constants/strings.dart';
 import 'package:okradish/controllers/meal_controller.dart';
+import 'package:okradish/model/food.dart';
 import 'package:okradish/screens/add/init.dart';
 import 'package:okradish/screens/add/weighting.dart';
 import 'package:okradish/screens/home_screen.dart';
@@ -32,6 +33,7 @@ class AddScreen extends StatefulWidget {
 class _AddScreenState extends State<AddScreen> {
   // TODO: for performance, it's better to not put it
   final weightCtrl = Get.put(WeighingServce());
+  final Rx<Food?> selectedFood = Rx(null);
   final wKey = GlobalKey();
 
   /// Screen main widget
@@ -39,13 +41,18 @@ class _AddScreenState extends State<AddScreen> {
     if (_step == AddStep.init) {
       return Init((AddStep step) {
         _step = step;
+        selectedFood.value = null;
         setState(() {});
       });
     } else {
-      return Weighing(key: wKey, (AddStep step) {
-        _step = step;
-        setState(() {});
-      });
+      // Don't try to understand (:
+      return Weighing(
+          (AddStep step) {
+            _step = step;
+            setState(() {});
+          },
+          selectedFood,
+          key: wKey);
     }
   }
 
@@ -59,48 +66,51 @@ class _AddScreenState extends State<AddScreen> {
       });
     }
     log('----- AddScreen rebuilt');
-    return SafeArea(
-      child: Scaffold(
-        resizeToAvoidBottomInset: false,
-        backgroundColor: Colors.transparent,
-        appBar: const MyAppBar(title: Strings.addFoodTitle),
-        body: SizedBox.expand(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              // weight
-              Expanded(
-                child: Center(
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      GetX<WeighingServce>(
-                          init: weightCtrl,
-                          builder: (context) {
-                            return Padding(
-                              padding: const EdgeInsets.all(Sizes.small),
-                              child: Text(
-                                weightCtrl.weight.toString(),
-                                style: AppTextStyles.weightNumber,
-                              ),
-                            );
-                          }),
-                      // Gram
-                      const Positioned(
-                        top: 0,
-                        left: 0,
-                        child: Text(Strings.gram, style: AppTextStyles.gram),
-                      )
-                    ],
+    return Visibility(
+      visible: MediaQuery.viewInsetsOf(context).bottom < 10,
+      child: SafeArea(
+        child: Scaffold(
+          resizeToAvoidBottomInset: false,
+          backgroundColor: Colors.transparent,
+          appBar: const MyAppBar(title: Strings.addFoodTitle),
+          body: SizedBox.expand(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                // weight
+                Expanded(
+                  child: Center(
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        GetX<WeighingServce>(
+                            init: weightCtrl,
+                            builder: (context) {
+                              return Padding(
+                                padding: const EdgeInsets.all(Sizes.small),
+                                child: Text(
+                                  weightCtrl.weight.toString(),
+                                  style: AppTextStyles.weightNumber,
+                                ),
+                              );
+                            }),
+                        // Gram
+                        const Positioned(
+                          top: 0,
+                          left: 0,
+                          child: Text(Strings.gram, style: AppTextStyles.gram),
+                        )
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(
-                height: Sizes.large,
-              ),
-              // bases on step
-              SingleChildScrollView(child: currentWidget),
-            ],
+                const SizedBox(
+                  height: Sizes.large,
+                ),
+                // bases on step
+                SingleChildScrollView(child: currentWidget),
+              ],
+            ),
           ),
         ),
       ),

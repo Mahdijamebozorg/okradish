@@ -47,70 +47,75 @@ class ProfileScreen extends StatelessWidget {
                 Expanded(
                   child: Form(
                     key: _formKey,
-                    child: SingleChildScrollView(
+                    child: Padding(
                       padding: EdgeInsets.only(
-                          bottom: MediaQuery.viewInsetsOf(context).bottom),
-                      physics: const BouncingScrollPhysics(),
-                      child: Column(
-                        children: [
-                          // username
-                          AppTextField(
-                            color: AppColors.black,
-                            lable: Strings.username,
-                            maxLength: Data.usernameMaxLen,
-                            inputAction: TextInputAction.done,
-                            initalValue: user.username,
-                            validator:
-                                AppValidator.textValidator(TextInputType.name),
-                            onSaved: (value) {},
-                          ),
-                          const SizedBox(height: Sizes.medium),
-                          // email
-                          AppTextField(
-                            color: AppColors.black,
-                            lable: Strings.email,
-                            inputType: TextInputType.emailAddress,
-                            textDirection: TextDirection.ltr,
-                            maxLength: Data.emailMaxLen,
-                            inputAction: TextInputAction.done,
-                            initalValue: user.email,
-                            validator: AppValidator.textValidator(
-                                TextInputType.emailAddress),
-                            onSaved: (value) {},
-                          ),
-                          const SizedBox(height: Sizes.medium),
-                          // phone
-                          AppTextField(
-                            color: AppColors.black,
-                            lable: Strings.phone,
-                            inputType: TextInputType.phone,
-                            inputFormatters: [
-                              FilteringTextInputFormatter.digitsOnly
-                            ],
-                            textDirection: TextDirection.ltr,
-                            maxLength: Data.phoneMaxLen,
-                            inputAction: TextInputAction.done,
-                            initalValue: user.phone,
-                            validator:
-                                AppValidator.textValidator(TextInputType.phone),
-                            onSaved: (value) {},
-                          ),
-                          const SizedBox(height: Sizes.medium),
-                          // password
-                          AppTextField(
-                            color: AppColors.black,
-                            lable: Strings.password,
-                            maxLength: Data.passwordMaxLen,
-                            textDirection: TextDirection.ltr,
-                            inputType: TextInputType.visiblePassword,
-                            isPasword: true,
-                            inputAction: TextInputAction.done,
-                            initalValue: user.password,
-                            validator: AppValidator.textValidator(
-                                TextInputType.visiblePassword),
-                            onSaved: (value) {},
-                          ),
-                        ],
+                          bottom: MediaQuery.viewInsetsOf(context).bottom > 10
+                              ? MediaQuery.viewInsetsOf(context).bottom -
+                                  (Sizes.large + Sizes.btmNavH + Sizes.medium + Sizes.bigBtnH)
+                              : 0),
+                      child: SingleChildScrollView(
+                        physics: const BouncingScrollPhysics(),
+                        child: Column(
+                          children: [
+                            // username
+                            AppTextField(
+                              color: AppColors.black,
+                              lable: Strings.username,
+                              maxLength: Data.usernameMaxLen,
+                              inputAction: TextInputAction.done,
+                              initalValue: user.username,
+                              validator: AppValidator.textValidator(
+                                  TextInputType.name),
+                              onSaved: (value) {},
+                            ),
+                            const SizedBox(height: Sizes.medium),
+                            // email
+                            AppTextField(
+                              color: AppColors.black,
+                              lable: Strings.email,
+                              inputType: TextInputType.emailAddress,
+                              textDirection: TextDirection.ltr,
+                              maxLength: Data.emailMaxLen,
+                              inputAction: TextInputAction.done,
+                              initalValue: user.email,
+                              validator: AppValidator.textValidator(
+                                  TextInputType.emailAddress),
+                              onSaved: (value) {},
+                            ),
+                            const SizedBox(height: Sizes.medium),
+                            // phone
+                            AppTextField(
+                              color: AppColors.black,
+                              lable: Strings.phone,
+                              inputType: TextInputType.phone,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly
+                              ],
+                              textDirection: TextDirection.ltr,
+                              maxLength: Data.phoneMaxLen,
+                              inputAction: TextInputAction.done,
+                              initalValue: user.phone,
+                              validator: AppValidator.textValidator(
+                                  TextInputType.phone),
+                              onSaved: (value) {},
+                            ),
+                            const SizedBox(height: Sizes.medium),
+                            // password
+                            AppTextField(
+                              color: AppColors.black,
+                              lable: Strings.password,
+                              maxLength: Data.passwordMaxLen,
+                              textDirection: TextDirection.ltr,
+                              inputType: TextInputType.visiblePassword,
+                              isPasword: true,
+                              inputAction: TextInputAction.done,
+                              initalValue: user.password,
+                              validator: AppValidator.textValidator(
+                                  TextInputType.visiblePassword),
+                              onSaved: (value) {},
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),

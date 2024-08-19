@@ -18,15 +18,17 @@ import 'package:okradish/widgets/snackbar.dart';
 
 class Weighing extends StatelessWidget {
   final void Function(AddStep step) changeState;
+  Weighing(this.changeState, this.selectedFood, {super.key});
+
   final weighingService = Get.find<WeighingServce>();
 
-  final mealCtrl = Get.put(MealController.create());
+  final mealCtrl = Get.isRegistered<MealController>()
+      ? Get.find<MealController>()
+      : Get.put(MealController.create());
 
-  final Rx<Food?> selectedFood = Rx(null);
+  final Rx<Food?> selectedFood;
 
   final RxBool waiting = false.obs;
-
-  Weighing(this.changeState, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -42,10 +44,11 @@ class Weighing extends StatelessWidget {
                 () => (selectedFood.value == null)
                     ? GestureDetector(
                         onTap: () async {
-                          showDialog<Food>(
-                            context: context,
-                            builder: (context) => const ChooseFood(),
-                          ).then((food) => selectedFood.value = food);
+                          Get.dialog<Food>(
+                            const ChooseFood(),
+                          ).then(
+                            (food) => selectedFood.value = food,
+                          );
                         },
                         child: const Hero(
                           tag: "search",
