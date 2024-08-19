@@ -1,12 +1,24 @@
-class Food {
+import 'package:hive/hive.dart';
+import 'package:okradish/utils/random.dart';
+
+part 'food.g.dart';
+
+@HiveType(typeId: 1)
+class Food extends HiveObject {
+  @HiveField(0)
   final String id;
+  @HiveField(1)
   final String name;
+  @HiveField(2)
   final double carboPerGram;
+  @HiveField(3)
   final double proteinPerGram;
+  @HiveField(4)
   final double fatPerGram;
+  @HiveField(5)
   final double fibersPerGram;
 
-  const Food({
+  Food({
     required this.id,
     required this.name,
     required this.carboPerGram,
@@ -16,8 +28,8 @@ class Food {
   });
 
   factory Food.dummy() {
-    return const Food(
-      id: 'id',
+    return Food(
+      id: RandomUtills().randomId(),
       name: 'name',
       carboPerGram: 0,
       fatPerGram: 0,

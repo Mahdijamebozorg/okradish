@@ -1,88 +1,201 @@
 import 'package:get/get.dart';
 import 'package:okradish/constants/nutrient.dart';
+import 'package:okradish/controllers/daily_controller.dart';
+import 'package:okradish/controllers/data_controller.dart';
 import 'package:okradish/model/daily.dart';
+import 'package:okradish/model/meal.dart';
+import 'package:okradish/utils/date.dart';
+import 'package:okradish/utils/random.dart';
 
 class SummaryController extends GetxController {
-  RxList<DailyEntry> entries;
-  SummaryController() : entries = RxList();
+  List<DailyEntry> _entries;
+  SummaryController.value(this._entries);
+  SummaryController.create() : _entries = [];
 
   @override
   void onInit() {
-    // load intries
-    Future.delayed(const Duration(seconds: 3)).then(
-      (value) {
+    Get.find<DataController>().thisWeek.listen(
+      (ents) {
+        _entries = ents;
         update(['summary']);
       },
     );
     super.onInit();
   }
 
+  // ---------------------------------------------------------------
+  // Local DateBase Management
+
+  void saveOnLocal(DailyEntry daily) async {
+    return await Get.find<DataController>().saveOnLocal(daily);
+  }
+
+  Future<DailyEntry?> loadFromLocal(DateTime date) async {
+    return await Get.find<DataController>().loadFromLocal(date);
+  }
+
+  Future<List<DailyEntry>> getByDate(List<DateTime> dates) async {
+    var ents = <DailyEntry>[];
+    for (var date in dates) {
+      var ent = await loadFromLocal(date);
+      ent ??= DailyEntry(id: RandomUtills().randomId(), meals: [], date: date);
+      ents.add(ent);
+    }
+
+    if (ents.isEmpty) return [];
+
+    final days = dates.map((d) => d.day).toList();
+    days.sort();
+    ents.sort((ent1, ent2) => ent1.date.compareTo(ent2.date));
+
+    if (days.length == 7) {
+      DateUtills.forEachDayInWeek((DateTime date) {
+        if (ents.where((ent) => ent.date.day == date.day).toList().isEmpty) {
+          ents.add(
+            DailyEntry(
+              id: "id",
+              meals: [],
+              date: date,
+            ),
+          );
+        }
+      }, dates[0]);
+    }
+
+    // if month
+    else if (days.length == 29 || days.length == 30 || days.length == 31) {
+      DateUtills.forEachDayInMonth((DateTime date) {
+        if (ents.where((ent) => ent.date.day == date.day).toList().isEmpty) {
+          ents.add(
+            DailyEntry(
+              id: "id",
+              meals: [],
+              date: date,
+            ),
+          );
+        }
+      }, dates[0], days.length);
+    }
+    ents.sort((ent1, ent2) => ent1.date.compareTo(ent2.date));
+    return ents;
+  }
+
+  // ---------------------------------------------------------------
+  // Cloud DateBase Management
+
+  // ---------------------------------------------------------------
+  //
+  void addDailyEntry(DailyEntry entry) {
+    _entries.add(entry);
+    update(['summary']);
+  }
+
+  List<DailyEntry> get entries {
+    return _entries;
+  }
+
+  set entries(List<DailyEntry> ents) {
+    _entries = ents;
+    update(['summary']);
+  }
+
+  Future<void> updateMeal(Meal meal) async {
+    final entIndex = entries.indexWhere((ent) => ent.meals.contains(meal));
+    final mealIndex =
+        _entries[entIndex].meals.indexWhere((ml) => ml.id == meal.id);
+
+    if (meal.foodItems.isEmpty) {
+      _entries[entIndex].meals.removeAt(mealIndex);
+    } else {
+      _entries[entIndex] = entries[entIndex]..meals[mealIndex] = meal;
+    }
+    await Get.find<DataController>().saveOnLocal(_entries[entIndex]);
+    update(['summary']);
+  }
+
+  List<Meal> get meals {
+    List<Meal> mls = [];
+    for (var ent in entries) {
+      for (var ml in ent.meals) {
+        mls.add(ml);
+      }
+    }
+    return mls;
+  }
+
+  // ---------------------------------------------------------------
   // Method to calculate total carbo for the meal
-  double get totalCarbo {
+  double totalCarbo() {
     double cals = 0;
-    for (var entry in entries) {
-      cals += entry.totalCarbo;
+    for (var ent in _entries) {
+      final daily = DailyController.value(ent);
+      cals += daily.totalCarbo();
     }
     return cals;
   }
 
-  double get totalCarboCalory {
-    return totalCarbo * Nutrients.carboCalory;
+  double totalCarboCalory() {
+    return totalCarbo() * Nutrients.carboCalory;
   }
 
   // Method to calculate total protein for the meal
-  double get totalProtein {
+  double totalProtein() {
     double cals = 0;
-    for (var entry in entries) {
-      cals += entry.totalProtein;
+    for (var ent in _entries) {
+      final daily = DailyController.value(ent);
+      cals += daily.totalProtein();
     }
     return cals;
   }
 
-  double get totalProteinCalory {
-    return totalProtein * Nutrients.proteinCalory;
+  double totalProteinCalory() {
+    return totalProtein() * Nutrients.proteinCalory;
   }
 
   // Method to calculate total fat for the meal
-  double get totalFat {
+  double totalFat() {
     double cals = 0;
-    for (var entry in entries) {
-      cals += entry.totalFat;
+    for (var ent in _entries) {
+      final daily = DailyController.value(ent);
+      cals += daily.totalFat();
     }
     return cals;
   }
 
-  double get totalFatCalory {
-    return totalFat * Nutrients.fatCalory;
+  double totalFatCalory() {
+    return totalFat() * Nutrients.fatCalory;
   }
 
   // Method to calculate total fiber for the meal
-  double get totalFiber {
+  double totalFiber() {
     double cals = 0;
-    for (var entry in entries) {
-      cals += entry.totalFiber;
+    for (var ent in _entries) {
+      final daily = DailyController.value(ent);
+      cals += daily.totalFiber();
     }
     return cals;
   }
 
-  double get totalFiberCalory {
-    return totalFiber * Nutrients.fiberCalory;
+  double totalFiberCalory() {
+    return totalFiber() * Nutrients.fiberCalory;
   }
 
   // Method to calculate total calories for the meal
-  double get totalCalories {
+  double totalCalories() {
     double cals = 0;
-    for (var entry in entries) {
-      cals += entry.totalCalories;
+    for (var ent in _entries) {
+      final daily = DailyController.value(ent);
+      cals += daily.totalCalories();
     }
     return cals;
   }
 
   // Method to calculate total weight for the meal
-  double get totalWeight {
+  double totalWeight() {
     double weights = 0;
-    for (var entry in entries) {
-      weights += entry.totalWeight;
+    for (var ent in _entries) {
+      final daily = DailyController.value(ent);
+      weights += daily.totalWeight();
     }
     return weights;
   }

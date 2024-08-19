@@ -20,6 +20,9 @@ class $AssetsPngGen {
   AssetGenImage get beforeAdding =>
       const AssetGenImage('assets/png/BeforeAdding.png');
 
+  /// File path: assets/png/Splash.png
+  AssetGenImage get splash => const AssetGenImage('assets/png/Splash.png');
+
   /// File path: assets/png/logo.png
   AssetGenImage get logo => const AssetGenImage('assets/png/logo.png');
 
@@ -27,7 +30,8 @@ class $AssetsPngGen {
   AssetGenImage get plus => const AssetGenImage('assets/png/plus.png');
 
   /// List of all assets
-  List<AssetGenImage> get values => [background, beforeAdding, logo, plus];
+  List<AssetGenImage> get values =>
+      [background, beforeAdding, splash, logo, plus];
 }
 
 class $AssetsSvgGen {

@@ -1,13 +1,17 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:okradish/component/button_style.dart';
 import 'package:okradish/component/text_style.dart';
 import 'package:okradish/constants/colors.dart';
 import 'package:okradish/constants/sizes.dart';
 import 'package:okradish/constants/strings.dart';
+import 'package:okradish/controllers/daily_controller.dart';
+import 'package:okradish/controllers/meal_controller.dart';
+import 'package:okradish/controllers/summary_controller.dart';
 import 'package:okradish/model/daily.dart';
 import 'package:okradish/model/meal.dart';
-import 'package:okradish/utils/calory.dart';
+import 'package:persian_datetime_picker/persian_datetime_picker.dart';
 
 enum _Nutrient { carbo, protein, fat, fiber, calory }
 
@@ -32,22 +36,40 @@ extension _EnumFromIndex on int {
   }
 }
 
-// Barchart
+extension _EnumtoString on _Nutrient {
+  String get toPersian {
+    switch (this) {
+      case _Nutrient.carbo:
+        return Strings.carbo;
+      case _Nutrient.protein:
+        return Strings.protein;
+      case _Nutrient.fat:
+        return Strings.fat;
+      case _Nutrient.fiber:
+        return Strings.fiber;
+      case _Nutrient.calory:
+        return Strings.totalCal;
+      default:
+        return Strings.totalCal;
+    }
+  }
+}
+
 class MyBarChart extends StatefulWidget {
-  final List<DailyEntry> entries;
-  const MyBarChart({required this.entries, super.key});
+  MyBarChart({super.key});
 
   @override
   State<StatefulWidget> createState() => MyBarChartState();
 }
 
 class MyBarChartState extends State<MyBarChart> {
-  var _nutrient = _Nutrient.carbo;
+  var nutrient = _Nutrient.calory;
+  final summary = Get.find<SummaryController>();
 
   _BarType get _barType {
-    if (widget.entries.length == 1) {
+    if (summary.entries.length == 1) {
       return _BarType.daily;
-    } else if (widget.entries.length == 7) {
+    } else if (summary.entries.length == 7) {
       return _BarType.weekly;
     } else {
       return _BarType.monthly;
@@ -63,7 +85,7 @@ class MyBarChartState extends State<MyBarChart> {
       case _BarType.monthly:
         return 30;
       default:
-        return widget.entries.length;
+        return summary.entries.length;
     }
   }
 
@@ -89,7 +111,7 @@ class MyBarChartState extends State<MyBarChart> {
                         getTooltipColor: (group) => AppColors.greyBack,
                         getTooltipItem: (group, groupIndex, rod, rodIndex) {
                           return BarTooltipItem(
-                            parseCalory(rod.toY),
+                            rod.toY.toStringAsFixed(1),
                             AppTextStyles.bodySmall,
                           );
                         },
@@ -111,8 +133,13 @@ class MyBarChartState extends State<MyBarChart> {
                         sideTitles: SideTitles(
                           showTitles: true,
                           getTitlesWidget: (value, meta) {
+                            if (_barType != _BarType.weekly) {
+                              if (!(value.round() % 6 == 0 ||
+                                  value.round() == itemsLen - 1)) {}
+                            }
                             if (!(value.round() % 6 == 0 ||
-                                    value.round() == itemsLen - 1) &&
+                                    (value.round() == itemsLen - 1 &&
+                                        _barType != _BarType.monthly)) &&
                                 _barType != _BarType.weekly) {
                               return Container();
                             }
@@ -178,15 +205,17 @@ class MyBarChartState extends State<MyBarChart> {
                 child: TextButton(
                   onPressed: () {
                     showDialog<int>(
-                            context: context,
-                            builder: (context) =>
-                                _ChooseNutrient(key: UniqueKey()))
-                        .then((index) => _nutrient = index!.toNutrient);
-                    setState(() {});
+                        context: context,
+                        builder: (context) =>
+                            _ChooseNutrient(key: UniqueKey())).then((index) {
+                      nutrient = index!.toNutrient;
+                      setState(() {});
+                    });
                   },
                   style: AppButtonStyles.textButtonBorder,
-                  child: const Text(
-                    Strings.chooseD,
+                  child: Text(
+                    nutrient.toPersian,
+                    style: AppTextStyles.bodyMeduim,
                   ),
                 ),
               ),
@@ -200,36 +229,38 @@ class MyBarChartState extends State<MyBarChart> {
   List<BarChartGroupData> barGroups(
       _BarType type, double barsWidth, double barsSpace) {
     double getMealNutrien(Meal meal) {
-      switch (_nutrient) {
+      final mealCtrl = MealController.value(meal);
+      switch (nutrient) {
         case _Nutrient.carbo:
-          return meal.totalCarboCalory;
+          return mealCtrl.totalCarboCalory();
         case _Nutrient.protein:
-          return meal.totalProteinCalory;
+          return mealCtrl.totalProteinCalory();
         case _Nutrient.fat:
-          return meal.totalFatCalory;
+          return mealCtrl.totalFatCalory();
         case _Nutrient.fiber:
-          return meal.totalFiberCalory;
+          return mealCtrl.totalFiberCalory();
         case _Nutrient.calory:
-          return meal.totalCalories;
+          return mealCtrl.totalCalories();
         default:
-          return meal.totalCalories;
+          return mealCtrl.totalCalories();
       }
     }
 
-    double getEntryNutrien(DailyEntry entry) {
-      switch (_nutrient) {
+    double getEntryNutrien(DailyEntry daily) {
+      final dailyCtrl = DailyController.value(daily);
+      switch (nutrient) {
         case _Nutrient.carbo:
-          return entry.totalCarboCalory;
+          return dailyCtrl.totalCarboCalory();
         case _Nutrient.protein:
-          return entry.totalProteinCalory;
+          return dailyCtrl.totalProteinCalory();
         case _Nutrient.fat:
-          return entry.totalFatCalory;
+          return dailyCtrl.totalFatCalory();
         case _Nutrient.fiber:
-          return entry.totalFiberCalory;
+          return dailyCtrl.totalFiberCalory();
         case _Nutrient.calory:
-          return entry.totalCalories;
+          return dailyCtrl.totalCalories();
         default:
-          return entry.totalCalories;
+          return dailyCtrl.totalCalories();
       }
     }
 
@@ -238,13 +269,13 @@ class MyBarChartState extends State<MyBarChart> {
           ? 24
           : type == _BarType.weekly
               ? 7
-              : 30,
+              : 31,
       (group) {
         double barValue = 0;
 
         // Daily
         if (type == _BarType.daily) {
-          final hourMeals = widget.entries[0].meals
+          final hourMeals = summary.entries[0].meals
               .where((meal) => meal.date.hour == group)
               .toList();
           for (var meal in hourMeals) {
@@ -253,11 +284,23 @@ class MyBarChartState extends State<MyBarChart> {
         }
 
         // Monthly
-        else if (type == _BarType.monthly || type == _BarType.weekly) {
-          final dayEntry =
-              widget.entries.where((meal) => meal.date.day == group).toList();
-          for (var entry in dayEntry) {
-            barValue += getEntryNutrien(entry);
+        else if (type == _BarType.monthly) {
+          final dayEntry = summary.entries
+              .where((meal) => meal.date.day == group + 1)
+              .toList();
+          for (var daily in dayEntry) {
+            barValue += getEntryNutrien(daily);
+          }
+        }
+
+        // Weekly
+        else {
+          final dayEntry = summary.entries
+              .where(
+                  (meal) => Jalali.fromDateTime(meal.date).weekDay == group + 1)
+              .toList();
+          for (var daily in dayEntry) {
+            barValue += getEntryNutrien(daily);
           }
         }
 

@@ -1,10 +1,10 @@
 // ignore_for_file: prefer_const_constructors
-
 import 'dart:math';
-
 import 'package:okradish/model/daily.dart';
 import 'package:okradish/model/food.dart';
 import 'package:okradish/model/meal.dart';
+import 'package:okradish/model/quantity.dart';
+import 'package:okradish/utils/random.dart';
 
 List<FoodQuantity> getRandomFoodItems(List<Food> dummyFoods) {
   final foods =
@@ -22,18 +22,6 @@ List<FoodQuantity> getRandomFoodItems(List<Food> dummyFoods) {
 
 double getRandomWeight() {
   return Random(Random().nextInt(500)).nextInt(100) + 1;
-}
-
-int randomHour() {
-  return Random(Random().nextInt(500)).nextInt(23);
-}
-
-int randomDay() {
-  return Random(Random().nextInt(500)).nextInt(29) + 1;
-}
-
-String randomId() {
-  return Random(Random().nextInt(500)).nextInt(500).toString();
 }
 
 class DummyData {
@@ -132,15 +120,15 @@ class DummyData {
   static final dummyDay = List.generate(
     1,
     (index) {
-      final date = DateTime.now().copyWith(day: randomDay());
+      final date = DateTime.now();
       return DailyEntry(
-        id: randomId(),
+        id: RandomUtills().randomId(),
         date: date,
         meals: List.generate(1 + Random().nextInt(4), (index) {
           dummyFoods.shuffle();
           return Meal(
-            id: randomId(),
-            date: date.copyWith(hour: randomHour()),
+            id: RandomUtills().randomId(),
+            date: date.copyWith(hour: RandomUtills().randomHour()),
             foodItems: getRandomFoodItems(dummyFoods),
           );
         }),
@@ -149,15 +137,15 @@ class DummyData {
   );
 
   static final dummyWeek = List.generate(7, (index) {
-    final date = DateTime.now().copyWith(day: randomDay());
+    final date = DateTime.now().copyWith(day: RandomUtills().randomDay());
     return DailyEntry(
-      id: randomId(),
+      id: RandomUtills().randomId(),
       date: date,
       meals: List.generate(7 + Random().nextInt(30), (index) {
         dummyFoods.shuffle();
         return Meal(
-          date: date.copyWith(hour: randomHour()),
-          id: randomId(),
+          date: date.copyWith(hour: RandomUtills().randomHour()),
+          id: RandomUtills().randomId(),
           foodItems: getRandomFoodItems(dummyFoods),
         );
       }),
@@ -165,15 +153,15 @@ class DummyData {
   });
 
   static final dummyMonth = List.generate(30, (index) {
-    final date = DateTime.now().copyWith(day: randomDay());
+    final date = DateTime.now().copyWith(day: RandomUtills().randomDay());
     return DailyEntry(
-      id: randomId(),
+      id: RandomUtills().randomId(),
       date: date,
       meals: List.generate(30 + Random().nextInt(120), (index) {
         dummyFoods.shuffle();
         return Meal(
-          id: randomId(),
-          date: date.copyWith(hour: randomHour()),
+          id: RandomUtills().randomId(),
+          date: date.copyWith(hour: RandomUtills().randomHour()),
           foodItems: getRandomFoodItems(dummyFoods),
         );
       }),

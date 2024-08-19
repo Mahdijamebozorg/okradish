@@ -19,16 +19,17 @@ class Strings {
   static const addFoodText = """آیا می‌خواهید وعده جدیدی ثبت کنید؟ 
   :شروع سنجش» را بفشارید»""";
   static const startWeighing = "شروع سنجش";
-  static const details = "نمایش جزعیات";
+  static const details = "نمایش جزئیات";
 // add food
   static const chooseFood = "اتتخاب غذا";
-  static const search = "جتسجو";
+  static const search = "جستجو";
   static const mainMeal = "وعده اصلی";
   static const snack = "میان وعده";
   static const drink = "نوشیدنی";
   static const other = "دیگر";
   static const cancel = "انصراف";
   static const finalizeMeal = "ثبت نهایی وعده";
+  static const saveMeal = "وعده غذایی ذخیره شد";
   // details
   static const food = "غذا";
   static const weight = "وزن";
@@ -45,6 +46,7 @@ class Strings {
   static const fat = "چربی";
   static const fiber = "فیبر";
   static const totalCal = "مجموغ کالری دریافتی";
+  static const noEntry = "در این تاریخ وعده غذایی وجود ندارد";
 // date
   static const chooseDate = "انتخاب تاریخ";
   static const startDate = "تاریخ شروع";

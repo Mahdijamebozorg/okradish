@@ -20,8 +20,8 @@ String parseCalory(double calory) {
     }
     rest = digits.substring(digits.length - 5, digits.length - 3);
 
-    return "$base.${rest}Kcal";
+    return "$base.$rest";
   } else {
-    return "${digits}cal";
+    return digits;
   }
 }

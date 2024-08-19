@@ -1,6 +1,6 @@
 class Screens {
   Screens._();
-  static const home = "/";
-  static const spalsh = "/spalsh";
+  static const spalsh = "/";
+  static const home = "/home";
   static const login = "/login";
 }

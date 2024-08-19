@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:okradish/component/button_style.dart';
@@ -10,10 +12,17 @@ import 'package:okradish/model/food.dart';
 import 'package:okradish/widgets/app_card.dart';
 import 'package:okradish/widgets/appbar.dart';
 
-class ChooseFood extends StatelessWidget {
-  ChooseFood({super.key});
+class ChooseFood extends StatefulWidget {
+  const ChooseFood({super.key});
+  static const _bottomMargin = 52.0;
 
+  @override
+  State<ChooseFood> createState() => _ChooseFoodState();
+}
+
+class _ChooseFoodState extends State<ChooseFood> {
   final Rx<Food?> selecetedFood = Rx(null);
+
   final RxList<List<Food>> foods = [
     DummyData.dummyFoods,
     DummyData.dummyFoods,
@@ -21,7 +30,6 @@ class ChooseFood extends StatelessWidget {
     DummyData.dummyFoods,
   ].obs;
 
-  static const _bottomMargin = 52.0;
   final searchCtrl = TextEditingController();
 
   @override
@@ -50,10 +58,14 @@ class ChooseFood extends StatelessWidget {
               top: Sizes.medium,
               left: Sizes.medium,
               right: Sizes.medium,
-              bottom: 2 * Sizes.smallBtnH +
-                  _bottomMargin +
-                  Sizes.tiny +
-                  Sizes.medium,
+              bottom: max(
+                2 * Sizes.smallBtnH +
+                    ChooseFood._bottomMargin +
+                    Sizes.tiny +
+                    Sizes.medium +
+                    MediaQuery.of(context).systemGestureInsets.bottom,
+                MediaQuery.viewInsetsOf(context).bottom,
+              ),
               child: AppCard(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -107,7 +119,7 @@ class ChooseFood extends StatelessWidget {
 
             // Buttons
             Positioned(
-                bottom: _bottomMargin,
+                bottom: ChooseFood._bottomMargin,
                 child: Column(
                   children: [
                     SizedBox(
@@ -133,7 +145,7 @@ class ChooseFood extends StatelessWidget {
                       child: ElevatedButton(
                         style: AppButtonStyles.borderBtnStyle,
                         onPressed: () {
-                          Navigator.pop(context, selecetedFood.value);
+                          Navigator.pop(context, null);
                         },
                         child: const Text(
                           Strings.cancel,
@@ -193,10 +205,26 @@ class _MyTabBarState extends State<MyTabBar> {
           const TabBar(
             labelPadding: EdgeInsets.all(Sizes.tiny),
             tabs: [
-              Text(Strings.mainMeal, style: AppTextStyles.bodyMeduim),
-              Text(Strings.snack, style: AppTextStyles.bodyMeduim),
-              Text(Strings.drink, style: AppTextStyles.bodyMeduim),
-              Text(Strings.other, style: AppTextStyles.bodyMeduim),
+              Text(
+                Strings.mainMeal,
+                style: AppTextStyles.bodyMeduim,
+                textAlign: TextAlign.center,
+              ),
+              Text(
+                Strings.snack,
+                style: AppTextStyles.bodyMeduim,
+                textAlign: TextAlign.center,
+              ),
+              Text(
+                Strings.drink,
+                style: AppTextStyles.bodyMeduim,
+                textAlign: TextAlign.center,
+              ),
+              Text(
+                Strings.other,
+                style: AppTextStyles.bodyMeduim,
+                textAlign: TextAlign.center,
+              ),
             ],
           ),
           Expanded(
@@ -284,9 +312,14 @@ class FoodList extends StatelessWidget {
               onPressed: () {
                 setIndex(index);
               },
-              child: Text(
-                foodList[index].name,
-                style: AppTextStyles.bodyMeduim,
+              child: Row(
+                children: [
+                  Text(
+                    foodList[index].name,
+                    style: AppTextStyles.bodyMeduim,
+                    textAlign: TextAlign.right,
+                  ),
+                ],
               ),
             ),
           );

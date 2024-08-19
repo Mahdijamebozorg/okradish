@@ -8,7 +8,7 @@ import 'package:okradish/widgets/app_card.dart';
 
 class Init extends StatelessWidget {
   final void Function(AddStep) changeState;
-  const Init(this.changeState);
+  const Init(this.changeState, {super.key});
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);

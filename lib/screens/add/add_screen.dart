@@ -1,9 +1,15 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:okradish/component/text_style.dart';
+import 'package:okradish/constants/sizes.dart';
 import 'package:okradish/constants/strings.dart';
+import 'package:okradish/controllers/meal_controller.dart';
 import 'package:okradish/screens/add/init.dart';
 import 'package:okradish/screens/add/weighting.dart';
+import 'package:okradish/screens/home_screen.dart';
+import 'package:okradish/services/weighing_servce.dart';
 import 'package:okradish/widgets/appbar.dart';
 
 enum AddStep {
@@ -11,52 +17,91 @@ enum AddStep {
   weighting,
 }
 
-final _step = AddStep.init.obs;
+var _step = AddStep.init;
 
-class AddScreen extends StatelessWidget {
-  const AddScreen({
+class AddScreen extends StatefulWidget {
+  // ignore: prefer_const_constructors_in_immutables
+  AddScreen({
     super.key,
   });
 
+  @override
+  State<AddScreen> createState() => _AddScreenState();
+}
+
+class _AddScreenState extends State<AddScreen> {
+  // TODO: for performance, it's better to not put it
+  final weightCtrl = Get.put(WeighingServce());
+  final wKey = GlobalKey();
+
   /// Screen main widget
   Widget get currentWidget {
-    if (_step.value == AddStep.init) {
+    if (_step == AddStep.init) {
       return Init((AddStep step) {
-        _step.value = step;
+        _step = step;
+        setState(() {});
       });
     } else {
-      return Weighing();
+      return Weighing(key: wKey, (AddStep step) {
+        _step = step;
+        setState(() {});
+      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      backgroundColor: Colors.transparent,
-      appBar: const MyAppBar(title: Strings.addFoodTitle),
-      body: SizedBox.expand(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            // weight
-            Stack(
-              alignment: Alignment.center,
-              children: [
-                Text(
-                  0.toString(),
-                  style: AppTextStyles.weightNumber,
+    // on change page
+    if (homeIndex != HomeScreenIndex.add) {
+      setState(() {
+        _step = AddStep.init;
+        Get.delete<MealController>();
+      });
+    }
+    log('----- AddScreen rebuilt');
+    return SafeArea(
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        backgroundColor: Colors.transparent,
+        appBar: const MyAppBar(title: Strings.addFoodTitle),
+        body: SizedBox.expand(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              // weight
+              Expanded(
+                child: Center(
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      GetX<WeighingServce>(
+                          init: weightCtrl,
+                          builder: (context) {
+                            return Padding(
+                              padding: const EdgeInsets.all(Sizes.small),
+                              child: Text(
+                                weightCtrl.weight.toString(),
+                                style: AppTextStyles.weightNumber,
+                              ),
+                            );
+                          }),
+                      // Gram
+                      const Positioned(
+                        top: 0,
+                        left: 0,
+                        child: Text(Strings.gram, style: AppTextStyles.gram),
+                      )
+                    ],
+                  ),
                 ),
-                const Positioned(
-                  top: 0,
-                  left: 0,
-                  child: Text(Strings.gram, style: AppTextStyles.pageTitle),
-                )
-              ],
-            ),
-            // bases on step
-            Obx(() => currentWidget),
-          ],
+              ),
+              const SizedBox(
+                height: Sizes.large,
+              ),
+              // bases on step
+              SingleChildScrollView(child: currentWidget),
+            ],
+          ),
         ),
       ),
     );

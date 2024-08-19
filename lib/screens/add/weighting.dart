@@ -4,18 +4,29 @@ import 'package:okradish/component/button_style.dart';
 import 'package:okradish/component/text_style.dart';
 import 'package:okradish/constants/sizes.dart';
 import 'package:okradish/constants/strings.dart';
+import 'package:okradish/controllers/data_controller.dart';
+import 'package:okradish/controllers/meal_controller.dart';
 import 'package:okradish/dialogs/choose_food.dart';
 import 'package:okradish/model/food.dart';
 import 'package:okradish/model/meal.dart';
-import 'package:okradish/utils/calory.dart';
+import 'package:okradish/model/quantity.dart';
+import 'package:okradish/screens/add/add_screen.dart';
+import 'package:okradish/services/weighing_servce.dart';
 import 'package:okradish/widgets/app_card.dart';
 import 'package:okradish/dialogs/meal_detail.dart';
-import 'package:okradish/widgets/snackBar.dart';
+import 'package:okradish/widgets/snackbar.dart';
 
 class Weighing extends StatelessWidget {
-  final _weight = 100.0.obs;
-  final Rx<Meal> _meal = Meal.dummy().obs;
-  final Rx<Food?> _selectedFood = Rx(null);
+  final void Function(AddStep step) changeState;
+  final weighingService = Get.find<WeighingServce>();
+
+  final mealCtrl = Get.put(MealController.create());
+
+  final Rx<Food?> selectedFood = Rx(null);
+
+  final RxBool waiting = false.obs;
+
+  Weighing(this.changeState, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -28,13 +39,13 @@ class Weighing extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Obx(
-                () => (_selectedFood.value == null)
+                () => (selectedFood.value == null)
                     ? GestureDetector(
                         onTap: () async {
-                          showDialog(
+                          showDialog<Food>(
                             context: context,
-                            builder: (context) => ChooseFood(key: UniqueKey()),
-                          ).then((food) => _selectedFood.value = food as Food?);
+                            builder: (context) => const ChooseFood(),
+                          ).then((food) => selectedFood.value = food);
                         },
                         child: const Hero(
                           tag: "search",
@@ -49,33 +60,25 @@ class Weighing extends StatelessWidget {
                         ),
                       )
                     : Text(
-                        _selectedFood.value!.name,
+                        selectedFood.value!.name,
                         style: AppTextStyles.bodyMeduim,
                       ),
               ),
               // add food to meal
               ElevatedButton(
                 onPressed: () {
-                  if (_selectedFood.value != null) {
+                  if (selectedFood.value != null) {
                     // TODO: add controller
-                    _meal.update(
-                      (meal) => meal!.foodItems.add(
-                        FoodQuantity(
-                          id: "id",
-                          food: _selectedFood.value!,
-                          weight: _weight.value,
-                        ),
+                    mealCtrl.add(
+                      FoodQuantity(
+                        id: "id",
+                        food: selectedFood.value!,
+                        weight: weighingService.weight.value,
                       ),
                     );
-                    _selectedFood.value = null;
+                    selectedFood.value = null;
                   } else {
-                    showSnackbar(
-                      context,
-                      const Text(
-                        ErrorTexts.emptyMeal,
-                        style: AppTextStyles.bodyMeduim,
-                      ),
-                    );
+                    getSnackBar(ErrorTexts.emptyMeal);
                   }
                 },
                 style: AppButtonStyles.blackBtnStyle,
@@ -91,95 +94,91 @@ class Weighing extends StatelessWidget {
         const SizedBox(height: Sizes.medium),
 
         // Meal status
-        AppCard(
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: Column(
+        GetBuilder<MealController>(
+            id: "meal",
+            init: mealCtrl,
+            builder: (context) {
+              return AppCard(
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          Strings.totalCal,
-                          style: AppTextStyles.bodyMeduim,
+                        Expanded(
+                          child: Column(
+                            children: [
+                              const Text(
+                                Strings.totalCal,
+                                style: AppTextStyles.bodyMeduim,
+                              ),
+                              const SizedBox(height: Sizes.medium),
+                              Text(
+                                mealCtrl.totalCalories().toStringAsFixed(1),
+                                textDirection: TextDirection.ltr,
+                                style: AppTextStyles.bodyExtreme,
+                              ),
+                            ],
+                          ),
                         ),
-                        const SizedBox(height: Sizes.medium),
-                        Obx(
-                          () => Text(
-                            parseCalory(_meal.value.totalCalories),
-                            textDirection: TextDirection.ltr,
-                            style: AppTextStyles.bodyExtreme,
+                        // show details
+                        SizedBox(
+                          height: Sizes.smallBtnH,
+                          child: ElevatedButton(
+                            style: AppButtonStyles.highlightBtn,
+                            onPressed: () {
+                              if (mealCtrl.foodItems.isEmpty) {
+                                getSnackBar(ErrorTexts.emptyMeal);
+                              } else {
+                                Get.dialog<Meal>(
+                                  MealDetial(key: UniqueKey()),
+                                ).then((meal) =>
+                                    mealCtrl.foodItems = meal!.foodItems);
+                              }
+                            },
+                            child: const Text(
+                              Strings.details,
+                              style: AppTextStyles.smallHighlight,
+                            ),
                           ),
                         ),
                       ],
                     ),
-                  ),
-                  // show details
-                  SizedBox(
-                    height: Sizes.smallBtnH,
-                    child: ElevatedButton(
-                      style: AppButtonStyles.highlightBtn,
-                      onPressed: () {
-                        if (_meal.value.foodItems.isEmpty) {
-                          showSnackbar(
-                            context,
-                            const Text(
-                              ErrorTexts.emptyMeal,
-                              style: AppTextStyles.bodyMeduim,
-                            ),
-                          );
-                        } else {
-                          showDialog<Meal>(
-                            context: context,
-                            builder: (context) =>
-                                MealDetial(meal: _meal.value, key: UniqueKey()),
-                          ).then((meal) => _meal.update(
-                                (val) => val!.foodItems = meal!.foodItems,
-                              ));
-                        }
-                      },
-                      child: const Text(
-                        Strings.details,
-                        style: AppTextStyles.smallHighlight,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 24.0),
+                    const SizedBox(height: 24.0),
 
-              // Save meal
-              SizedBox(
-                height: Sizes.bigBtnH,
-                width: size.width * 0.9,
-                child: ElevatedButton(
-                  style: AppButtonStyles.orangeBtn,
-                  onPressed: () {
-                    //
-                    if (_meal.value.foodItems.isEmpty) {
-                      showSnackbar(
-                        context,
-                        const Text(
-                          ErrorTexts.emptyMeal,
-                          style: AppTextStyles.bodyMeduim,
-                        ),
-                      );
-                    } else {
-                      //
-                    }
-                  },
-                  child: const Text(
-                    textAlign: TextAlign.center,
-                    Strings.finalizeMeal,
-                    style: AppTextStyles.colorBtn,
-                  ),
+                    // Save meal
+                    SizedBox(
+                      height: Sizes.bigBtnH,
+                      width: size.width * 0.9,
+                      child: ElevatedButton(
+                        style: AppButtonStyles.orangeBtn,
+                        onPressed: () async {
+                          //
+                          if (mealCtrl.foodItems.isEmpty) {
+                            getSnackBar(ErrorTexts.emptyMeal);
+                          } else {
+                            //
+                            final dataCtrl = Get.find<DataController>();
+                            waiting.value = true;
+                            await dataCtrl.addMeal(mealCtrl.meal);
+                            waiting.value = false;
+                            changeState(AddStep.init);
+                            getSnackBar(Strings.saveMeal);
+                          }
+                        },
+                        child: waiting.value
+                            ? const Center(child: CircularProgressIndicator())
+                            : const Text(
+                                textAlign: TextAlign.center,
+                                Strings.finalizeMeal,
+                                style: AppTextStyles.colorBtn,
+                              ),
+                      ),
+                    )
+                  ],
                 ),
-              )
-            ],
-          ),
-        ),
+              );
+            }),
       ],
     );
   }

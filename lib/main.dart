@@ -2,12 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:okradish/component/themes.dart';
-import 'package:okradish/controllers/auth_controller.dart';
 import 'package:okradish/route/routes.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() async {
-  Get.put(AuthController());
   WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
@@ -17,7 +15,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.leanBack);
+    // SystemChrome.setEnabledSystemUIMode(SystemUiMode.leanBack);
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
@@ -36,7 +34,7 @@ class MyApp extends StatelessWidget {
       title: 'Okradish',
       theme: lightTheme(),
       routes: routes,
-      initialRoute: '/login',
+      initialRoute: '/',
     );
   }
 }

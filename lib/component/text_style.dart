@@ -13,9 +13,16 @@ class AppTextStyles {
     fontWeight: FontWeight.bold,
   );
 
+  static const TextStyle gram = TextStyle(
+    fontFamily: FontFamily.estedad,
+    fontSize: 18,
+    color: AppColors.black,
+    fontWeight: FontWeight.bold,
+  );
+
   static const TextStyle weightNumber = TextStyle(
     fontFamily: FontFamily.estedad,
-    fontSize: 128,
+    fontSize: 68,
     color: AppColors.black,
     fontWeight: FontWeight.w900,
   );

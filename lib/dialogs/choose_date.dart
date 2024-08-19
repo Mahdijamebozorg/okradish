@@ -4,13 +4,20 @@ import 'package:okradish/component/text_style.dart';
 import 'package:okradish/constants/colors.dart';
 import 'package:okradish/constants/sizes.dart';
 import 'package:okradish/constants/strings.dart';
-import 'package:okradish/dummy_data.dart';
-import 'package:okradish/model/daily.dart';
+import 'package:okradish/utils/date.dart';
 import 'package:okradish/widgets/app_card.dart';
 import 'package:okradish/widgets/appbar.dart';
 import 'package:persian_datetime_picker/persian_datetime_picker.dart';
 
-enum _DateType { day, week, month, custome }
+enum _DateType {
+  yesterday,
+  today,
+  lastWeek,
+  thisWeek,
+  lastMonth,
+  thisMonth,
+  custome
+}
 
 class ChooseDate extends StatefulWidget {
   const ChooseDate({super.key});
@@ -42,11 +49,6 @@ class _ChooseDateState extends State<ChooseDate> {
                   children: [
                     // Options
                     DateOptions(
-                      chosenDate: _chosenDate,
-                      chooseDate: (date) {
-                        _chosenDate = date;
-                        setState(() {});
-                      },
                       setDateType: (type) {
                         _dateType = type;
                         setState(() {});
@@ -98,8 +100,7 @@ class _ChooseDateState extends State<ChooseDate> {
                           Expanded(
                             child: PCalendarDatePicker(
                               initialDate: Jalali.now(),
-                              // TODO: Take fist date from ctrl
-                              firstDate: Jalali.now().copy(month: 1),
+                              firstDate: Jalali.now().copy(month: 1, day: 1),
                               lastDate: Jalali.now(),
                               onDateChanged: (Jalali? value) {
                                 _chosenDate = value!;
@@ -154,26 +155,56 @@ class _ChooseDateState extends State<ChooseDate> {
                       child: ElevatedButton(
                         style: AppButtonStyles.blackBtnStyle,
                         onPressed: () {
-                          // TODO: retrun entry list based on date
-                          late List<DailyEntry> output;
+                          List<DateTime> dates = [];
                           switch (_dateType) {
-                            case _DateType.day:
-                              output = DummyData.dummyDay;
+                            case _DateType.yesterday:
+                              {
+                                dates.add(DateTime.now()
+                                    .subtract(const Duration(days: 1)));
+                              }
+                              break;
+                            case _DateType.today:
+                              {
+                                dates.add(DateTime.now());
+                              }
                               break;
                             case _DateType.custome:
-                              output = DummyData.dummyDay;
+                              {
+                                dates.add(_chosenDate.toDateTime());
+                              }
                               break;
-                            case _DateType.week:
-                              output = DummyData.dummyWeek;
+                            case _DateType.thisWeek:
+                              {
+                                dates.addAll(
+                                    DateUtills.weekDays(DateTime.now()));
+                              }
                               break;
-                            case _DateType.month:
-                              output = DummyData.dummyMonth;
+                            case _DateType.lastWeek:
+                              {
+                                var lastWeek = DateTime.now()
+                                    .subtract(const Duration(days: 7));
+                                dates.addAll(DateUtills.weekDays(lastWeek));
+                              }
+                              break;
+
+                            case _DateType.thisMonth:
+                              {
+                                dates.addAll(
+                                  DateUtills.monthDays(DateTime.now()),
+                                );
+                              }
+
+                            case _DateType.lastMonth:
+                              {
+                                final lastMonth = DateTime.now().subtract(
+                                    Duration(days: Jalali.now().day + 1));
+                                dates.addAll(DateUtills.monthDays(lastMonth));
+                              }
                               break;
                             default:
-                              output = DummyData.dummyDay;
                               break;
                           }
-                          Navigator.of(context).pop(output);
+                          Navigator.of(context).pop(dates);
                         },
                         child: const Text(
                           Strings.confirm,
@@ -194,15 +225,11 @@ class _ChooseDateState extends State<ChooseDate> {
 
 class DateOptions extends StatefulWidget {
   const DateOptions({
-    required this.chosenDate,
     required this.setDateType,
-    required this.chooseDate,
     super.key,
   });
 
-  final void Function(Jalali) chooseDate;
   final void Function(_DateType) setDateType;
-  final Jalali chosenDate;
 
   @override
   State<DateOptions> createState() => _DateOptionsState();
@@ -212,7 +239,9 @@ class _DateOptionsState extends State<DateOptions> {
   int index = 6;
 
   Color optColor(int indx) {
-    return index == indx ? AppColors.trunks.withOpacity(0.3) : AppColors.transparent;
+    return index == indx
+        ? AppColors.trunks.withOpacity(0.3)
+        : AppColors.transparent;
   }
 
   @override
@@ -229,12 +258,7 @@ class _DateOptionsState extends State<DateOptions> {
           child: TextButton(
             style: AppButtonStyles.textButtonBorder,
             onPressed: () {
-              // to ensure updat
-              widget.chooseDate(Jalali.now().copy(
-                day: widget.chosenDate.day - 1,
-              ));
-              widget.chooseDate(Jalali.now());
-              widget.setDateType(_DateType.day);
+              widget.setDateType(_DateType.today);
               index = 0;
               setState(() {});
             },
@@ -256,10 +280,7 @@ class _DateOptionsState extends State<DateOptions> {
           child: TextButton(
             style: AppButtonStyles.textButtonBorder,
             onPressed: () {
-              widget.chooseDate(Jalali.now().copy(
-                day: Jalali.now().day - 1,
-              ));
-              widget.setDateType(_DateType.day);
+              widget.setDateType(_DateType.yesterday);
               index = 1;
               setState(() {});
             },
@@ -281,11 +302,7 @@ class _DateOptionsState extends State<DateOptions> {
           child: TextButton(
             style: AppButtonStyles.textButtonBorder,
             onPressed: () {
-              widget.setDateType(_DateType.week);
-              widget.chooseDate(Jalali.now().copy(
-                day: widget.chosenDate.day - 1,
-              ));
-              widget.chooseDate(Jalali.now());
+              widget.setDateType(_DateType.thisWeek);
               index = 2;
               setState(() {});
             },
@@ -307,10 +324,7 @@ class _DateOptionsState extends State<DateOptions> {
           child: TextButton(
             style: AppButtonStyles.textButtonBorder,
             onPressed: () {
-              widget.chooseDate(Jalali.now().copy(
-                day: Jalali.now().day - 7,
-              ));
-              widget.setDateType(_DateType.week);
+              widget.setDateType(_DateType.lastWeek);
               index = 3;
               setState(() {});
             },
@@ -332,11 +346,7 @@ class _DateOptionsState extends State<DateOptions> {
           child: TextButton(
             style: AppButtonStyles.textButtonBorder,
             onPressed: () {
-              widget.chooseDate(Jalali.now().copy(
-                day: widget.chosenDate.day - 1,
-              ));
-              widget.chooseDate(Jalali.now());
-              widget.setDateType(_DateType.month);
+              widget.setDateType(_DateType.thisMonth);
               index = 4;
               setState(() {});
             },
@@ -358,10 +368,7 @@ class _DateOptionsState extends State<DateOptions> {
           child: TextButton(
             style: AppButtonStyles.textButtonBorder,
             onPressed: () {
-              widget.chooseDate(Jalali.now().copy(
-                month: Jalali.now().month - 1,
-              ));
-              widget.setDateType(_DateType.month);
+              widget.setDateType(_DateType.lastMonth);
               index = 5;
               setState(() {});
             },
@@ -383,10 +390,6 @@ class _DateOptionsState extends State<DateOptions> {
           child: TextButton(
             style: AppButtonStyles.textButtonBorder,
             onPressed: () {
-              widget.chooseDate(Jalali.now().copy(
-                day: widget.chosenDate.day - 1,
-              ));
-              widget.chooseDate(Jalali.now());
               widget.setDateType(_DateType.custome);
               index = 6;
               setState(() {});
