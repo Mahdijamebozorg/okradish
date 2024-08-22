@@ -3,7 +3,7 @@ import 'package:hive/hive.dart';
 part 'user.g.dart';
 
 @HiveType(typeId: 0)
-class UserProfile extends HiveObject {
+class UserData extends HiveObject {
   @HiveField(0)
   final String id;
   @HiveField(1)
@@ -14,12 +14,15 @@ class UserProfile extends HiveObject {
   final String phone;
   @HiveField(4)
   final String token;
+  @HiveField(5)
+  final String password;
 
-  UserProfile({
+  UserData({
     required this.id,
     required this.username,
     required this.email,
-    required this.phone,
+    required this.password,
+    this.phone = "",
     this.token = "",
   });
 }

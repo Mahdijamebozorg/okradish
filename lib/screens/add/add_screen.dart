@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:okradish/component/extention.dart';
 import 'package:okradish/component/text_style.dart';
 import 'package:okradish/constants/sizes.dart';
 import 'package:okradish/constants/strings.dart';
@@ -10,7 +11,7 @@ import 'package:okradish/model/food.dart';
 import 'package:okradish/screens/add/init.dart';
 import 'package:okradish/screens/add/weighting.dart';
 import 'package:okradish/screens/home_screen.dart';
-import 'package:okradish/services/weighing_servce.dart';
+import 'package:okradish/controllers/weighing_servce.dart';
 import 'package:okradish/widgets/appbar.dart';
 
 enum AddStep {
@@ -46,14 +47,17 @@ class _AddScreenState extends State<AddScreen> {
       });
     } else {
       // Don't try to understand (:
-      return Weighing(
-          (AddStep step) {
-            _step = step;
-            setState(() {});
-          },
-          selectedFood,
-          key: wKey);
+      return Weighing((AddStep step) {
+        _step = step;
+        setState(() {});
+      }, selectedFood, key: wKey);
     }
+  }
+
+  @override
+  void initState() {
+    weightCtrl.init();
+    super.initState();
   }
 
   @override
@@ -83,17 +87,27 @@ class _AddScreenState extends State<AddScreen> {
                     child: Stack(
                       alignment: Alignment.center,
                       children: [
-                        GetX<WeighingServce>(
-                            init: weightCtrl,
-                            builder: (context) {
-                              return Padding(
-                                padding: const EdgeInsets.all(Sizes.small),
-                                child: Text(
-                                  weightCtrl.weight.toString(),
-                                  style: AppTextStyles.weightNumber,
-                                ),
-                              );
-                            }),
+                        Obx(
+                          () => !weightCtrl.connected.value
+                              ? const Center(child: CircularProgressIndicator())
+                              : GetBuilder(
+                                  id: 'weight',
+                                  init: weightCtrl,
+                                  builder: (context) {
+                                    return Padding(
+                                      padding:
+                                          const EdgeInsets.all(Sizes.small),
+                                      child: Text(
+                                        weightCtrl.connected.value
+                                            ? weightCtrl.weight
+                                                .toString()
+                                                .toPersian
+                                            : "",
+                                        style: AppTextStyles.weightNumber,
+                                      ),
+                                    );
+                                  }),
+                        ),
                         // Gram
                         const Positioned(
                           top: 0,

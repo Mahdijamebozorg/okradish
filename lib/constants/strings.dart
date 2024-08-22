@@ -72,4 +72,10 @@ class ErrorTexts {
   static const invalidPhone = "شماره وارد شده صحیح نمی باشد";
   static const invalidEmail = "آدرس ایمیل صحیح نمی باشد";
   static const shortPwd = "رمز باید حداقل 8 کاراکتر باشد";
+  static const internet = "بعد از اتصال به اینترنت اطلاعات بروز میشوند";
+  static const noInternet = "دستگاه به اینترنت متصل نیست";
+  static const syncing = "در حال بروز رسانی اطلاعات ...";
+  static const resetPwdAuth = "ابتدا وارد شوید";
+  static const emailNotVerified = "ایمیل شما تایید نشده است";
+  static const emailVersent = "تاییدیه ایمیل برای شما ارسال شد";
 }

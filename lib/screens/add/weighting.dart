@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:okradish/component/button_style.dart';
+import 'package:okradish/component/extention.dart';
 import 'package:okradish/component/text_style.dart';
 import 'package:okradish/constants/sizes.dart';
 import 'package:okradish/constants/strings.dart';
@@ -11,7 +12,7 @@ import 'package:okradish/model/food.dart';
 import 'package:okradish/model/meal.dart';
 import 'package:okradish/model/quantity.dart';
 import 'package:okradish/screens/add/add_screen.dart';
-import 'package:okradish/services/weighing_servce.dart';
+import 'package:okradish/controllers/weighing_servce.dart';
 import 'package:okradish/widgets/app_card.dart';
 import 'package:okradish/dialogs/meal_detail.dart';
 import 'package:okradish/widgets/snackbar.dart';
@@ -27,7 +28,6 @@ class Weighing extends StatelessWidget {
       : Get.put(MealController.create());
 
   final Rx<Food?> selectedFood;
-
   final RxBool waiting = false.obs;
 
   @override
@@ -76,7 +76,7 @@ class Weighing extends StatelessWidget {
                       FoodQuantity(
                         id: "id",
                         food: selectedFood.value!,
-                        weight: weighingService.weight.value,
+                        weight: weighingService.weight.value / 100,
                       ),
                     );
                     selectedFood.value = null;
@@ -117,7 +117,10 @@ class Weighing extends StatelessWidget {
                               ),
                               const SizedBox(height: Sizes.medium),
                               Text(
-                                mealCtrl.totalCalories().toStringAsFixed(1),
+                                mealCtrl
+                                    .totalCalories()
+                                    .toStringAsFixed(1)
+                                    .toPersian,
                                 textDirection: TextDirection.ltr,
                                 style: AppTextStyles.bodyExtreme,
                               ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:okradish/component/button_style.dart';
+import 'package:okradish/component/extention.dart';
 import 'package:okradish/component/text_style.dart';
 import 'package:okradish/constants/colors.dart';
 import 'package:okradish/constants/sizes.dart';
@@ -7,7 +8,10 @@ import 'package:okradish/constants/strings.dart';
 import 'package:okradish/utils/date.dart';
 import 'package:okradish/widgets/app_card.dart';
 import 'package:okradish/widgets/appbar.dart';
-import 'package:persian_datetime_picker/persian_datetime_picker.dart';
+// import 'package:persian_datetime_picker/persian_datetime_picker.dart' as date;
+// import 'package:jalali_flutter_datepicker/jalali_flutter_datepicker.dart';
+import 'package:okradish/persian_datetime_picker-2.7.0/pcalendar_date_picker.dart';
+import 'package:okradish/persian_datetime_picker-2.7.0/date/shamsi_date.dart';
 
 enum _DateType {
   yesterday,
@@ -88,7 +92,8 @@ class _ChooseDateState extends State<ChooseDate> {
                                   style: AppTextStyles.bodySmall,
                                 ),
                                 Text(
-                                  "${_chosenDate.formatter.dd.toString()}/${_chosenDate.formatter.mN.toString()}/${_chosenDate.formatter.yyyy.toString()}",
+                                  "${_chosenDate.formatter.dd.toString()}/${_chosenDate.formatter.mN.toString()}/${_chosenDate.formatter.yyyy.toString()}"
+                                      .toPersian,
                                 ),
                               ],
                             ),
@@ -117,6 +122,13 @@ class _ChooseDateState extends State<ChooseDate> {
                                 //
                                 return true;
                               },
+                              // disabledDayColor: AppColors.trunks,
+                              // enabledDayColor: AppColors.white,
+                              // footerIconColor: AppColors.white,
+                              // footerTextStyle: AppTextStyles.blackBtn,
+                              // selectedDayBackground: AppColors.orange,
+                              // selectedDayColor: AppColors.white,
+                              // todayColor: AppColors.primaryColor,
                             ),
                           ),
                         ],

@@ -1,5 +1,4 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:okradish/component/button_style.dart';
@@ -12,23 +11,32 @@ import 'package:okradish/controllers/auth_controller.dart';
 import 'package:okradish/route/screens.dart';
 import 'package:okradish/utils/validator.dart';
 import 'package:okradish/widgets/app_text_field.dart';
+import 'dart:developer' as dev;
+
+import 'package:okradish/widgets/snackbar.dart';
 
 class Signup extends StatelessWidget {
   final GlobalKey<FormState> _formState;
   Signup(this._formState, {super.key});
 
   final auth = Get.find<AuthController>();
-  final RxBool waiting = RxBool(false);
 
-  void saveForm() async {
+  void saveForm(BuildContext context) async {
     final valid = _formState.currentState!.validate();
-    if (valid && !waiting.value) {
-      waiting.value = true;
+    if (valid && !auth.isWorking.value) {
       _formState.currentState!.save();
-      await auth.singUp();
-      waiting.value = false;
-      if (valid) {
-        Get.toNamed(Screens.home);
+      var msg = await auth.singUp();
+      if (context.mounted) showSnackbar(context, msg);
+      dev.log(msg);
+
+      if (msg.isEmpty) {
+        msg = await auth.signIn();
+        if (context.mounted) showSnackbar(context, msg);
+        dev.log(msg);
+        if (msg.isEmpty) {
+          // if (context.mounted) showSnackbar(context, ErrorTexts.emailVersent);
+          Get.offAndToNamed(Screens.home);
+        }
       }
     }
   }
@@ -51,7 +59,7 @@ class Signup extends StatelessWidget {
               maxLength: Data.usernameMaxLen,
               validator: AppValidator.textValidator(TextInputType.name),
               onSaved: (String? val) {
-                auth.username = val ?? "";
+                auth.username = val!.toLowerCase();
               },
             ),
           ),
@@ -67,7 +75,7 @@ class Signup extends StatelessWidget {
               maxLength: Data.emailMaxLen,
               validator: AppValidator.textValidator(TextInputType.emailAddress),
               onSaved: (String? val) {
-                auth.email = val ?? "";
+                auth.email = val!.toLowerCase();
               },
             ),
           ),
@@ -86,7 +94,7 @@ class Signup extends StatelessWidget {
               validator:
                   AppValidator.textValidator(TextInputType.visiblePassword),
               onSaved: (String? val) {
-                auth.password = val ?? "";
+                auth.password = val!;
               },
             ),
           ),
@@ -102,9 +110,9 @@ class Signup extends StatelessWidget {
               child: ElevatedButton(
                 style: AppButtonStyles.yellowBtn,
                 onPressed: () {
-                  saveForm();
+                  saveForm(context);
                 },
-                child: waiting.value
+                child: auth.isWorking.value
                     ? const Center(child: CircularProgressIndicator())
                     : const Text(Strings.register,
                         style: AppTextStyles.colorBtn),

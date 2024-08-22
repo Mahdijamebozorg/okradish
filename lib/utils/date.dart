@@ -21,11 +21,13 @@ class DateUtills {
   }
 
   static List<DateTime> weekDays(DateTime aDay) {
-    var weekDay = Jalali.fromDateTime(aDay);
+    // var date = Jalali.fromDateTime(aDay);
     List<DateTime> dates = [];
-    final startOfWeek = weekDay.copy(day: weekDay.day - (weekDay.weekDay - 1));
+    final startOfWeek =
+        aDay.copyWith(day: aDay.day - (Jalali.fromDateTime(aDay).weekDay - 1));
+
     for (int i = 0; i < 7; i++) {
-      final date = startOfWeek.toDateTime().add(Duration(days: i));
+      final date = startOfWeek.add(Duration(days: i));
       dates.add(date);
     }
     return dates;

@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:okradish/component/text_style.dart';
 import 'package:okradish/constants/Sizes.dart';
 import 'package:okradish/constants/strings.dart';
+import 'package:okradish/controllers/auth_controller.dart';
 import 'package:okradish/gen/assets.gen.dart';
 import 'package:okradish/screens/login/reset.dart';
 import 'package:okradish/screens/login/signin.dart';
@@ -18,6 +19,7 @@ class LoginScreen extends StatelessWidget {
   LoginScreen({super.key});
 
   final step = _Step.signin.obs;
+  final authCtrl = Get.find<AuthController>();
 
   final singInFormState = GlobalKey<FormState>();
   final signupFormState = GlobalKey<FormState>();
@@ -35,46 +37,25 @@ class LoginScreen extends StatelessWidget {
   }
 
   /// Text buttons
-  Widget get textButtons {
+  Widget textButtons(BuildContext context) {
     String leftText = '';
     String rightText = '';
-    var leftFunc = () {};
-    var rightFunc = () {};
-
     switch (step.value) {
       case _Step.signin:
         {
           leftText = Strings.resetPass;
-          leftFunc = () {
-            step.value = _Step.reset;
-          };
           rightText = Strings.register;
-          rightFunc = () {
-            step.value = _Step.signup;
-          };
         }
         break;
       case _Step.signup:
         {
           leftText = Strings.resetPass;
-          leftFunc = () {
-            step.value = _Step.reset;
-          };
           rightText = Strings.login;
-          rightFunc = () {
-            step.value = _Step.signin;
-          };
         }
       default:
         {
           leftText = Strings.register;
-          leftFunc = () {
-            step.value = _Step.signup;
-          };
           rightText = Strings.login;
-          rightFunc = () {
-            step.value = _Step.signin;
-          };
         }
     }
     return Row(
@@ -82,13 +63,33 @@ class LoginScreen extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         TextButton(
-          onPressed: rightFunc,
-          child: Text(rightText, style: AppTextStyles.loginTextBtn),
+          onPressed: () async {
+            if (step.value == _Step.signin) {
+              step.value = _Step.signup;
+            } else if (step.value == _Step.signup) {
+              step.value = _Step.signin;
+            } else {
+              step.value = _Step.signin;
+            }
+          },
+          child: authCtrl.isWorking.value
+              ? const Center(child: CircularProgressIndicator())
+              : Text(rightText, style: AppTextStyles.loginTextBtn),
         ),
         const Text('/', style: AppTextStyles.loginTextBtn),
         TextButton(
-          onPressed: leftFunc,
-          child: Text(leftText, style: AppTextStyles.loginTextBtn),
+          onPressed: () async {
+            if (step.value == _Step.signin) {
+              step.value = _Step.reset;
+            } else if (step.value == _Step.signup) {
+              step.value = _Step.reset;
+            } else {
+              step.value = _Step.signup;
+            }
+          },
+          child: authCtrl.isWorking.value
+              ? const Center(child: CircularProgressIndicator())
+              : Text(leftText, style: AppTextStyles.loginTextBtn),
         ),
       ],
     );
@@ -113,7 +114,7 @@ class LoginScreen extends StatelessWidget {
                 children: [
                   Expanded(child: currentWidget),
                   const SizedBox(height: Sizes.medium),
-                  textButtons,
+                  textButtons(context),
                 ],
               ),
             ),

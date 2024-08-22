@@ -2,6 +2,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:okradish/component/button_style.dart';
+import 'package:okradish/component/extention.dart';
 import 'package:okradish/component/text_style.dart';
 import 'package:okradish/constants/colors.dart';
 import 'package:okradish/constants/sizes.dart';
@@ -11,7 +12,7 @@ import 'package:okradish/controllers/meal_controller.dart';
 import 'package:okradish/controllers/summary_controller.dart';
 import 'package:okradish/model/daily.dart';
 import 'package:okradish/model/meal.dart';
-import 'package:persian_datetime_picker/persian_datetime_picker.dart';
+import 'package:okradish/persian_datetime_picker-2.7.0/date/shamsi_date.dart';
 
 enum _Nutrient { carbo, protein, fat, fiber, calory }
 
@@ -111,7 +112,7 @@ class MyBarChartState extends State<MyBarChart> {
                         getTooltipColor: (group) => AppColors.greyBack,
                         getTooltipItem: (group, groupIndex, rod, rodIndex) {
                           return BarTooltipItem(
-                            rod.toY.toStringAsFixed(1),
+                            rod.toY.toStringAsFixed(1).toPersian,
                             AppTextStyles.bodySmall,
                           );
                         },
@@ -145,8 +146,8 @@ class MyBarChartState extends State<MyBarChart> {
                             }
                             return Text(
                               _barType == _BarType.daily
-                                  ? value.round().toString()
-                                  : (value.round() + 1).toString(),
+                                  ? value.round().toString().toPersian
+                                  : (value.round() + 1).toString().toPersian,
                               style: AppTextStyles.bodySmall,
                             );
                           },
@@ -286,7 +287,7 @@ class MyBarChartState extends State<MyBarChart> {
         // Monthly
         else if (type == _BarType.monthly) {
           final dayEntry = summary.entries
-              .where((meal) => meal.date.day == group + 1)
+              .where((meal) => Jalali.fromDateTime(meal.date).day == group + 1)
               .toList();
           for (var daily in dayEntry) {
             barValue += getEntryNutrien(daily);

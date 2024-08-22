@@ -12,6 +12,7 @@ class AppTextField extends StatelessWidget {
   final Color color;
   final String? initalValue;
   final bool isPasword;
+  final bool enabled;
   final int maxLength;
   final TextAlign textAlign;
   final TextDirection? textDirection;
@@ -27,6 +28,7 @@ class AppTextField extends StatelessWidget {
     required this.color,
     required this.maxLength,
     this.isPasword = false,
+    this.enabled = true,
     this.icon = const SizedBox(),
     this.controller,
     this.onSaved,
@@ -62,6 +64,7 @@ class AppTextField extends StatelessWidget {
         ),
         const SizedBox(height: Sizes.tiny),
         TextFormField(
+          enabled: enabled,
           onSaved: onSaved,
           controller: controller,
           textDirection: textDirection,

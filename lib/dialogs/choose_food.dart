@@ -7,7 +7,7 @@ import 'package:okradish/component/text_style.dart';
 import 'package:okradish/constants/colors.dart';
 import 'package:okradish/constants/sizes.dart';
 import 'package:okradish/constants/strings.dart';
-import 'package:okradish/dummy_data.dart';
+import 'package:okradish/foods.dart';
 import 'package:okradish/model/food.dart';
 import 'package:okradish/widgets/app_card.dart';
 import 'package:okradish/widgets/appbar.dart';
@@ -23,11 +23,18 @@ class ChooseFood extends StatefulWidget {
 class _ChooseFoodState extends State<ChooseFood> {
   final Rx<Food?> selecetedFood = Rx(null);
 
-  final RxList<List<Food>> foods = [
-    DummyData.dummyFoods,
-    DummyData.dummyFoods,
-    DummyData.dummyFoods,
-    DummyData.dummyFoods,
+  final List<List<Food>> foods = [
+    [...mainfood],
+    [...snack],
+    [...drinks],
+    [...other],
+  ];
+
+  final RxList<List<Food>> editigFoods = [
+    [...mainfood],
+    [...snack],
+    [...drinks],
+    [...other],
   ].obs;
 
   final searchCtrl = TextEditingController();
@@ -36,9 +43,9 @@ class _ChooseFoodState extends State<ChooseFood> {
   Widget build(BuildContext context) {
     searchCtrl.addListener(
       () {
-        for (var i = 0; i < foods.length; i++) {
-          foods[i] = DummyData.dummyFoods;
-          foods[i] = foods[i]
+        for (var i = 0; i < editigFoods.length; i++) {
+          editigFoods[i] = foods[i];
+          editigFoods[i] = editigFoods[i]
               .where((food) => food.name.contains(searchCtrl.text))
               .toList();
         }
@@ -101,10 +108,10 @@ class _ChooseFoodState extends State<ChooseFood> {
                         () => MyTabBar(
                           // TODO: Revice from database
                           foodList: [
-                            foods[0],
-                            foods[1],
-                            foods[2],
-                            foods[3],
+                            editigFoods[0],
+                            editigFoods[1],
+                            editigFoods[2],
+                            editigFoods[3],
                           ],
                           setFood: (Food? food) {
                             selecetedFood.value = food;

@@ -1,6 +1,7 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:okradish/component/extention.dart';
 import 'package:okradish/component/text_style.dart';
 import 'package:okradish/constants/colors.dart';
 import 'package:okradish/constants/sizes.dart';
@@ -130,13 +131,13 @@ class _PieDiagramState extends State<PieDiagram> {
               sections: [
                 // Carbo
                 PieChartSectionData(
-                  title: touchedIndex == 0
+                  title: (touchedIndex == 0
                       ? ((summary.totalCarboCalory() / summary.totalCalories() +
                                   double.minPositive) *
                               100)
                           .round()
-                          .toString()
-                      : "",
+                          .toString().toPersian
+                      : ""),
                   titleStyle: AppTextStyles.blackBtn,
                   color: AppColors.trunks,
                   value: summary.totalCarboCalory() /
@@ -151,7 +152,7 @@ class _PieDiagramState extends State<PieDiagram> {
                                   summary.totalCalories()) *
                               100)
                           .round()
-                          .toString()
+                          .toString().toPersian
                       : "",
                   titleStyle: AppTextStyles.blackBtn,
                   color: AppColors.primaryColor,
@@ -168,7 +169,7 @@ class _PieDiagramState extends State<PieDiagram> {
                                       double.minPositive)) *
                               100)
                           .round()
-                          .toString()
+                          .toString().toPersian
                       : "",
                   titleStyle: AppTextStyles.blackBtn,
                   color: AppColors.orange,
@@ -184,7 +185,7 @@ class _PieDiagramState extends State<PieDiagram> {
                                   summary.totalCalories()) *
                               100)
                           .round()
-                          .toString()
+                          .toString().toPersian
                       : "",
                   titleStyle: AppTextStyles.blackBtn,
                   color: AppColors.grey,
@@ -212,7 +213,7 @@ class _ItemRow extends StatelessWidget {
       children: [
         Text(text, style: AppTextStyles.bodyMeduim),
         Text(
-          calory.toStringAsFixed(1),
+          calory.toStringAsFixed(1).toPersian,
           style: AppTextStyles.bodyMeduim,
         )
       ],

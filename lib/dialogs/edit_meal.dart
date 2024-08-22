@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:okradish/component/button_style.dart';
+import 'package:okradish/component/extention.dart';
 import 'package:okradish/component/text_style.dart';
 import 'package:okradish/constants/colors.dart';
 import 'package:okradish/constants/sizes.dart';
@@ -113,7 +114,7 @@ class EditMeal extends StatelessWidget {
                                                 SizedBox(
                                                   width: 25,
                                                   child: Text(
-                                                    (index + 1).toString(),
+                                                    (index + 1).toString().toPersian,
                                                     style: AppTextStyles
                                                         .bodyMeduim,
                                                   ),
@@ -151,7 +152,7 @@ class EditMeal extends StatelessWidget {
                                                     meals
                                                         .mealCtrl(index)
                                                         .totalCalories()
-                                                        .toStringAsFixed(1),
+                                                        .toStringAsFixed(1).toPersian,
                                                     style:
                                                         AppTextStyles.borderBtn,
                                                   ),

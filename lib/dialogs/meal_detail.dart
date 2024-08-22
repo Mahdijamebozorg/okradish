@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:okradish/component/button_style.dart';
+import 'package:okradish/component/extention.dart';
 import 'package:okradish/component/text_style.dart';
 import 'package:okradish/constants/colors.dart';
 import 'package:okradish/constants/sizes.dart';
@@ -92,7 +93,7 @@ class MealDetial extends StatelessWidget {
                                     SizedBox(
                                       width: 8,
                                       child: Text(
-                                        (index + 1).toString(),
+                                        (index + 1).toString().toPersian,
                                         style: AppTextStyles.borderBtn,
                                       ),
                                     ),
@@ -112,7 +113,7 @@ class MealDetial extends StatelessWidget {
                                       width: 60,
                                       child: Text(
                                         textDirection: TextDirection.ltr,
-                                        meal.foodItems[index].weight.toString(),
+                                        meal.foodItems[index].weight.toString().toPersian,
                                         style: AppTextStyles.borderBtn,
                                       ),
                                     ),
@@ -123,7 +124,7 @@ class MealDetial extends StatelessWidget {
                                       child: Text(
                                         textDirection: TextDirection.ltr,
                                         meal.foodItems[index].calories
-                                            .toStringAsFixed(1),
+                                            .toStringAsFixed(1).toPersian,
                                         style: AppTextStyles.borderBtn,
                                       ),
                                     ),
@@ -188,7 +189,7 @@ class MealDetial extends StatelessWidget {
                         // Calories
                         Expanded(
                           child: Text(
-                            meal.totalCalories().toStringAsFixed(1),
+                            meal.totalCalories().toStringAsFixed(1).toPersian,
                             style: AppTextStyles.highlight,
                           ),
                         ),

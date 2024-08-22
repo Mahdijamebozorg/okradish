@@ -51,7 +51,10 @@ class ProfileScreen extends StatelessWidget {
                       padding: EdgeInsets.only(
                           bottom: MediaQuery.viewInsetsOf(context).bottom > 10
                               ? MediaQuery.viewInsetsOf(context).bottom -
-                                  (Sizes.large + Sizes.btmNavH + Sizes.medium + Sizes.bigBtnH)
+                                  (Sizes.large +
+                                      Sizes.btmNavH +
+                                      Sizes.medium +
+                                      Sizes.bigBtnH)
                               : 0),
                       child: SingleChildScrollView(
                         physics: const BouncingScrollPhysics(),
@@ -66,7 +69,9 @@ class ProfileScreen extends StatelessWidget {
                               initalValue: user.username,
                               validator: AppValidator.textValidator(
                                   TextInputType.name),
-                              onSaved: (value) {},
+                              onSaved: (value) {
+                                user.username = value!;
+                              },
                             ),
                             const SizedBox(height: Sizes.medium),
                             // email
@@ -80,7 +85,9 @@ class ProfileScreen extends StatelessWidget {
                               initalValue: user.email,
                               validator: AppValidator.textValidator(
                                   TextInputType.emailAddress),
-                              onSaved: (value) {},
+                              onSaved: (value) {
+                                user.email = value!;
+                              },
                             ),
                             const SizedBox(height: Sizes.medium),
                             // phone
@@ -97,7 +104,9 @@ class ProfileScreen extends StatelessWidget {
                               initalValue: user.phone,
                               validator: AppValidator.textValidator(
                                   TextInputType.phone),
-                              onSaved: (value) {},
+                              onSaved: (value) {
+                                user.phone = value!;
+                              },
                             ),
                             const SizedBox(height: Sizes.medium),
                             // password
@@ -112,7 +121,9 @@ class ProfileScreen extends StatelessWidget {
                               initalValue: user.password,
                               validator: AppValidator.textValidator(
                                   TextInputType.visiblePassword),
-                              onSaved: (value) {},
+                              onSaved: (value) {
+                                user.password = value!;
+                              },
                             ),
                           ],
                         ),

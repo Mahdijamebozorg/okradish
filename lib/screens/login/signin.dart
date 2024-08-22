@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'dart:developer' as dev;
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -12,23 +13,23 @@ import 'package:okradish/controllers/auth_controller.dart';
 import 'package:okradish/route/screens.dart';
 import 'package:okradish/utils/validator.dart';
 import 'package:okradish/widgets/app_text_field.dart';
+import 'package:okradish/widgets/snackbar.dart';
 
 class Signin extends StatelessWidget {
   final GlobalKey<FormState> _formState;
   Signin(this._formState, {super.key});
 
   final auth = Get.find<AuthController>();
-  final RxBool waiting = RxBool(false);
 
-  void saveForm() async {
+  Future<void> saveForm(BuildContext context) async {
     final valid = _formState.currentState!.validate();
-    if (valid && !waiting.value) {
-      waiting.value = true;
+    if (valid && !auth.isWorking.value) {
       _formState.currentState!.save();
-      await auth.signIn();
-      waiting.value = false;
-      if (valid) {
-        Get.toNamed(Screens.home);
+      final msg = await auth.signIn();
+      if (context.mounted) showSnackbar(context, msg);
+      dev.log(name: "AUTH", msg);
+      if (msg.isEmpty) {
+        Get.offAndToNamed(Screens.home);
       }
     }
   }
@@ -51,7 +52,7 @@ class Signin extends StatelessWidget {
               maxLength: Data.usernameMaxLen,
               validator: AppValidator.textValidator(TextInputType.name),
               onSaved: (String? val) {
-                auth.username = val ?? "";
+                auth.username = val!.toLowerCase();
               },
             ),
           ),
@@ -71,7 +72,7 @@ class Signin extends StatelessWidget {
               validator:
                   AppValidator.textValidator(TextInputType.visiblePassword),
               onSaved: (String? val) {
-                auth.password = val ?? "";
+                auth.password = val!;
               },
             ),
           ),
@@ -88,9 +89,9 @@ class Signin extends StatelessWidget {
               child: ElevatedButton(
                 style: AppButtonStyles.yellowBtn,
                 onPressed: () {
-                  saveForm();
+                  saveForm(context);
                 },
-                child: waiting.value
+                child: auth.isWorking.value
                     ? const Center(child: CircularProgressIndicator())
                     : const Text(Strings.login, style: AppTextStyles.colorBtn),
               ),
