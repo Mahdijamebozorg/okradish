@@ -1,19 +1,19 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:okradish/component/button_style.dart';
-import 'package:okradish/component/text_style.dart';
-import 'package:okradish/constants/colors.dart';
-import 'package:okradish/constants/data.dart';
-import 'package:okradish/constants/sizes.dart';
-import 'package:okradish/constants/strings.dart';
-import 'package:okradish/controllers/auth_controller.dart';
-import 'package:okradish/route/screens.dart';
-import 'package:okradish/utils/validator.dart';
-import 'package:okradish/widgets/app_text_field.dart';
+import 'package:OKRADISH/component/button_style.dart';
+import 'package:OKRADISH/component/text_style.dart';
+import 'package:OKRADISH/constants/colors.dart';
+import 'package:OKRADISH/constants/data.dart';
+import 'package:OKRADISH/constants/sizes.dart';
+import 'package:OKRADISH/constants/strings.dart';
+import 'package:OKRADISH/controllers/auth_controller.dart';
+import 'package:OKRADISH/route/screens.dart';
+import 'package:OKRADISH/utils/validator.dart';
+import 'package:OKRADISH/widgets/app_text_field.dart';
 import 'dart:developer' as dev;
 
-import 'package:okradish/widgets/snackbar.dart';
+import 'package:OKRADISH/widgets/snackbar.dart';
 
 class Signup extends StatelessWidget {
   final GlobalKey<FormState> _formState;
@@ -25,15 +25,19 @@ class Signup extends StatelessWidget {
     final valid = _formState.currentState!.validate();
     if (valid && !auth.isWorking.value) {
       _formState.currentState!.save();
-      var msg = await auth.singUp();
-      if (context.mounted) showSnackbar(context, msg);
-      dev.log(msg);
 
-      if (msg.isEmpty) {
-        msg = await auth.signIn();
+      var msg = await auth.singUp();
+      // if error on signup
+      if (msg.isNotEmpty) {
         if (context.mounted) showSnackbar(context, msg);
         dev.log(msg);
-        if (msg.isEmpty) {
+      } else {
+        msg = await auth.signIn();
+        // if error on signin
+        if (msg.isNotEmpty) {
+          if (context.mounted) showSnackbar(context, msg);
+          dev.log(msg);
+        } else {
           // if (context.mounted) showSnackbar(context, ErrorTexts.emailVersent);
           Get.offAndToNamed(Screens.home);
         }

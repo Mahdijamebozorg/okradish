@@ -1,8 +1,8 @@
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
-import 'package:okradish/controllers/meal_controller.dart';
-import 'package:okradish/model/daily.dart';
-import 'package:okradish/model/meal.dart';
+import 'package:OKRADISH/controllers/meal_controller.dart';
+import 'package:OKRADISH/model/daily.dart';
+import 'package:OKRADISH/model/meal.dart';
 
 class DailyController extends GetxController {
   final DailyEntry _daily;

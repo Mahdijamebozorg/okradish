@@ -4,8 +4,8 @@
 
 import 'dart:math' as math;
 
-import 'package:okradish/component/extention.dart';
-import 'package:okradish/component/text_style.dart';
+import 'package:OKRADISH/component/extention.dart';
+import 'package:OKRADISH/component/text_style.dart';
 
 import './pdate_utils.dart';
 import 'package:flutter/material.dart';

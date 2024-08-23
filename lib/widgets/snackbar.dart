@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:okradish/component/text_style.dart';
-import 'package:okradish/constants/colors.dart';
-import 'package:okradish/constants/sizes.dart';
+import 'package:OKRADISH/component/text_style.dart';
+import 'package:OKRADISH/constants/colors.dart';
+import 'package:OKRADISH/constants/sizes.dart';
 
 ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showSnackbar(
     BuildContext context, String message) {
@@ -16,7 +16,7 @@ ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showSnackbar(
   );
 }
 
-GetSnackBar getSnackBar(String message) {
+GetSnackBar getSnackbar(String message) {
   return GetSnackBar(
     title: message,
     message: " ",
@@ -32,7 +32,7 @@ GetSnackBar getSnackBar(String message) {
   );
 }
 
-// SnackbarController getSnackBar(String message) {
+// SnackbarController showSnackbar(context,String message) {
 //   Get.closeCurrentSnackbar();
 //   return Get.rawSnackbar(
 //     title: message,

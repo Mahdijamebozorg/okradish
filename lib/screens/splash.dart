@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hive_flutter/adapters.dart';
-import 'package:okradish/constants/api_keys.dart';
-import 'package:okradish/controllers/auth_controller.dart';
-import 'package:okradish/controllers/data_controller.dart';
-import 'package:okradish/gen/assets.gen.dart';
-import 'package:okradish/model/daily.dart';
-import 'package:okradish/model/food.dart';
-import 'package:okradish/model/meal.dart';
-import 'package:okradish/model/quantity.dart';
-import 'package:okradish/model/user.dart';
-import 'package:okradish/route/screens.dart';
+import 'package:OKRADISH/constants/api_keys.dart';
+import 'package:OKRADISH/controllers/auth_controller.dart';
+import 'package:OKRADISH/controllers/data_controller.dart';
+import 'package:OKRADISH/gen/assets.gen.dart';
+import 'package:OKRADISH/model/daily.dart';
+import 'package:OKRADISH/model/food.dart';
+import 'package:OKRADISH/model/meal.dart';
+import 'package:OKRADISH/model/quantity.dart';
+import 'package:OKRADISH/model/user.dart';
+import 'package:OKRADISH/route/screens.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk_flutter.dart';
 
 Future rootDeps() async {

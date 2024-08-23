@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:okradish/Constants/colors.dart';
+import 'package:OKRADISH/Constants/colors.dart';
 
 ThemeData lightTheme() {
   return ThemeData(

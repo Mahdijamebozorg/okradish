@@ -5,18 +5,18 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "okradish",
+            "name": "OKRADISH",
             "request": "launch",
             "type": "dart"
         },
         {
-            "name": "okradish (profile mode)",
+            "name": "OKRADISH (profile mode)",
             "request": "launch",
             "type": "dart",
             "flutterMode": "profile"
         },
         {
-            "name": "okradish (release mode)",
+            "name": "OKRADISH (release mode)",
             "request": "launch",
             "type": "dart",
             "flutterMode": "release"

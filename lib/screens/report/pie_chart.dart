@@ -1,12 +1,12 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:okradish/component/extention.dart';
-import 'package:okradish/component/text_style.dart';
-import 'package:okradish/constants/colors.dart';
-import 'package:okradish/constants/sizes.dart';
-import 'package:okradish/constants/strings.dart';
-import 'package:okradish/controllers/summary_controller.dart';
+import 'package:OKRADISH/component/extention.dart';
+import 'package:OKRADISH/component/text_style.dart';
+import 'package:OKRADISH/constants/colors.dart';
+import 'package:OKRADISH/constants/sizes.dart';
+import 'package:OKRADISH/constants/strings.dart';
+import 'package:OKRADISH/controllers/summary_controller.dart';
 
 class MyPieChart extends StatelessWidget {
   MyPieChart({super.key});
@@ -19,9 +19,9 @@ class MyPieChart extends StatelessWidget {
     return Column(
       children: [
         // Diagram
+        SizedBox(height: Sizes.medium),
         SizedBox(height: size.height * 0.15, child: PieDiagram()),
-
-        const SizedBox(height: Sizes.medium),
+        SizedBox(height: Sizes.medium),
 
         // Indicators
         const Row(
@@ -132,19 +132,20 @@ class _PieDiagramState extends State<PieDiagram> {
                 // Carbo
                 PieChartSectionData(
                   title: (touchedIndex == 0
-                      ? ((summary.totalCarboCalory() / summary.totalCalories() +
-                                  double.minPositive) *
+                      ? ((summary.totalCarboCalory() /
+                                  summary.totalCalories()) *
                               100)
                           .round()
-                          .toString().toPersian
+                          .toString()
+                          .toPersian
                       : ""),
                   titleStyle: AppTextStyles.blackBtn,
                   color: AppColors.trunks,
-                  value: summary.totalCarboCalory() /
-                      (summary.totalCalories() + double.minPositive),
-                  radius: touchedIndex == 0 ? 90 : 70,
+                  value:
+                      summary.totalCarboCalory() / (summary.totalCalories()),
+                  radius: touchedIndex == 0 ? 70 : 65,
                 ),
-
+    
                 // Protein
                 PieChartSectionData(
                   title: touchedIndex == 1
@@ -152,32 +153,32 @@ class _PieDiagramState extends State<PieDiagram> {
                                   summary.totalCalories()) *
                               100)
                           .round()
-                          .toString().toPersian
+                          .toString()
+                          .toPersian
                       : "",
                   titleStyle: AppTextStyles.blackBtn,
                   color: AppColors.primaryColor,
                   value: summary.totalProteinCalory() /
-                      (summary.totalCalories() + double.minPositive),
-                  radius: touchedIndex == 1 ? 90 : 70,
+                      (summary.totalCalories()),
+                  radius: touchedIndex == 1 ? 70 : 65,
                 ),
-
+    
                 // Fat
                 PieChartSectionData(
                   title: touchedIndex == 2
                       ? ((summary.totalFatCalory() /
-                                  (summary.totalCalories() +
-                                      double.minPositive)) *
+                                  (summary.totalCalories())) *
                               100)
                           .round()
-                          .toString().toPersian
+                          .toString()
+                          .toPersian
                       : "",
                   titleStyle: AppTextStyles.blackBtn,
                   color: AppColors.orange,
-                  value: summary.totalFatCalory() /
-                      (summary.totalCalories() + double.minPositive),
-                  radius: touchedIndex == 2 ? 90 : 70,
+                  value: summary.totalFatCalory() / (summary.totalCalories()),
+                  radius: touchedIndex == 2 ? 70 : 65,
                 ),
-
+    
                 // Fiber
                 PieChartSectionData(
                   title: touchedIndex == 3
@@ -185,13 +186,14 @@ class _PieDiagramState extends State<PieDiagram> {
                                   summary.totalCalories()) *
                               100)
                           .round()
-                          .toString().toPersian
+                          .toString()
+                          .toPersian
                       : "",
                   titleStyle: AppTextStyles.blackBtn,
                   color: AppColors.grey,
-                  value: summary.totalFiberCalory() /
-                      (summary.totalCalories() + double.minPositive),
-                  radius: touchedIndex == 3 ? 90 : 70,
+                  value:
+                      summary.totalFiberCalory() / (summary.totalCalories()),
+                  radius: touchedIndex == 3 ? 70 : 65,
                 ),
               ],
             ),

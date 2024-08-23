@@ -3,22 +3,21 @@ import 'dart:developer' as dev;
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:okradish/component/button_style.dart';
-import 'package:okradish/component/text_style.dart';
-import 'package:okradish/constants/colors.dart';
-import 'package:okradish/constants/data.dart';
-import 'package:okradish/constants/sizes.dart';
-import 'package:okradish/constants/strings.dart';
-import 'package:okradish/controllers/auth_controller.dart';
-import 'package:okradish/route/screens.dart';
-import 'package:okradish/utils/validator.dart';
-import 'package:okradish/widgets/app_text_field.dart';
-import 'package:okradish/widgets/snackbar.dart';
+import 'package:OKRADISH/component/button_style.dart';
+import 'package:OKRADISH/component/text_style.dart';
+import 'package:OKRADISH/constants/colors.dart';
+import 'package:OKRADISH/constants/data.dart';
+import 'package:OKRADISH/constants/sizes.dart';
+import 'package:OKRADISH/constants/strings.dart';
+import 'package:OKRADISH/controllers/auth_controller.dart';
+import 'package:OKRADISH/route/screens.dart';
+import 'package:OKRADISH/utils/validator.dart';
+import 'package:OKRADISH/widgets/app_text_field.dart';
+import 'package:OKRADISH/widgets/snackbar.dart';
 
 class Signin extends StatelessWidget {
   final GlobalKey<FormState> _formState;
   Signin(this._formState, {super.key});
-
   final auth = Get.find<AuthController>();
 
   Future<void> saveForm(BuildContext context) async {
@@ -26,9 +25,10 @@ class Signin extends StatelessWidget {
     if (valid && !auth.isWorking.value) {
       _formState.currentState!.save();
       final msg = await auth.signIn();
-      if (context.mounted) showSnackbar(context, msg);
-      dev.log(name: "AUTH", msg);
-      if (msg.isEmpty) {
+      if (msg.isNotEmpty) {
+        dev.log(name: "AUTH", msg);
+        if (context.mounted) showSnackbar(context, msg);
+      } else {
         Get.offAndToNamed(Screens.home);
       }
     }

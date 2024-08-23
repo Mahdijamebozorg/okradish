@@ -2,15 +2,15 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:okradish/component/button_style.dart';
-import 'package:okradish/component/text_style.dart';
-import 'package:okradish/constants/colors.dart';
-import 'package:okradish/constants/sizes.dart';
-import 'package:okradish/constants/strings.dart';
-import 'package:okradish/foods.dart';
-import 'package:okradish/model/food.dart';
-import 'package:okradish/widgets/app_card.dart';
-import 'package:okradish/widgets/appbar.dart';
+import 'package:OKRADISH/component/button_style.dart';
+import 'package:OKRADISH/component/text_style.dart';
+import 'package:OKRADISH/constants/colors.dart';
+import 'package:OKRADISH/constants/sizes.dart';
+import 'package:OKRADISH/constants/strings.dart';
+import 'package:OKRADISH/foods.dart';
+import 'package:OKRADISH/model/food.dart';
+import 'package:OKRADISH/widgets/app_card.dart';
+import 'package:OKRADISH/widgets/appbar.dart';
 
 class ChooseFood extends StatefulWidget {
   const ChooseFood({super.key});

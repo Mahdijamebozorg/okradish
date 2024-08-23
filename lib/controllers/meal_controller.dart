@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
-import 'package:okradish/model/meal.dart';
-import 'package:okradish/model/quantity.dart';
+import 'package:OKRADISH/model/meal.dart';
+import 'package:OKRADISH/model/quantity.dart';
 
 class MealController extends GetxController {
   final Meal _meal;

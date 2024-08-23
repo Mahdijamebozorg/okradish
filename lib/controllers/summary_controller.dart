@@ -1,11 +1,11 @@
 import 'package:get/get.dart';
-import 'package:okradish/constants/nutrient.dart';
-import 'package:okradish/controllers/daily_controller.dart';
-import 'package:okradish/controllers/data_controller.dart';
-import 'package:okradish/model/daily.dart';
-import 'package:okradish/model/meal.dart';
-import 'package:okradish/utils/date.dart';
-import 'package:okradish/utils/random.dart';
+import 'package:OKRADISH/constants/nutrient.dart';
+import 'package:OKRADISH/controllers/daily_controller.dart';
+import 'package:OKRADISH/controllers/data_controller.dart';
+import 'package:OKRADISH/model/daily.dart';
+import 'package:OKRADISH/model/meal.dart';
+import 'package:OKRADISH/utils/date.dart';
+import 'package:OKRADISH/utils/random.dart';
 
 class SummaryController extends GetxController {
   List<DailyEntry> _entries;

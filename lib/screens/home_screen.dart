@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:okradish/constants/sizes.dart';
-import 'package:okradish/gen/assets.gen.dart';
-import 'package:okradish/screens/add/add_screen.dart';
-import 'package:okradish/screens/profile_screen.dart';
-import 'package:okradish/screens/report/report_screen.dart';
-import 'package:okradish/widgets/btm_nav.dart';
+import 'package:OKRADISH/constants/sizes.dart';
+import 'package:OKRADISH/gen/assets.gen.dart';
+import 'package:OKRADISH/screens/add/add_screen.dart';
+import 'package:OKRADISH/screens/profile_screen.dart';
+import 'package:OKRADISH/screens/report/report_screen.dart';
+import 'package:OKRADISH/widgets/btm_nav.dart';
 
 enum HomeScreenIndex { profile, add, report }
 
@@ -80,7 +80,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 left: 0,
                 bottom: Sizes.large +
                     Sizes.btmNavH +
+                    // bottom nav bottom margin
                     Sizes.medium +
+                    // button pad
                     MediaQuery.of(context).systemGestureInsets.bottom,
                 child: PageView(
                   allowImplicitScrolling: false,

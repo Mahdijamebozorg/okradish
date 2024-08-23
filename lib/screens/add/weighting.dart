@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:okradish/component/button_style.dart';
-import 'package:okradish/component/extention.dart';
-import 'package:okradish/component/text_style.dart';
-import 'package:okradish/constants/sizes.dart';
-import 'package:okradish/constants/strings.dart';
-import 'package:okradish/controllers/data_controller.dart';
-import 'package:okradish/controllers/meal_controller.dart';
-import 'package:okradish/dialogs/choose_food.dart';
-import 'package:okradish/model/food.dart';
-import 'package:okradish/model/meal.dart';
-import 'package:okradish/model/quantity.dart';
-import 'package:okradish/screens/add/add_screen.dart';
-import 'package:okradish/controllers/weighing_servce.dart';
-import 'package:okradish/widgets/app_card.dart';
-import 'package:okradish/dialogs/meal_detail.dart';
-import 'package:okradish/widgets/snackbar.dart';
+import 'package:OKRADISH/component/button_style.dart';
+import 'package:OKRADISH/component/extention.dart';
+import 'package:OKRADISH/component/text_style.dart';
+import 'package:OKRADISH/constants/sizes.dart';
+import 'package:OKRADISH/constants/strings.dart';
+import 'package:OKRADISH/controllers/data_controller.dart';
+import 'package:OKRADISH/controllers/meal_controller.dart';
+import 'package:OKRADISH/dialogs/choose_food.dart';
+import 'package:OKRADISH/model/food.dart';
+import 'package:OKRADISH/model/meal.dart';
+import 'package:OKRADISH/model/quantity.dart';
+import 'package:OKRADISH/screens/add/add_screen.dart';
+import 'package:OKRADISH/services/weighing_servce.dart';
+import 'package:OKRADISH/widgets/app_card.dart';
+import 'package:OKRADISH/dialogs/meal_detail.dart';
+import 'package:OKRADISH/widgets/snackbar.dart';
 
 class Weighing extends StatelessWidget {
   final void Function(AddStep step) changeState;
@@ -71,7 +71,6 @@ class Weighing extends StatelessWidget {
               ElevatedButton(
                 onPressed: () {
                   if (selectedFood.value != null) {
-                    // TODO: add controller
                     mealCtrl.add(
                       FoodQuantity(
                         id: "id",
@@ -81,7 +80,7 @@ class Weighing extends StatelessWidget {
                     );
                     selectedFood.value = null;
                   } else {
-                    getSnackBar(ErrorTexts.emptyMeal);
+                    showSnackbar(context, ErrorTexts.emptyMeal);
                   }
                 },
                 style: AppButtonStyles.blackBtnStyle,
@@ -100,7 +99,7 @@ class Weighing extends StatelessWidget {
         GetBuilder<MealController>(
             id: "meal",
             init: mealCtrl,
-            builder: (context) {
+            builder: (ctrl) {
               return AppCard(
                 child: Column(
                   children: [
@@ -134,7 +133,7 @@ class Weighing extends StatelessWidget {
                             style: AppButtonStyles.highlightBtn,
                             onPressed: () {
                               if (mealCtrl.foodItems.isEmpty) {
-                                getSnackBar(ErrorTexts.emptyMeal);
+                                showSnackbar(context, ErrorTexts.emptyMeal);
                               } else {
                                 Get.dialog<Meal>(
                                   MealDetial(key: UniqueKey()),
@@ -161,7 +160,9 @@ class Weighing extends StatelessWidget {
                         onPressed: () async {
                           //
                           if (mealCtrl.foodItems.isEmpty) {
-                            getSnackBar(ErrorTexts.emptyMeal);
+                            showSnackbar(context, ErrorTexts.emptyMeal);
+                          } else if (mealCtrl.totalCalories() == 0) {
+                            showSnackbar(context, ErrorTexts.weighterError);
                           } else {
                             //
                             final dataCtrl = Get.find<DataController>();
@@ -169,7 +170,7 @@ class Weighing extends StatelessWidget {
                             await dataCtrl.addMeal(mealCtrl.meal);
                             waiting.value = false;
                             changeState(AddStep.init);
-                            getSnackBar(Strings.saveMeal);
+                            showSnackbar(context, Strings.saveMeal);
                           }
                         },
                         child: waiting.value

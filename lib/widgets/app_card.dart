@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:okradish/constants/Sizes.dart';
+import 'package:OKRADISH/constants/Sizes.dart';
 
 class AppCard extends StatelessWidget {
   final Widget child;

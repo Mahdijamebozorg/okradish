@@ -2,17 +2,18 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:okradish/component/extention.dart';
-import 'package:okradish/component/text_style.dart';
-import 'package:okradish/constants/sizes.dart';
-import 'package:okradish/constants/strings.dart';
-import 'package:okradish/controllers/meal_controller.dart';
-import 'package:okradish/model/food.dart';
-import 'package:okradish/screens/add/init.dart';
-import 'package:okradish/screens/add/weighting.dart';
-import 'package:okradish/screens/home_screen.dart';
-import 'package:okradish/controllers/weighing_servce.dart';
-import 'package:okradish/widgets/appbar.dart';
+import 'package:OKRADISH/component/extention.dart';
+import 'package:OKRADISH/component/text_style.dart';
+import 'package:OKRADISH/constants/sizes.dart';
+import 'package:OKRADISH/constants/strings.dart';
+import 'package:OKRADISH/controllers/meal_controller.dart';
+import 'package:OKRADISH/widgets/bluetooth.dart';
+import 'package:OKRADISH/model/food.dart';
+import 'package:OKRADISH/screens/add/init.dart';
+import 'package:OKRADISH/screens/add/weighting.dart';
+import 'package:OKRADISH/screens/home_screen.dart';
+import 'package:OKRADISH/services/weighing_servce.dart';
+import 'package:OKRADISH/widgets/appbar.dart';
 
 enum AddStep {
   init,
@@ -32,7 +33,6 @@ class AddScreen extends StatefulWidget {
 }
 
 class _AddScreenState extends State<AddScreen> {
-  // TODO: for performance, it's better to not put it
   final weightCtrl = Get.put(WeighingServce());
   final Rx<Food?> selectedFood = Rx(null);
   final wKey = GlobalKey();
@@ -84,37 +84,33 @@ class _AddScreenState extends State<AddScreen> {
                 // weight
                 Expanded(
                   child: Center(
-                    child: Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        Obx(
-                          () => !weightCtrl.connected.value
-                              ? const Center(child: CircularProgressIndicator())
-                              : GetBuilder(
-                                  id: 'weight',
-                                  init: weightCtrl,
-                                  builder: (context) {
-                                    return Padding(
-                                      padding:
-                                          const EdgeInsets.all(Sizes.small),
-                                      child: Text(
-                                        weightCtrl.connected.value
-                                            ? weightCtrl.weight
-                                                .toString()
-                                                .toPersian
-                                            : "",
-                                        style: AppTextStyles.weightNumber,
-                                      ),
-                                    );
-                                  }),
-                        ),
-                        // Gram
-                        const Positioned(
-                          top: 0,
-                          left: 0,
-                          child: Text(Strings.gram, style: AppTextStyles.gram),
-                        )
-                      ],
+                    child: Obx(
+                      () => weightCtrl.device.value == null
+                          ? const BluetoothDialog()
+                          : Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                // Weight
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.all(Sizes.small),
+                                  child: Text(
+                                    weightCtrl.weight.value
+                                        .toString()
+                                        .toPersian,
+                                    style: AppTextStyles.weightNumber,
+                                  ),
+                                ),
+
+                                // Gram
+                                const Positioned(
+                                  top: 0,
+                                  left: 0,
+                                  child: Text(Strings.gram,
+                                      style: AppTextStyles.gram),
+                                )
+                              ],
+                            ),
                     ),
                   ),
                 ),

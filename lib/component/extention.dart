@@ -1,9 +1,17 @@
 import 'package:intl/intl.dart';
+import 'package:OKRADISH/persian_datetime_picker-2.7.0/date/shamsi_date.dart';
 
 extension IntExtention on int {
   String get separateWithComma {
     final numberFormat = NumberFormat.decimalPattern();
     return numberFormat.format(this);
+  }
+}
+
+extension JalaliFormatter on DateTime {
+  String get jalaliYmd {
+    final jalali = Jalali.fromDateTime(this);
+    return "${jalali.year}/${jalali.month}/${jalali.day}".toPersian;
   }
 }
 

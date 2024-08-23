@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:okradish/component/text_style.dart';
-import 'package:okradish/constants/Sizes.dart';
-import 'package:okradish/constants/colors.dart';
-import 'package:okradish/constants/strings.dart';
+import 'package:OKRADISH/component/text_style.dart';
+import 'package:OKRADISH/constants/Sizes.dart';
+import 'package:OKRADISH/constants/colors.dart';
+import 'package:OKRADISH/constants/strings.dart';
 
 class AppTextField extends StatelessWidget {
   final TextEditingController? controller;

@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:okradish/component/button_style.dart';
-import 'package:okradish/component/extention.dart';
-import 'package:okradish/component/text_style.dart';
-import 'package:okradish/constants/colors.dart';
-import 'package:okradish/constants/sizes.dart';
-import 'package:okradish/constants/strings.dart';
-import 'package:okradish/controllers/daily_controller.dart';
-import 'package:okradish/controllers/meal_controller.dart';
-import 'package:okradish/dialogs/meal_detail.dart';
-import 'package:okradish/model/meal.dart';
-import 'package:okradish/widgets/app_card.dart';
+import 'package:OKRADISH/component/button_style.dart';
+import 'package:OKRADISH/component/extention.dart';
+import 'package:OKRADISH/component/text_style.dart';
+import 'package:OKRADISH/constants/colors.dart';
+import 'package:OKRADISH/constants/sizes.dart';
+import 'package:OKRADISH/constants/strings.dart';
+import 'package:OKRADISH/controllers/daily_controller.dart';
+import 'package:OKRADISH/controllers/meal_controller.dart';
+import 'package:OKRADISH/dialogs/meal_detail.dart';
+import 'package:OKRADISH/model/meal.dart';
+import 'package:OKRADISH/widgets/app_card.dart';
 
 class EditMeal extends StatelessWidget {
   EditMeal({super.key});
@@ -114,7 +114,9 @@ class EditMeal extends StatelessWidget {
                                                 SizedBox(
                                                   width: 25,
                                                   child: Text(
-                                                    (index + 1).toString().toPersian,
+                                                    (index + 1)
+                                                        .toString()
+                                                        .toPersian,
                                                     style: AppTextStyles
                                                         .bodyMeduim,
                                                   ),
@@ -125,8 +127,7 @@ class EditMeal extends StatelessWidget {
                                                 SizedBox(
                                                   width: 80,
                                                   child: Text(
-                                                    DateFormat.yMd().format(
-                                                        meals[index].date),
+                                                    meals[index].date.jalaliYmd,
                                                     style:
                                                         AppTextStyles.borderBtn,
                                                   ),
@@ -137,8 +138,11 @@ class EditMeal extends StatelessWidget {
                                                 SizedBox(
                                                   width: 45,
                                                   child: Text(
-                                                    DateFormat.Hm().format(
-                                                        meals[index].date),
+                                                    DateFormat.Hm()
+                                                        .format(
+                                                            meals[index].date)
+                                                        .toString()
+                                                        .toPersian,
                                                     style:
                                                         AppTextStyles.borderBtn,
                                                   ),
@@ -152,7 +156,8 @@ class EditMeal extends StatelessWidget {
                                                     meals
                                                         .mealCtrl(index)
                                                         .totalCalories()
-                                                        .toStringAsFixed(1).toPersian,
+                                                        .toStringAsFixed(1)
+                                                        .toPersian,
                                                     style:
                                                         AppTextStyles.borderBtn,
                                                   ),

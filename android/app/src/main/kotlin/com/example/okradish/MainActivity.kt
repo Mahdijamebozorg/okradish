@@ -1,4 +1,4 @@
-package com.example.okradish
+package com.example.OKRADISH
 
 import io.flutter.embedding.android.FlutterActivity
 

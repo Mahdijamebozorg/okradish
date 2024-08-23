@@ -8,6 +8,7 @@ import 'dart:math' as math;
 import 'package:flutter/gestures.dart' show DragStartBehavior;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:OKRADISH/component/extention.dart';
 import './date/shamsi_date.dart';
 
 import 'pdate_picker_common.dart';
@@ -733,7 +734,7 @@ class _YearPickerState extends State<PYearPicker> {
           child: Center(
             child: Semantics(
               selected: isSelected,
-              child: Text(year.toString(), style: itemStyle),
+              child: Text(year.toString().toPersian, style: itemStyle),
             ),
           ),
         );

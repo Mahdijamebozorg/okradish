@@ -1,18 +1,20 @@
 import 'dart:developer';
 
+import 'package:OKRADISH/route/screens.dart';
+import 'package:OKRADISH/widgets/snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:okradish/component/button_style.dart';
-import 'package:okradish/component/text_style.dart';
-import 'package:okradish/constants/colors.dart';
-import 'package:okradish/constants/data.dart';
-import 'package:okradish/constants/sizes.dart';
-import 'package:okradish/constants/strings.dart';
-import 'package:okradish/controllers/auth_controller.dart';
-import 'package:okradish/utils/validator.dart';
-import 'package:okradish/widgets/app_text_field.dart';
-import 'package:okradish/widgets/appbar.dart';
+import 'package:OKRADISH/component/button_style.dart';
+import 'package:OKRADISH/component/text_style.dart';
+import 'package:OKRADISH/constants/colors.dart';
+import 'package:OKRADISH/constants/data.dart';
+import 'package:OKRADISH/constants/sizes.dart';
+import 'package:OKRADISH/constants/strings.dart';
+import 'package:OKRADISH/controllers/auth_controller.dart';
+import 'package:OKRADISH/utils/validator.dart';
+import 'package:OKRADISH/widgets/app_text_field.dart';
+import 'package:OKRADISH/widgets/appbar.dart';
 
 class ProfileScreen extends StatelessWidget {
   final GlobalKey<FormState> _formKey;
@@ -20,12 +22,14 @@ class ProfileScreen extends StatelessWidget {
 
   final user = Get.find<AuthController>();
 
-// TODO: save form
-  saveForm() async {
+  saveForm(BuildContext context) async {
     final valid = _formKey.currentState!.validate();
     if (valid) {
       _formKey.currentState!.save();
-      await user.submitData();
+      final msg = await user.submitData();
+      if (msg.isNotEmpty) {
+        showSnackbar(context, msg);
+      }
     }
   }
 
@@ -51,10 +55,14 @@ class ProfileScreen extends StatelessWidget {
                       padding: EdgeInsets.only(
                           bottom: MediaQuery.viewInsetsOf(context).bottom > 10
                               ? MediaQuery.viewInsetsOf(context).bottom -
-                                  (Sizes.large +
-                                      Sizes.btmNavH +
-                                      Sizes.medium +
-                                      Sizes.bigBtnH)
+                                  (
+                                      // main body padding
+                                      Sizes.large +
+                                          Sizes.btmNavH +
+                                          // margins
+                                          Sizes.medium * 3 +
+                                          // buttons
+                                          Sizes.smallBtnH * 2)
                               : 0),
                       child: SingleChildScrollView(
                         physics: const BouncingScrollPhysics(),
@@ -131,20 +139,87 @@ class ProfileScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-                SizedBox(
-                  height: Sizes.bigBtnH,
-                  width: size.width * 0.9,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      saveForm();
-                    },
-                    style: AppButtonStyles.highlightBtn,
-                    child: const Text(
-                      Strings.editAcount,
-                      style: AppTextStyles.highlight,
+
+                SizedBox(height: Sizes.medium),
+
+                // Save
+                Obx(
+                  () => SizedBox(
+                    height: Sizes.smallBtnH,
+                    width: size.width * 0.9,
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        await saveForm(context);
+                      },
+                      style: AppButtonStyles.highlightBtn,
+                      child: user.isWorking.value
+                          ? const Center(child: CircularProgressIndicator())
+                          : const Text(
+                              Strings.editAcount,
+                              style: AppTextStyles.highlight,
+                            ),
                     ),
                   ),
-                )
+                ),
+                SizedBox(height: Sizes.medium),
+
+                // Logout
+                Obx(
+                  () => SizedBox(
+                    height: Sizes.smallBtnH,
+                    width: size.width * 0.9,
+                    child: user.isWorking.value
+                        ? const Center(child: CircularProgressIndicator())
+                        : ElevatedButton(
+                            onPressed: () async {
+                              showDialog<bool>(
+                                  context: context,
+                                  builder: (context) => AlertDialog(
+                                        actions: [
+                                          // true
+                                          TextButton(
+                                            onPressed: () {
+                                              Navigator.of(context).pop(true);
+                                            },
+                                            child: Text(
+                                              Strings.confirm,
+                                              style: AppTextStyles.bodyMeduim,
+                                            ),
+                                          ),
+                                          // false
+                                          TextButton(
+                                            onPressed: () {
+                                              Navigator.of(context).pop(false);
+                                            },
+                                            child: Text(
+                                              Strings.cancel,
+                                              style: AppTextStyles.bodyMeduim,
+                                            ),
+                                          ),
+                                        ],
+                                        title: Text(Strings.logoutAlert,
+                                            style: AppTextStyles.bodyMeduim),
+                                      )).then((value) async {
+                                if (value == null) return;
+                                if (value) {
+                                  final msg = await user.signOut();
+                                  if (msg.isNotEmpty) {
+                                    showSnackbar(context, msg);
+                                  } else {
+                                    Get.offAndToNamed(Screens.login);
+                                  }
+                                }
+                                ;
+                              });
+                            },
+                            style: AppButtonStyles.blackBtnStyle,
+                            child: const Text(
+                              Strings.logout,
+                              style: AppTextStyles.blackBtn,
+                            ),
+                          ),
+                  ),
+                ),
               ],
             ),
           ),

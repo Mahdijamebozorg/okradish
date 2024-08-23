@@ -1,18 +1,18 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:okradish/component/button_style.dart';
-import 'package:okradish/component/extention.dart';
-import 'package:okradish/component/text_style.dart';
-import 'package:okradish/constants/colors.dart';
-import 'package:okradish/constants/sizes.dart';
-import 'package:okradish/constants/strings.dart';
-import 'package:okradish/controllers/daily_controller.dart';
-import 'package:okradish/controllers/meal_controller.dart';
-import 'package:okradish/controllers/summary_controller.dart';
-import 'package:okradish/model/daily.dart';
-import 'package:okradish/model/meal.dart';
-import 'package:okradish/persian_datetime_picker-2.7.0/date/shamsi_date.dart';
+import 'package:OKRADISH/component/button_style.dart';
+import 'package:OKRADISH/component/extention.dart';
+import 'package:OKRADISH/component/text_style.dart';
+import 'package:OKRADISH/constants/colors.dart';
+import 'package:OKRADISH/constants/sizes.dart';
+import 'package:OKRADISH/constants/strings.dart';
+import 'package:OKRADISH/controllers/daily_controller.dart';
+import 'package:OKRADISH/controllers/meal_controller.dart';
+import 'package:OKRADISH/controllers/summary_controller.dart';
+import 'package:OKRADISH/model/daily.dart';
+import 'package:OKRADISH/model/meal.dart';
+import 'package:OKRADISH/persian_datetime_picker-2.7.0/date/shamsi_date.dart';
 
 enum _Nutrient { carbo, protein, fat, fiber, calory }
 
@@ -160,7 +160,7 @@ class MyBarChartState extends State<MyBarChart> {
                           showTitles: true,
                           reservedSize: 30,
                           getTitlesWidget: (value, meta) => Text(
-                            value == meta.max ? "" : meta.formattedValue,
+                            value == meta.max ? "" : meta.formattedValue.toPersian,
                             style: AppTextStyles.bodySmall,
                           ),
                         ),
@@ -182,15 +182,6 @@ class MyBarChartState extends State<MyBarChart> {
                         color: AppColors.trunks,
                         strokeWidth: 0.3,
                       ),
-                      // TODO: fix vertical lines
-                      // checkToShowVerticalLine: (value) =>
-                      //     (value % 6 == 0 || value == itemsLen - 1),
-                      // getDrawingVerticalLine: (value) {
-                      //   return const FlLine(
-                      //     color: AppColors.trunks,
-                      //     strokeWidth: 0.3,
-                      //   );
-                      // },
                     ),
 
                     //
@@ -333,14 +324,14 @@ class _ChooseNutrient extends StatelessWidget {
 
     return Dialog(
       child: Container(
-          height: 300,
-          width: 200,
-          color: AppColors.white,
-          padding: const EdgeInsets.all(Sizes.medium),
-          child: Column(
-            children: [
-              Expanded(
-                  child: SizedBox(
+        height: 300,
+        width: 200,
+        color: AppColors.white,
+        padding: const EdgeInsets.all(Sizes.medium),
+        child: Column(
+          children: [
+            Expanded(
+              child: SizedBox(
                 width: double.infinity,
                 child: TextButton(
                   onPressed: () => onPressed(0),
@@ -350,9 +341,10 @@ class _ChooseNutrient extends StatelessWidget {
                     style: AppTextStyles.bodyMeduim,
                   ),
                 ),
-              )),
-              Expanded(
-                  child: SizedBox(
+              ),
+            ),
+            Expanded(
+              child: SizedBox(
                 width: double.infinity,
                 child: TextButton(
                   onPressed: () => onPressed(1),
@@ -362,9 +354,10 @@ class _ChooseNutrient extends StatelessWidget {
                     style: AppTextStyles.bodyMeduim,
                   ),
                 ),
-              )),
-              Expanded(
-                  child: SizedBox(
+              ),
+            ),
+            Expanded(
+              child: SizedBox(
                 width: double.infinity,
                 child: TextButton(
                   onPressed: () => onPressed(2),
@@ -374,9 +367,10 @@ class _ChooseNutrient extends StatelessWidget {
                     style: AppTextStyles.bodyMeduim,
                   ),
                 ),
-              )),
-              Expanded(
-                  child: SizedBox(
+              ),
+            ),
+            Expanded(
+              child: SizedBox(
                 width: double.infinity,
                 child: TextButton(
                   onPressed: () => onPressed(3),
@@ -386,9 +380,10 @@ class _ChooseNutrient extends StatelessWidget {
                     style: AppTextStyles.bodyMeduim,
                   ),
                 ),
-              )),
-              Expanded(
-                  child: SizedBox(
+              ),
+            ),
+            Expanded(
+              child: SizedBox(
                 width: double.infinity,
                 child: TextButton(
                   onPressed: () => onPressed(4),
@@ -398,9 +393,11 @@ class _ChooseNutrient extends StatelessWidget {
                     style: AppTextStyles.bodyMeduim,
                   ),
                 ),
-              )),
-            ],
-          )),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

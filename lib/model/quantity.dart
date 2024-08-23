@@ -1,5 +1,5 @@
 import 'package:hive/hive.dart';
-import 'package:okradish/constants/nutrient.dart';
+import 'package:OKRADISH/constants/nutrient.dart';
 import 'food.dart';
 
 part 'quantity.g.dart';

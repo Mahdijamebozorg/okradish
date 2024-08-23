@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:okradish/component/button_style.dart';
-import 'package:okradish/component/text_style.dart';
-import 'package:okradish/constants/sizes.dart';
-import 'package:okradish/constants/strings.dart';
-import 'package:okradish/screens/add/add_screen.dart';
-import 'package:okradish/widgets/app_card.dart';
+import 'package:OKRADISH/component/button_style.dart';
+import 'package:OKRADISH/component/text_style.dart';
+import 'package:OKRADISH/constants/sizes.dart';
+import 'package:OKRADISH/constants/strings.dart';
+import 'package:OKRADISH/screens/add/add_screen.dart';
+import 'package:OKRADISH/widgets/app_card.dart';
 
 class Init extends StatelessWidget {
   final void Function(AddStep) changeState;
@@ -18,6 +18,7 @@ class Init extends StatelessWidget {
           const Text(
             Strings.addFoodText,
             style: AppTextStyles.bodyMeduim,
+            textAlign: TextAlign.right,
           ),
           const SizedBox(height: 24.0),
           SizedBox(

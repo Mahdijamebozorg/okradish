@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:okradish/constants/colors.dart';
-import 'package:okradish/constants/sizes.dart';
-import 'package:okradish/gen/assets.gen.dart';
-import 'package:okradish/screens/home_screen.dart';
+import 'package:OKRADISH/constants/colors.dart';
+import 'package:OKRADISH/constants/sizes.dart';
+import 'package:OKRADISH/gen/assets.gen.dart';
+import 'package:OKRADISH/screens/home_screen.dart';
 
 class AppBottomNav extends StatelessWidget {
   final Function changeIndex;

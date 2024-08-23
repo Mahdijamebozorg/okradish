@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:okradish/component/themes.dart';
-import 'package:okradish/route/routes.dart';
+import 'package:OKRADISH/component/themes.dart';
+import 'package:OKRADISH/route/routes.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() async {
@@ -31,7 +31,7 @@ class MyApp extends StatelessWidget {
         Locale("fa", "IR"),
       ],
       locale: const Locale("fa", "IR"),
-      title: 'Okradish',
+      title: 'OKRADISH',
       theme: lightTheme(),
       routes: routes,
       initialRoute: '/',

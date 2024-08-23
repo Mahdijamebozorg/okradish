@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:okradish/gen/fonts.gen.dart';
-import 'package:okradish/constants/colors.dart';
+import 'package:OKRADISH/gen/fonts.gen.dart';
+import 'package:OKRADISH/constants/colors.dart';
 
 class AppTextStyles {
   AppTextStyles._();

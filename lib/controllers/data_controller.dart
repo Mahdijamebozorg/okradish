@@ -3,12 +3,12 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
-import 'package:okradish/constants/storage_keys.dart';
-import 'package:okradish/controllers/daily_controller.dart';
-import 'package:okradish/model/daily.dart';
-import 'package:okradish/model/meal.dart';
-import 'package:okradish/utils/date.dart';
-import 'package:okradish/utils/random.dart';
+import 'package:OKRADISH/constants/storage_keys.dart';
+import 'package:OKRADISH/controllers/daily_controller.dart';
+import 'package:OKRADISH/model/daily.dart';
+import 'package:OKRADISH/model/meal.dart';
+import 'package:OKRADISH/utils/date.dart';
+import 'package:OKRADISH/utils/random.dart';
 
 class DataController extends GetxController {
   final RxList<DailyEntry> thisWeek;
@@ -113,5 +113,11 @@ class DataController extends GetxController {
 
   List<DailyController> get entriesCtrl {
     return thisWeek.map((element) => DailyController.value(element)).toList();
+  }
+
+  Future<void> deleteData() async {
+    log(name: "DATA", "removeing data");
+    var box = Hive.box<DailyEntry>(StorageKeys.entries);
+    await box.deleteFromDisk();
   }
 }

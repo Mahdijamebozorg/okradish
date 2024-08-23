@@ -1,17 +1,15 @@
 import 'dart:developer';
+import 'package:OKRADISH/controllers/data_controller.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
-import 'package:okradish/constants/api_keys.dart';
-import 'package:okradish/constants/storage_keys.dart';
-import 'package:okradish/constants/strings.dart';
-import 'package:okradish/model/user.dart';
-import 'package:okradish/widgets/snackbar.dart';
-import 'package:parse_server_sdk_flutter/parse_server_sdk_flutter.dart';
+import 'package:OKRADISH/constants/storage_keys.dart';
+import 'package:OKRADISH/constants/strings.dart';
+import 'package:OKRADISH/model/user.dart';
+import 'package:OKRADISH/services/parse_service.dart';
 
 class AuthController extends GetxController {
-  ParseUser? _parseUser;
-  UserData? _userData = UserData(
+  UserData _userData = UserData(
     phone: "",
     email: "",
     id: "",
@@ -19,7 +17,7 @@ class AuthController extends GetxController {
     username: "",
     token: "",
   );
-
+  final parse = ParseService();
   final RxBool isWorking = false.obs;
   final RxBool isAuth = false.obs;
   final RxBool isOnline = false.obs;
@@ -29,37 +27,22 @@ class AuthController extends GetxController {
     // save data when user connected to internet
     Connectivity().onConnectivityChanged.listen(
       (event) async {
-        if (isAuth.value) {
-          //if internet is on
-          if (event == ConnectivityResult.wifi ||
-              event == ConnectivityResult.mobile) {
-            if (isAuth.value) {
-              // login if not
-              isWorking.value = true;
-              await Parse().initialize(
-                ApiKeys.applicationId,
-                ApiKeys.parseServerUrl,
-                clientKey: ApiKeys.clientKey,
-                autoSendSessionId: true,
-                sessionId: token,
-              );
-              isWorking.value = false;
-              // read user
-              _parseUser = await ParseUser.currentUser();
-              // submit changes
-              isOnline.value = true;
-              if (!isWorking.value) {
-                log(name: "AUTH", "syncing...");
-                isWorking.value = true;
-                await _parseUser!.save();
-                isWorking.value = false;
-              }
-            }
-          }
-          //if internet is off
-          else {
-            isOnline.value = false;
-          }
+        if (isWorking.value) return;
+        if (!isAuth.value) return;
+        if (isOnline.value) return;
+        //if internet is on
+        if (event == ConnectivityResult.wifi ||
+            event == ConnectivityResult.mobile) {
+          isWorking.value = true;
+          log(name: "AUTH", "syncing...");
+          await parse.initialize(token);
+          await parse.updateUser(username, email, password, token);
+          isWorking.value = false;
+          isOnline.value = true;
+        }
+        //if internet is off
+        else {
+          isOnline.value = false;
         }
       },
     );
@@ -72,55 +55,52 @@ class AuthController extends GetxController {
   Future<void> saveOnLocal() async {
     log(name: "AUTH", "save data on device");
     final box = await Hive.openBox<UserData>(StorageKeys.user);
-    await box.put(StorageKeys.user, _userData!);
+    await box.put(StorageKeys.user, _userData);
   }
 
   Future<UserData?> loadFromLocal() async {
-    log(name: "AUTH", "load data from device");
     final box = await Hive.openBox<UserData>(StorageKeys.user);
-    return box.get(StorageKeys.user);
+    final data = box.get(StorageKeys.user);
+    if (data == null) {
+      log(name: "AUTH", "no data found on device");
+    } else {
+      log(name: "AUTH", "data loaded from device");
+    }
+    return data;
   }
 
   Future<void> removeFromLocal() async {
     log(name: "AUTH", "remove data from device");
     final box = await Hive.openBox<UserData>(StorageKeys.user);
-    await box.delete(StorageKeys.user);
+    await box.deleteFromDisk();
+    await Get.find<DataController>().deleteData();
   }
 
   // ---------------------------------------------------------------
   // Cloud DateBase Management
 
-  Future<void> saveOnCloud() async {
+  Future<String> saveOnCloud() async {
     log(name: "AUTH", "saving data on cloud");
+    log(name: "AUTH", "username: $username");
+    log(name: "AUTH", "phone: $phone");
     try {
+      isWorking.value = true;
       // check if is online
       final connectivity = await Connectivity().checkConnectivity();
       if (connectivity == ConnectivityResult.mobile ||
           connectivity == ConnectivityResult.wifi) {
-        // save
-        final ParseObject object = ParseObject(StorageKeys.user);
-        var query = QueryBuilder(object)..whereEqualTo('username', username);
-        var response = await query.query();
-
-        if (response.success) {
-          await (object
-                ..set("username", username)
-                ..set("phone", phone))
-              .save();
-        } else {
-          await (object
-                ..set("username", username)
-                ..set("phone", phone))
-              .create();
-        }
-        // final response = await (object..set("phone", phone)..set("username":username)).create();
+        await parse.saveData(username, phone);
+        isWorking.value = false;
+        return "";
       }
       // if offline
       else {
-        getSnackBar(ErrorTexts.internet);
+        isWorking.value = false;
+        return ErrorTexts.noInternet;
       }
     } catch (e) {
-      getSnackBar(e.toString());
+      isWorking.value = false;
+      return e.toString();
     }
   }
 
@@ -130,14 +110,19 @@ class AuthController extends GetxController {
   Future<String> requestResetPwd() async {
     try {
       isWorking.value = true;
-      _parseUser = ParseUser(null, null, email);
-      final resp = await _parseUser!.requestPasswordReset();
-      if (!resp.success) {
+      // check if is online
+      final connectivity = await Connectivity().checkConnectivity();
+      if (connectivity == ConnectivityResult.mobile ||
+          connectivity == ConnectivityResult.wifi) {
+        await parse.requestPasswordReset(email);
         isWorking.value = false;
-        return resp.error!.message;
+        return "";
       }
-      isWorking.value = false;
-      return "";
+      // if offline
+      else {
+        isWorking.value = false;
+        return ErrorTexts.noInternet;
+      }
     } catch (e) {
       isWorking.value = false;
       return e.toString();
@@ -147,13 +132,19 @@ class AuthController extends GetxController {
   Future<String> requestEmailVerification() async {
     try {
       isWorking.value = true;
-      final resp = await _parseUser!.verificationEmailRequest();
-      if (!resp.success) {
+      // check if is online
+      final connectivity = await Connectivity().checkConnectivity();
+      if (connectivity == ConnectivityResult.mobile ||
+          connectivity == ConnectivityResult.wifi) {
+        await parse.requestEmailVerification(email);
         isWorking.value = false;
-        return resp.error!.message;
+        return "";
       }
-      isWorking.value = false;
-      return "";
+      // if offline
+      else {
+        isWorking.value = false;
+        return ErrorTexts.noInternet;
+      }
     } catch (e) {
       isWorking.value = false;
       return e.toString();
@@ -161,213 +152,177 @@ class AuthController extends GetxController {
   }
 
   Future<String> signIn() async {
-    isWorking.value = true;
-    final connectivity = await Connectivity().checkConnectivity();
-    // if online
-    if (connectivity == ConnectivityResult.mobile ||
-        connectivity == ConnectivityResult.wifi) {
-      try {
-        log(name: "AUTH", "signing in ...");
-        // sign in
-        _parseUser = ParseUser(username, password, null);
-        // check verification
-        // if (_parseUser!.emailVerified == null || !_parseUser!.emailVerified!) {
-        //   isWorking.value = false;
-        //   return ErrorTexts.emailNotVerified;
-        // }
-        final ParseResponse response = await _parseUser!.login();
-        if (!response.success) {
-          isWorking.value = false;
-          return response.error!.message;
-        }
-
-        log(name: "AUTH", response.results.toString());
-        _userData = UserData(
-          id: response.result['objectId'],
-          username: response.result['username'],
-          email: response.result['email'],
-          password: _userData!.password,
-          token: response.result['sessionToken'],
-        );
-        _parseUser = ParseUser(username, password, email);
-
-        // make/upload userdate on cloud
-        await saveOnCloud();
-
-        // save token
+    try {
+      isWorking.value = true;
+      // check if is online
+      final connectivity = await Connectivity().checkConnectivity();
+      if (connectivity == ConnectivityResult.mobile ||
+          connectivity == ConnectivityResult.wifi) {
+        //
+        _userData = await parse.signin(username, email, password);
+        // save user data on device
         await saveOnLocal();
+
+        isWorking.value = false;
         isAuth.value = true;
-        isWorking.value = false;
-        update(['user']);
         return "";
-      } catch (e) {
-        isWorking.value = false;
-        return e.toString();
       }
-    } else {
+      // if offline
+      else {
+        isWorking.value = false;
+        return ErrorTexts.noInternet;
+      }
+    } catch (e) {
       isWorking.value = false;
-      return ErrorTexts.noInternet;
+      return e.toString();
     }
   }
 
   Future<String> singUp() async {
-    isWorking.value = true;
-    final connectivity = await Connectivity().checkConnectivity();
-    // if online
-    if (connectivity == ConnectivityResult.mobile ||
-        connectivity == ConnectivityResult.wifi) {
-      log(name: "AUTH", "signing up ...");
-      try {
-        _parseUser = ParseUser(username, password, email);
-        final ParseResponse response =
-            await _parseUser!.signUp(allowWithoutEmail: false);
-        if (!response.success) {
-          isWorking.value = false;
-          return response.error!.message;
-        }
+    try {
+      isWorking.value = true;
+      // check if is online
+      final connectivity = await Connectivity().checkConnectivity();
+      if (connectivity == ConnectivityResult.mobile ||
+          connectivity == ConnectivityResult.wifi) {
+        //
+        _userData = await parse.signup(username, email, password);
         isWorking.value = false;
+        isAuth.value = true;
         return "";
-      } catch (e) {
-        isWorking.value = false;
-        return e.toString();
       }
-    } else {
+      // if offline
+      else {
+        isWorking.value = false;
+        return ErrorTexts.noInternet;
+      }
+    } catch (e) {
       isWorking.value = false;
-      return ErrorTexts.noInternet;
+      return e.toString();
     }
   }
 
   Future<String> tokenLogin() async {
-    isWorking.value = true;
-    final connectivity = await Connectivity().checkConnectivity();
-    if (connectivity == ConnectivityResult.mobile ||
-        connectivity == ConnectivityResult.wifi) {
-      log(name: "AUTH", "token login ...");
-      try {
+    try {
+      isWorking.value = true;
+      var loadedData = await loadFromLocal();
+      // check if is online
+      final connectivity = await Connectivity().checkConnectivity();
+      if (connectivity == ConnectivityResult.mobile ||
+          connectivity == ConnectivityResult.wifi) {
         // load token
-        _userData = await loadFromLocal();
-        if (_userData != null && _userData!.token.isNotEmpty) {
+        if (loadedData != null && loadedData.token.isNotEmpty) {
+          _userData = loadedData;
           // login
-          await Parse().initialize(
-            ApiKeys.applicationId,
-            ApiKeys.parseServerUrl,
-            clientKey: ApiKeys.clientKey,
-            autoSendSessionId: true,
-            sessionId: token,
-          );
-          // read user
-          _parseUser = await ParseUser.currentUser();
-
-          // make/upload userdate on cloud
-          await saveOnCloud();
+          await parse.initialize(token);
 
           isAuth.value = true;
           isWorking.value = false;
           update(['user']);
           return "";
         }
-      } catch (e) {
-        isWorking.value = false;
-        return e.toString();
       }
-    } else {
-      // offline mode
-      _userData = await loadFromLocal();
-      if (_userData != null && _userData!.token.isNotEmpty) {
-        // login
-        await Parse().initialize(
-          ApiKeys.applicationId,
-          ApiKeys.parseServerUrl,
-          clientKey: ApiKeys.clientKey,
-          autoSendSessionId: true,
-          sessionId: token,
-        );
-        // read user
-        _parseUser = await ParseUser.currentUser();
-        isAuth.value = true;
-        isWorking.value = false;
-        return '';
+      // if offline
+      else {
+        // offline mode
+        if (loadedData != null && loadedData.token.isNotEmpty) {
+          _userData = loadedData;
+          // login
+          await parse.initialize(token);
+          // read user
+          isAuth.value = true;
+          isWorking.value = false;
+          return '';
+        }
       }
-      // return ErrorTexts.noInternet;
-    }
-    _userData = UserData(
-      id: "",
-      username: "",
-      email: "",
-      password: "",
-    );
-    isWorking.value = false;
-    return "token failed";
-  }
-
-  Future<bool> signOut() async {
-    isWorking.value = true;
-    try {
-      final response = await _parseUser!.logout();
-      if (!response.success) {
-        isWorking.value = false;
-        return false;
-      }
-      await removeFromLocal();
-      isAuth.value = false;
-      isWorking.value = false;
-      update(['user']);
-      return true;
     } catch (e) {
       isWorking.value = false;
-      return false;
+      return e.toString();
+    }
+    isWorking.value = false;
+    return ErrorTexts.authFailed;
+  }
+
+  Future<String> signOut() async {
+    isWorking.value = true;
+    try {
+      isWorking.value = true;
+      // check if is online
+      final connectivity = await Connectivity().checkConnectivity();
+      if (connectivity == ConnectivityResult.mobile ||
+          connectivity == ConnectivityResult.wifi) {
+        //
+        await parse.signout(username, email, password, token);
+
+        await removeFromLocal();
+
+        isWorking.value = false;
+        isAuth.value = false;
+        return "";
+      }
+      // if offline
+      else {
+        isWorking.value = false;
+        return ErrorTexts.noInternet;
+      }
+    } catch (e) {
+      isWorking.value = false;
+      return e.toString();
     }
   }
 
   // ---------------------------------------------------------------
 
   String get id {
-    return _userData!.id;
+    return _userData.id;
   }
 
   String get username {
-    return _userData!.username;
+    return _userData.username;
   }
 
   String get email {
-    return _userData!.email;
+    return _userData.email;
   }
 
   String get phone {
-    return _userData!.phone;
+    return _userData.phone;
   }
 
   String get token {
-    return _userData!.token;
+    return _userData.token;
   }
 
   String get password {
-    return _userData!.password;
+    return _userData.password;
   }
 
   Future<String> submitData() async {
+    log(name: "AUTH", "Submiting user data");
+    isWorking.value = true;
     // cloud
     try {
-      _parseUser = (((_parseUser!..username = username)..emailAddress = email)
-        ..password = password);
-      await _parseUser!.save();
+      await parse.updateUser(username, email, password, token);
+      log(name: "AUTH", "user updated");
+      if (phone.isNotEmpty) await saveOnCloud();
+      log(name: "AUTH", "userdata on cloud updated");
     } catch (e) {
+      isWorking.value = false;
       return ErrorTexts.internet;
     }
-    // local
-    await saveOnCloud();
+
     await saveOnLocal();
+    log(name: "AUTH", "userdata on device updated");
     update(['user']);
+    isWorking.value = false;
     return "";
   }
 
   Future<String> resetPwd() async {
-    _parseUser!.password = password;
     // cloud
     try {
       isWorking.value = true;
-      _parseUser = _parseUser!..password = password;
-      await _parseUser!.save();
+      await parse.requestPasswordReset(email);
     } catch (e) {
       isWorking.value = false;
       return ErrorTexts.internet;

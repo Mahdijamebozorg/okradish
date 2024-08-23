@@ -1,6 +1,6 @@
 import 'package:hive/hive.dart';
-import 'package:okradish/model/quantity.dart';
-import 'package:okradish/utils/random.dart';
+import 'package:OKRADISH/model/quantity.dart';
+import 'package:OKRADISH/utils/random.dart';
 
 part 'meal.g.dart';
 

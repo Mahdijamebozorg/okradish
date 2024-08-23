@@ -1,4 +1,4 @@
-import 'package:okradish/model/food.dart';
+import 'package:OKRADISH/model/food.dart';
 
 List<Food> mainfood = [
   Food(id: '1', name: 'پلو کته(بدون روغن)', carboPerGram: 21, proteinPerGram: 2, fatPerGram: 0.2, fibersPerGram: 1),

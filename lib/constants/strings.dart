@@ -12,16 +12,18 @@ class Strings {
   static const email = "ایمیل";
   static const phone = "شماره موبایل";
   static const editAcount = "ویرایش اطلاعات حساب کاربری";
+  static const logoutAlert = "تمام اطلاعات غذاهای شما پاک میشود، میخواهید خارج شوید؟";
+  static const logout = "خروج از حساب";
 // add weight
   static const addFoodTitle = "ثبت غذای مصرفی";
   static const addFood = "افزودن غذا";
   static const gram = "گرم";
   static const addFoodText = """آیا می‌خواهید وعده جدیدی ثبت کنید؟ 
-  :شروع سنجش» را بفشارید»""";
+  شروع سنجش را بفشارید""";
   static const startWeighing = "شروع سنجش";
   static const details = "نمایش جزئیات";
 // add food
-  static const chooseFood = "اتتخاب غذا";
+  static const chooseFood = "انتخاب غذا";
   static const search = "جستجو";
   static const mainMeal = "وعده اصلی";
   static const snack = "میان وعده";
@@ -45,7 +47,7 @@ class Strings {
   static const protein = "پروتئین";
   static const fat = "چربی";
   static const fiber = "فیبر";
-  static const totalCal = "مجموغ کالری دریافتی";
+  static const totalCal = "مجموع کالری دریافتی";
   static const noEntry = "در این تاریخ وعده غذایی وجود ندارد";
 // date
   static const chooseDate = "انتخاب تاریخ";
@@ -78,4 +80,8 @@ class ErrorTexts {
   static const resetPwdAuth = "ابتدا وارد شوید";
   static const emailNotVerified = "ایمیل شما تایید نشده است";
   static const emailVersent = "تاییدیه ایمیل برای شما ارسال شد";
+  static const authFailed = 'ابتدا ثبت نام کنید';
+  static const wrongDevice = "لطفا دستگاه با نام OKRADISH را انتخاب کنید";
+  static const weighterError = 'ترازو به درستی متصل نشده است';
 }
+

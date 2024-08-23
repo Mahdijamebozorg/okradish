@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:okradish/component/button_style.dart';
-import 'package:okradish/component/extention.dart';
-import 'package:okradish/component/text_style.dart';
-import 'package:okradish/constants/colors.dart';
-import 'package:okradish/constants/sizes.dart';
-import 'package:okradish/constants/strings.dart';
-import 'package:okradish/controllers/meal_controller.dart';
-import 'package:okradish/model/meal.dart';
-import 'package:okradish/widgets/app_card.dart';
+import 'package:OKRADISH/component/button_style.dart';
+import 'package:OKRADISH/component/extention.dart';
+import 'package:OKRADISH/component/text_style.dart';
+import 'package:OKRADISH/constants/colors.dart';
+import 'package:OKRADISH/constants/sizes.dart';
+import 'package:OKRADISH/constants/strings.dart';
+import 'package:OKRADISH/controllers/meal_controller.dart';
+import 'package:OKRADISH/model/meal.dart';
+import 'package:OKRADISH/widgets/app_card.dart';
 
 class MealDetial extends StatelessWidget {
   final meal = Get.find<MealController>();
@@ -113,7 +113,9 @@ class MealDetial extends StatelessWidget {
                                       width: 60,
                                       child: Text(
                                         textDirection: TextDirection.ltr,
-                                        meal.foodItems[index].weight.toString().toPersian,
+                                        meal.foodItems[index].weight
+                                            .toString()
+                                            .toPersian,
                                         style: AppTextStyles.borderBtn,
                                       ),
                                     ),
@@ -124,7 +126,8 @@ class MealDetial extends StatelessWidget {
                                       child: Text(
                                         textDirection: TextDirection.ltr,
                                         meal.foodItems[index].calories
-                                            .toStringAsFixed(1).toPersian,
+                                            .toStringAsFixed(1)
+                                            .toPersian,
                                         style: AppTextStyles.borderBtn,
                                       ),
                                     ),
@@ -182,7 +185,7 @@ class MealDetial extends StatelessWidget {
                         // Weight
                         Expanded(
                           child: Text(
-                            "${meal.totalWeight()}",
+                            "${meal.totalWeight()}".toPersian,
                             style: AppTextStyles.highlight,
                           ),
                         ),

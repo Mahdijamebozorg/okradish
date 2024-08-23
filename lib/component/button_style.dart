@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:okradish/component/text_style.dart';
-import 'package:okradish/constants/colors.dart';
+import 'package:OKRADISH/component/text_style.dart';
+import 'package:OKRADISH/constants/colors.dart';
 
 class AppButtonStyles {
   AppButtonStyles._();

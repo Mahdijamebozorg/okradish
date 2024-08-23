@@ -2,22 +2,22 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:okradish/component/button_style.dart';
-import 'package:okradish/component/text_style.dart';
-import 'package:okradish/constants/colors.dart';
-import 'package:okradish/constants/sizes.dart';
-import 'package:okradish/constants/strings.dart';
-import 'package:okradish/controllers/daily_controller.dart';
-import 'package:okradish/controllers/data_controller.dart';
-import 'package:okradish/controllers/summary_controller.dart';
-import 'package:okradish/dialogs/choose_date.dart';
-import 'package:okradish/dialogs/edit_meal.dart';
-import 'package:okradish/model/daily.dart';
-import 'package:okradish/model/meal.dart';
-import 'package:okradish/screens/report/bar_chart.dart';
-import 'package:okradish/screens/report/pie_chart.dart';
-import 'package:okradish/widgets/app_card.dart';
-import 'package:okradish/widgets/appbar.dart';
+import 'package:OKRADISH/component/button_style.dart';
+import 'package:OKRADISH/component/text_style.dart';
+import 'package:OKRADISH/constants/colors.dart';
+import 'package:OKRADISH/constants/sizes.dart';
+import 'package:OKRADISH/constants/strings.dart';
+import 'package:OKRADISH/controllers/daily_controller.dart';
+import 'package:OKRADISH/controllers/data_controller.dart';
+import 'package:OKRADISH/controllers/summary_controller.dart';
+import 'package:OKRADISH/dialogs/choose_date.dart';
+import 'package:OKRADISH/dialogs/edit_meal.dart';
+import 'package:OKRADISH/model/daily.dart';
+import 'package:OKRADISH/model/meal.dart';
+import 'package:OKRADISH/screens/report/bar_chart.dart';
+import 'package:OKRADISH/screens/report/pie_chart.dart';
+import 'package:OKRADISH/widgets/app_card.dart';
+import 'package:OKRADISH/widgets/appbar.dart';
 
 class ReportScreen extends StatefulWidget {
   const ReportScreen({super.key});
@@ -37,7 +37,7 @@ class _ReportScreenState extends State<ReportScreen> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.transparent,
-        appBar: const MyAppBar(title: Strings.account),
+        appBar: const MyAppBar(title: Strings.report),
         body: GetBuilder<SummaryController>(
             id: 'summary',
             init: summary,
@@ -97,7 +97,8 @@ class _ReportScreenState extends State<ReportScreen> {
                                 ],
                               ),
                               const SizedBox(height: Sizes.medium),
-                              summary.meals.isEmpty
+                              summary.meals.isEmpty ||
+                                      summary.totalCalories() == 0
                                   ? const Expanded(
                                       child: Center(
                                         child: Text(
@@ -110,7 +111,6 @@ class _ReportScreenState extends State<ReportScreen> {
                                   : _index == 0
                                       ? Expanded(child: MyPieChart())
                                       : Expanded(
-                                          // TODO: recive from ctrl
                                           child: MyBarChart(),
                                         ),
                             ],

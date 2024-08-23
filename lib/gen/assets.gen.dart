@@ -23,6 +23,9 @@ class $AssetsPngGen {
   /// File path: assets/png/Splash.png
   AssetGenImage get splash => const AssetGenImage('assets/png/Splash.png');
 
+  /// File path: assets/png/icon.png
+  AssetGenImage get icon => const AssetGenImage('assets/png/icon.png');
+
   /// File path: assets/png/logo.png
   AssetGenImage get logo => const AssetGenImage('assets/png/logo.png');
 
@@ -31,7 +34,7 @@ class $AssetsPngGen {
 
   /// List of all assets
   List<AssetGenImage> get values =>
-      [background, beforeAdding, splash, logo, plus];
+      [background, beforeAdding, splash, icon, logo, plus];
 }
 
 class $AssetsSvgGen {
@@ -47,11 +50,22 @@ class $AssetsSvgGen {
   List<String> get values => [fileText, user];
 }
 
+class $AssetsVideoGen {
+  const $AssetsVideoGen();
+
+  /// File path: assets/video/back.mp4
+  String get back => 'assets/video/back.mp4';
+
+  /// List of all assets
+  List<String> get values => [back];
+}
+
 class Assets {
   Assets._();
 
   static const $AssetsPngGen png = $AssetsPngGen();
   static const $AssetsSvgGen svg = $AssetsSvgGen();
+  static const $AssetsVideoGen video = $AssetsVideoGen();
 }
 
 class AssetGenImage {

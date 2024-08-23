@@ -1,6 +1,6 @@
 import 'package:hive/hive.dart';
-import 'package:okradish/model/meal.dart';
-import 'package:okradish/utils/random.dart';
+import 'package:OKRADISH/model/meal.dart';
+import 'package:OKRADISH/utils/random.dart';
 
 part 'daily.g.dart';
 

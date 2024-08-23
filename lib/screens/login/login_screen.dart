@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:okradish/component/text_style.dart';
-import 'package:okradish/constants/Sizes.dart';
-import 'package:okradish/constants/strings.dart';
-import 'package:okradish/controllers/auth_controller.dart';
-import 'package:okradish/gen/assets.gen.dart';
-import 'package:okradish/screens/login/reset.dart';
-import 'package:okradish/screens/login/signin.dart';
-import 'package:okradish/screens/login/signup.dart';
+import 'package:OKRADISH/component/text_style.dart';
+import 'package:OKRADISH/constants/Sizes.dart';
+import 'package:OKRADISH/constants/strings.dart';
+import 'package:OKRADISH/controllers/auth_controller.dart';
+import 'package:OKRADISH/gen/assets.gen.dart';
+import 'package:OKRADISH/screens/login/reset.dart';
+import 'package:OKRADISH/screens/login/signin.dart';
+import 'package:OKRADISH/screens/login/signup.dart';
+import 'package:video_player/video_player.dart';
 
 enum _Step {
   signin,
@@ -15,14 +16,22 @@ enum _Step {
   reset,
 }
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   LoginScreen({super.key});
 
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
   final step = _Step.signin.obs;
+
   final authCtrl = Get.find<AuthController>();
 
   final singInFormState = GlobalKey<FormState>();
+
   final signupFormState = GlobalKey<FormState>();
+
   final resetFormState = GlobalKey<FormState>();
 
   /// Screen main widget
@@ -95,13 +104,33 @@ class LoginScreen extends StatelessWidget {
     );
   }
 
+  final vidCtrl = VideoPlayerController.asset(Assets.video.back);
+  @override
+  void initState() {
+    vidCtrl.initialize().then((value) => setState(() {}));
+    vidCtrl.setLooping(true);
+    vidCtrl.setVolume(0.0);
+    vidCtrl.play();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
+    vidCtrl.play();
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
-          Positioned.fill(child: Assets.png.background.image(fit: BoxFit.fill)),
+          Positioned.fill(
+            child: FittedBox(
+              fit: BoxFit.fill,
+              child: SizedBox(
+                width: vidCtrl.value.size.width,
+                height: vidCtrl.value.size.height,
+                child: VideoPlayer(vidCtrl),
+              ),
+            ),
+          ),
           Positioned(
             bottom: MediaQuery.viewInsetsOf(context).bottom > 10 ? 0 : 80,
             left: 0,

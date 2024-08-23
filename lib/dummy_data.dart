@@ -1,10 +1,10 @@
 // ignore_for_file: prefer_const_constructors
 import 'dart:math';
-import 'package:okradish/model/daily.dart';
-import 'package:okradish/model/food.dart';
-import 'package:okradish/model/meal.dart';
-import 'package:okradish/model/quantity.dart';
-import 'package:okradish/utils/random.dart';
+import 'package:OKRADISH/model/daily.dart';
+import 'package:OKRADISH/model/food.dart';
+import 'package:OKRADISH/model/meal.dart';
+import 'package:OKRADISH/model/quantity.dart';
+import 'package:OKRADISH/utils/random.dart';
 
 List<FoodQuantity> getRandomFoodItems(List<Food> dummyFoods) {
   final foods =

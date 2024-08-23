@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:okradish/constants/strings.dart';
+import 'package:OKRADISH/constants/strings.dart';
+import 'package:get/get.dart';
 
 class AppValidator {
   AppValidator._();
@@ -39,9 +40,7 @@ class AppValidator {
         return (String? value) {
           if (value == null || value.isEmpty) {
             return ErrorTexts.emptyInput;
-          } else if (!value.contains("@") ||
-              !value.contains(".com") ||
-              value.length < 7) {
+          } else if (!value.isEmail) {
             return ErrorTexts.invalidEmail;
           } else {
             return null;
