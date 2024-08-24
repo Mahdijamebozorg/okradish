@@ -116,7 +116,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    vidCtrl.play();
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Stack(

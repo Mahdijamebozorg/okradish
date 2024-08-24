@@ -34,11 +34,13 @@ class AuthController extends GetxController {
         if (event == ConnectivityResult.wifi ||
             event == ConnectivityResult.mobile) {
           isWorking.value = true;
-          log(name: "AUTH", "syncing...");
-          await parse.initialize(token);
-          await parse.updateUser(username, email, password, token);
+          try {
+            log(name: "AUTH", "syncing...");
+            await parse.initialize(token);
+            await parse.updateUser(username, email, password, token);
+            isOnline.value = true;
+          } catch (e) {}
           isWorking.value = false;
-          isOnline.value = true;
         }
         //if internet is off
         else {
