@@ -25,4 +25,23 @@ class UserData extends HiveObject {
     this.phone = "",
     this.token = "",
   });
+
+  UserData.fromJson(Map<String, dynamic> json)
+      : id = json['id'],
+        username = json['username'],
+        email = json['email'],
+        password = json['password'],
+        phone = json['phone'],
+        token = json['token'];
+
+  toJson() {
+    return {
+      'id': id,
+      'username': username,
+      'email': email,
+      'password': password,
+      'phone': phone,
+      'token': token,
+    };
+  }
 }

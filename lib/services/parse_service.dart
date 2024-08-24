@@ -1,27 +1,27 @@
-import 'dart:developer';
-
 import 'package:OKRADISH/constants/api_keys.dart';
-import 'package:OKRADISH/constants/storage_keys.dart';
 import 'package:OKRADISH/model/user.dart';
 import 'package:OKRADISH/utils/response_validator.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk_flutter.dart';
 
 class ParseService {
   Future<void> saveData(String username, String phone) async {
-    // save
-    final ParseObject object = ParseObject(StorageKeys.user);
-    var query = QueryBuilder(object)..whereEqualTo('username', username);
-    var resp = await query.query();
-    if (resp.success && resp.result != null) {
-      var foundObj = resp.result as ParseObject;
-      foundObj.set("phone", phone);
-      resp = await foundObj.save();
-      log(name: "AUTH", "found data at ${foundObj.objectId}");
+    // Check if the user exists
+    final QueryBuilder<ParseObject> query =
+        QueryBuilder<ParseObject>(ParseObject(ApiKeys.user))
+          ..whereEqualTo('username', username);
+    ParseResponse resp = await query.query();
+    if (resp.success && resp.results != null && resp.results!.isNotEmpty) {
+      // User exists, update their data
+      final ParseObject user = resp.results!.first as ParseObject;
+      // Update user data
+      user.set('phone', phone);
+      resp = await user.save();
     } else {
-      object.set<String>("username", username);
-      object.set<String>("phone", phone);
-      resp = await object.save();
-      log(name: "AUTH", "create data");
+      // User does not exist, create a new user
+      final ParseObject newUser = ParseObject(ApiKeys.user)
+        ..set('username', username)
+        ..set('phone', phone);
+      resp = await newUser.save();
     }
     if (resp.success) {
       HTTPResponseValidator.validate(resp.statusCode);
