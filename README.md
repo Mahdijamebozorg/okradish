@@ -1,18 +1,23 @@
-# Crop diseases
- A comprehensive diet monitoring app that provides detailed statistics on nutrient intake
+# OKARDISH
 
- ## Key features:
- - Accurate calorie tracking based on food intake.
- - Measuring accurate real-time weight with BLE(Bluetooth Low Enenrgy) ESP32 scale
- - Detailed breakdown of macronutrients (protein, carbohydrates, fats).
- - Micronutrient tracking (vitamins, minerals).
- - Customizable food database with options to add new foods.
+A comprehensive diet monitoring app that provides detailed statistics on nutrient intake
+ 
+<p>&nbsp;</p>
 
 <div align="center">
   <a>
-    <img src="screenShots/icon.png" alt="Icon" width="80" height="80">
+    <img src="screenShots/logo.png" alt="Icon" width="200" height="80">
   </a>
 </div>
+
+ 
+
+## Key features:
+- Accurate calorie tracking based on food intake.
+- Measuring accurate real-time weight with BLE(Bluetooth Low Enenrgy) ESP32 scale
+- Detailed breakdown of macronutrients (protein, carbohydrates, fats).
+- Micronutrient tracking (vitamins, minerals).
+- Customizable food database with options to add new foods.
 
 <p>&nbsp;</p>
 
