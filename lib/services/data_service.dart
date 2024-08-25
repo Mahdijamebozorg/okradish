@@ -1,5 +1,4 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
@@ -10,14 +9,14 @@ import 'package:OKRADISH/model/meal.dart';
 import 'package:OKRADISH/utils/date.dart';
 import 'package:OKRADISH/utils/random.dart';
 
-class DataController extends GetxController {
+class DataSevice extends GetxController {
   final RxList<DailyEntry> thisWeek;
 
-  DataController._(List<DailyEntry> week) : thisWeek = week.obs;
+  DataSevice._(List<DailyEntry> week) : thisWeek = week.obs;
 
-  static DataController? _instance;
+  static DataSevice? _instance;
 
-  static Future<DataController> _createInstance() async {
+  static Future<DataSevice> _createInstance() async {
     final today = DateTime.now();
     final List<DailyEntry> week = [];
     DateUtills.weekDays(today).forEach(
@@ -44,10 +43,10 @@ class DataController extends GetxController {
         week.add(ent);
       },
     );
-    return DataController._(week);
+    return DataSevice._(week);
   }
 
-  static Future<DataController> instance() async {
+  static Future<DataSevice> instance() async {
     await Hive.openBox<DailyEntry>(StorageKeys.entries);
     _instance ??= await _createInstance();
     return _instance!;

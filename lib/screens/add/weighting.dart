@@ -6,7 +6,7 @@ import 'package:OKRADISH/component/extention.dart';
 import 'package:OKRADISH/component/text_style.dart';
 import 'package:OKRADISH/constants/sizes.dart';
 import 'package:OKRADISH/constants/strings.dart';
-import 'package:OKRADISH/controllers/data_controller.dart';
+import 'package:OKRADISH/services/data_service.dart';
 import 'package:OKRADISH/controllers/meal_controller.dart';
 import 'package:OKRADISH/dialogs/choose_food.dart';
 import 'package:OKRADISH/model/food.dart';
@@ -171,9 +171,9 @@ class Weighing extends StatelessWidget {
                             showSnackbar(context, ErrorTexts.emptyMeal);
                           } else {
                             //
-                            final dataCtrl = Get.find<DataController>();
+                            final data = Get.find<DataSevice>();
                             waiting.value = true;
-                            await dataCtrl.addMeal(mealCtrl.meal);
+                            await data.addMeal(mealCtrl.meal);
                             waiting.value = false;
                             changeState(AddStep.init);
                             showSnackbar(context, Strings.saveMeal);

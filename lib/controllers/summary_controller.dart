@@ -1,7 +1,8 @@
+import 'package:OKRADISH/dummy_data.dart';
 import 'package:get/get.dart';
 import 'package:OKRADISH/constants/nutrient.dart';
 import 'package:OKRADISH/controllers/daily_controller.dart';
-import 'package:OKRADISH/controllers/data_controller.dart';
+import 'package:OKRADISH/services/data_service.dart';
 import 'package:OKRADISH/model/daily.dart';
 import 'package:OKRADISH/model/meal.dart';
 import 'package:OKRADISH/utils/date.dart';
@@ -14,7 +15,7 @@ class SummaryController extends GetxController {
 
   @override
   void onInit() {
-    Get.find<DataController>().thisWeek.listen(
+    Get.find<DataSevice>().thisWeek.listen(
       (ents) {
         _entries = ents;
         update(['summary']);
@@ -27,11 +28,11 @@ class SummaryController extends GetxController {
   // Local DateBase Management
 
   void saveOnLocal(DailyEntry daily) async {
-    return await Get.find<DataController>().saveOnLocal(daily);
+    return await Get.find<DataSevice>().saveOnLocal(daily);
   }
 
   Future<DailyEntry?> loadFromLocal(DateTime date) async {
-    return await Get.find<DataController>().loadFromLocal(date);
+    return await Get.find<DataSevice>().loadFromLocal(date);
   }
 
   Future<List<DailyEntry>> getByDate(List<DateTime> dates) async {
@@ -109,7 +110,7 @@ class SummaryController extends GetxController {
     } else {
       _entries[entIndex] = entries[entIndex]..meals[mealIndex] = meal;
     }
-    await Get.find<DataController>().saveOnLocal(_entries[entIndex]);
+    await Get.find<DataSevice>().saveOnLocal(_entries[entIndex]);
     update(['summary']);
   }
 

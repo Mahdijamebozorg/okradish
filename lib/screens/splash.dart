@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:OKRADISH/constants/api_keys.dart';
 import 'package:OKRADISH/controllers/auth_controller.dart';
-import 'package:OKRADISH/controllers/data_controller.dart';
+import 'package:OKRADISH/services/data_service.dart';
 import 'package:OKRADISH/gen/assets.gen.dart';
 import 'package:OKRADISH/model/daily.dart';
 import 'package:OKRADISH/model/food.dart';
@@ -28,7 +28,7 @@ Future rootDeps() async {
   final auth = Get.put(AuthController());
   await auth.tokenLogin();
   // Manages App data
-  final dc = await DataController.instance();
+  final dc = await DataSevice.instance();
   Get.put(dc);
 }
 

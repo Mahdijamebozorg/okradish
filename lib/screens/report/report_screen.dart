@@ -8,7 +8,7 @@ import 'package:OKRADISH/constants/colors.dart';
 import 'package:OKRADISH/constants/sizes.dart';
 import 'package:OKRADISH/constants/strings.dart';
 import 'package:OKRADISH/controllers/daily_controller.dart';
-import 'package:OKRADISH/controllers/data_controller.dart';
+import 'package:OKRADISH/services/data_service.dart';
 import 'package:OKRADISH/controllers/summary_controller.dart';
 import 'package:OKRADISH/dialogs/choose_date.dart';
 import 'package:OKRADISH/dialogs/edit_meal.dart';
@@ -28,8 +28,9 @@ class ReportScreen extends StatefulWidget {
 
 class _ReportScreenState extends State<ReportScreen> {
   int _index = 0;
+  // set this week as entry
   final summary =
-      Get.put(SummaryController.value(Get.find<DataController>().thisWeek));
+      Get.put(SummaryController.value(Get.find<DataSevice>().thisWeek));
 
   @override
   Widget build(BuildContext context) {

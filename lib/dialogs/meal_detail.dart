@@ -29,44 +29,54 @@ class MealDetial extends StatelessWidget {
                   Expanded(
                     // Background
                     child: Container(
+                      width: double.infinity,
+                      height: double.infinity,
                       decoration: const BoxDecoration(
                         borderRadius: BorderRadius.all(Radius.circular(8.0)),
                         color: AppColors.greyBack,
                       ),
                       padding: const EdgeInsets.all(Sizes.small),
                       child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           // Headings
                           const Padding(
-                            padding: EdgeInsets.all(Sizes.medium),
+                            padding: EdgeInsets.all(Sizes.small),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
-                                SizedBox(width: 30),
-                                SizedBox(
-                                  width: 60,
+                                // padding
+                                SizedBox(width: 8),
+                                SizedBox(width: Sizes.medium),
+                                // name
+                                Expanded(
                                   child: Text(
                                     Strings.food,
                                     style: AppTextStyles.borderBtn,
                                   ),
                                 ),
-                                Expanded(child: SizedBox()),
+                                SizedBox(width: Sizes.medium),
+                                // weight
                                 SizedBox(
-                                  width: 50,
+                                  width: 60,
                                   child: Text(
                                     Strings.weight,
                                     style: AppTextStyles.borderBtn,
+                                    textAlign: TextAlign.left,
                                   ),
                                 ),
-                                SizedBox(width: 30),
+                                SizedBox(width: Sizes.medium),
+                                // calory
                                 SizedBox(
-                                  width: 50,
+                                  width: 60,
                                   child: Text(
                                     Strings.calory,
                                     style: AppTextStyles.borderBtn,
+                                    textAlign: TextAlign.left,
                                   ),
                                 ),
-                                SizedBox(width: 30),
+                                SizedBox(width: Sizes.medium),
+                                SizedBox(width: 22),
                               ],
                             ),
                           ),
@@ -86,8 +96,7 @@ class MealDetial extends StatelessWidget {
                                 ),
                                 padding: const EdgeInsets.all(Sizes.small),
                                 child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
                                     // Index
                                     SizedBox(
@@ -100,11 +109,9 @@ class MealDetial extends StatelessWidget {
                                     const SizedBox(width: Sizes.medium),
                                     // Name
                                     Expanded(
-                                      child: SizedBox(
-                                        child: Text(
-                                          meal.foodItems[index].food.name,
-                                          style: AppTextStyles.borderBtn,
-                                        ),
+                                      child: Text(
+                                        meal.foodItems[index].food.name,
+                                        style: AppTextStyles.borderBtn,
                                       ),
                                     ),
                                     const SizedBox(width: Sizes.medium),
@@ -173,6 +180,8 @@ class MealDetial extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
+                        SizedBox(width: 8),
+                        SizedBox(width: Sizes.medium),
                         // Sum
                         const SizedBox(
                           width: 50,
@@ -181,16 +190,16 @@ class MealDetial extends StatelessWidget {
                             style: AppTextStyles.highlight,
                           ),
                         ),
-                        const Expanded(child: SizedBox()),
+                        Expanded(flex: 1,child:SizedBox()),
                         // Weight
-                        Expanded(
+                        Expanded(flex: 2,
                           child: Text(
                             "${meal.totalWeight()}".toPersian,
                             style: AppTextStyles.highlight,
                           ),
                         ),
                         // Calories
-                        Expanded(
+                        Expanded(flex: 2,
                           child: Text(
                             meal.totalCalories().toStringAsFixed(1).toPersian,
                             style: AppTextStyles.highlight,

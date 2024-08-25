@@ -45,36 +45,45 @@ class EditMeal extends StatelessWidget {
                           const Padding(
                             padding: EdgeInsets.all(Sizes.medium),
                             child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
-                                SizedBox(width: 58),
                                 // Date
-                                SizedBox(
-                                  width: 50,
-                                  child: Text(
-                                    Strings.date,
-                                    style: AppTextStyles.borderBtn,
-                                  ),
-                                ),
                                 SizedBox(width: 25),
-                                // Time
-                                SizedBox(
-                                  width: 50,
-                                  child: Text(
-                                    Strings.hour,
-                                    style: AppTextStyles.borderBtn,
+                                const SizedBox(width: Sizes.medium),
+                                Expanded(
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      SizedBox(
+                                        width: 80,
+                                        child: Text(
+                                          Strings.date,
+                                          style: AppTextStyles.borderBtn,
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ),
+                                      // Time
+                                      SizedBox(
+                                        width: 45,
+                                        child: Text(
+                                          Strings.hour,
+                                          style: AppTextStyles.borderBtn,
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ),
+                                      // Calory
+                                      SizedBox(
+                                        width: 60,
+                                        child: Text(
+                                          Strings.calory,
+                                          style: AppTextStyles.borderBtn,
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
-                                SizedBox(width: 25),
-                                // Calory
-                                SizedBox(
-                                  width: 50,
-                                  child: Text(
-                                    Strings.calory,
-                                    style: AppTextStyles.borderBtn,
-                                  ),
-                                ),
-                                SizedBox(width: 30),
                               ],
                             ),
                           ),
@@ -123,43 +132,58 @@ class EditMeal extends StatelessWidget {
                                                 ),
                                                 const SizedBox(
                                                     width: Sizes.medium),
-                                                // Date
-                                                SizedBox(
-                                                  width: 80,
-                                                  child: Text(
-                                                    meals[index].date.jalaliYmd,
-                                                    style:
-                                                        AppTextStyles.borderBtn,
-                                                  ),
-                                                ),
-                                                const SizedBox(
-                                                    width: Sizes.medium),
-                                                // Time
-                                                SizedBox(
-                                                  width: 45,
-                                                  child: Text(
-                                                    DateFormat.Hm()
-                                                        .format(
-                                                            meals[index].date)
-                                                        .toString()
-                                                        .toPersian,
-                                                    style:
-                                                        AppTextStyles.borderBtn,
-                                                  ),
-                                                ),
-                                                const SizedBox(
-                                                    width: Sizes.medium),
-                                                // Calory
-                                                SizedBox(
-                                                  width: 80,
-                                                  child: Text(
-                                                    meals
-                                                        .mealCtrl(index)
-                                                        .totalCalories()
-                                                        .toStringAsFixed(1)
-                                                        .toPersian,
-                                                    style:
-                                                        AppTextStyles.borderBtn,
+                                                Expanded(
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      // Date
+                                                      SizedBox(
+                                                        width: 80,
+                                                        child: Text(
+                                                          meals[index]
+                                                              .date
+                                                              .jalaliYmd,
+                                                          style: AppTextStyles
+                                                              .borderBtn,
+                                                          textAlign:
+                                                              TextAlign.left,
+                                                        ),
+                                                      ),
+                                                      // Time
+                                                      SizedBox(
+                                                        width: 45,
+                                                        child: Text(
+                                                          DateFormat.Hm()
+                                                              .format(
+                                                                  meals[index]
+                                                                      .date)
+                                                              .toString()
+                                                              .toPersian,
+                                                          style: AppTextStyles
+                                                              .borderBtn,
+                                                          textAlign:
+                                                              TextAlign.left,
+                                                        ),
+                                                      ),
+                                                      // Calory
+                                                      SizedBox(
+                                                        width: 60,
+                                                        child: Text(
+                                                          meals
+                                                              .mealCtrl(index)
+                                                              .totalCalories()
+                                                              .toStringAsFixed(
+                                                                  1)
+                                                              .toPersian,
+                                                          style: AppTextStyles
+                                                              .borderBtn,
+                                                          textAlign:
+                                                              TextAlign.left,
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ),
                                                 ),
                                               ],

@@ -1,5 +1,5 @@
 import 'dart:developer';
-import 'package:OKRADISH/controllers/data_controller.dart';
+import 'package:OKRADISH/services/data_service.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
@@ -75,7 +75,7 @@ class AuthController extends GetxController {
     log(name: "AUTH", "remove data from device");
     final box = await Hive.openBox<UserData>(StorageKeys.user);
     await box.deleteFromDisk();
-    await Get.find<DataController>().deleteData();
+    await Get.find<DataSevice>().deleteData();
   }
 
   // ---------------------------------------------------------------
