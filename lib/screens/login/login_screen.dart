@@ -1,3 +1,4 @@
+import 'package:OKRADISH/constants/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:OKRADISH/component/text_style.dart';
@@ -128,6 +129,11 @@ class _LoginScreenState extends State<LoginScreen> {
                 height: vidCtrl.value.size.height,
                 child: VideoPlayer(vidCtrl),
               ),
+            ),
+          ),
+          Positioned.fill(
+            child: Container(
+              decoration: const BoxDecoration(gradient: AppColors.backGrad),
             ),
           ),
           Positioned(

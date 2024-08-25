@@ -53,7 +53,7 @@ class SummaryController extends GetxController {
         if (ents.where((ent) => ent.date.day == date.day).toList().isEmpty) {
           ents.add(
             DailyEntry(
-              id: "id",
+              id: RandomUtills().randomId(),
               meals: [],
               date: date,
             ),
@@ -68,7 +68,7 @@ class SummaryController extends GetxController {
         if (ents.where((ent) => ent.date.day == date.day).toList().isEmpty) {
           ents.add(
             DailyEntry(
-              id: "id",
+              id: RandomUtills().randomId(),
               meals: [],
               date: date,
             ),

@@ -1,4 +1,5 @@
-import 'dart:developer';
+import 'dart:developer' as dev;
+import 'dart:math';
 
 import 'package:OKRADISH/route/screens.dart';
 import 'package:OKRADISH/widgets/snackbar.dart';
@@ -35,7 +36,7 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    log("----- ProfileScreen rebult");
+    dev.log("----- ProfileScreen rebult");
     final size = MediaQuery.sizeOf(context);
     return SafeArea(
       child: Scaffold(
@@ -54,19 +55,25 @@ class ProfileScreen extends StatelessWidget {
                     child: Padding(
                       padding: EdgeInsets.only(
                           bottom: MediaQuery.viewInsetsOf(context).bottom > 10
-                              ? MediaQuery.viewInsetsOf(context).bottom -
-                                  (
-                                      // main body padding
-                                      Sizes.large +
-                                          Sizes.btmNavH +
-                                          // margins
-                                          Sizes.medium * 3 +
-                                          // buttons
-                                          Sizes.smallBtnH * 2)
+                              ? max(
+                                  0,
+                                  MediaQuery.viewInsetsOf(context).bottom -
+                                      (
+                                          // main body padding
+                                          Sizes.large +
+                                              Sizes.btmNavH +
+                                              // margins
+                                              Sizes.medium * 3 +
+                                              // save button
+                                              Sizes.smallBtnH +
+                                              // logout button
+                                              Sizes.bigBtnH))
                               : 0),
                       child: SingleChildScrollView(
                         physics: const BouncingScrollPhysics(),
                         child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          mainAxisSize: MainAxisSize.max,
                           children: [
                             // username
                             AppTextField(
@@ -81,9 +88,9 @@ class ProfileScreen extends StatelessWidget {
                                 user.username = value!;
                               },
                             ),
-                            const SizedBox(height: Sizes.medium),
                             // email
                             AppTextField(
+                              enabled: false,
                               color: AppColors.black,
                               lable: Strings.email,
                               inputType: TextInputType.emailAddress,
@@ -97,7 +104,6 @@ class ProfileScreen extends StatelessWidget {
                                 user.email = value!;
                               },
                             ),
-                            const SizedBox(height: Sizes.medium),
                             // phone
                             AppTextField(
                               color: AppColors.black,
@@ -116,7 +122,6 @@ class ProfileScreen extends StatelessWidget {
                                 user.phone = value!;
                               },
                             ),
-                            const SizedBox(height: Sizes.medium),
                             // password
                             AppTextField(
                               color: AppColors.black,
@@ -145,7 +150,7 @@ class ProfileScreen extends StatelessWidget {
                 // Save
                 Obx(
                   () => SizedBox(
-                    height: Sizes.smallBtnH,
+                    height: Sizes.bigBtnH,
                     width: size.width * 0.9,
                     child: ElevatedButton(
                       onPressed: () async {

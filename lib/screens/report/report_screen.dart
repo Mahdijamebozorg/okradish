@@ -98,7 +98,7 @@ class _ReportScreenState extends State<ReportScreen> {
                               ),
                               const SizedBox(height: Sizes.medium),
                               summary.meals.isEmpty ||
-                                      summary.totalCalories() == 0
+                                      summary.totalCalories() <= 0
                                   ? const Expanded(
                                       child: Center(
                                         child: Text(

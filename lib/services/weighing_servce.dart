@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:OKRADISH/constants/strings.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
@@ -11,7 +12,7 @@ import 'package:OKRADISH/constants/device.dart';
 class WeighingServce extends GetxService {
   // web.BluetoothDevice? device2;
 
-  final RxDouble weight = 0.0.obs;
+  final RxInt weight = 0.obs;
   final Rx<mobile.BluetoothDevice?> device = Rx(null);
   var _searchDevices = <mobile.ScanResult>[];
   final RxList<String> deviceNames = RxList([]);
@@ -119,9 +120,12 @@ class WeighingServce extends GetxService {
       char.onValueReceived.listen(
         (value) {
           log(name: "WEIGHT", 'value list: $value');
-          var strout = String.fromCharCodes(value);
-          strout = strout.trim();
-          weight.value = double.parse(strout);
+          ByteBuffer buffer = new Int8List.fromList(value).buffer;
+          ByteData byteData = new ByteData.view(buffer);
+          weight.value = byteData.getInt16(0);
+          // var strout = String.fromCharCodes(value);
+          // strout = strout.trim();
+          // weight.value = int.parse(strout);
           log(name: "WEIGHT", 'parsed weight: ${weight.value.toString()}');
         },
       );

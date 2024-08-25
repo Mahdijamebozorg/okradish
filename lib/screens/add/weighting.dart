@@ -1,3 +1,4 @@
+import 'package:OKRADISH/utils/random.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:OKRADISH/component/button_style.dart';
@@ -70,17 +71,24 @@ class Weighing extends StatelessWidget {
               // add food to meal
               ElevatedButton(
                 onPressed: () {
-                  if (selectedFood.value != null) {
+                  // if no food selcted
+                  if (selectedFood.value == null) {
+                    showSnackbar(context, ErrorTexts.emptyMeal);
+                    return;
+                  }
+                  // if weigher is not connected properly
+                  else if (weighingService.weight.value <= 0) {
+                    showSnackbar(context, ErrorTexts.weighterError);
+                    return;
+                  } else {
                     mealCtrl.add(
                       FoodQuantity(
-                        id: "id",
+                        id: RandomUtills().randomId(),
                         food: selectedFood.value!,
-                        weight: weighingService.weight.value / 100,
+                        weight: weighingService.weight.value.toDouble(),
                       ),
                     );
                     selectedFood.value = null;
-                  } else {
-                    showSnackbar(context, ErrorTexts.emptyMeal);
                   }
                 },
                 style: AppButtonStyles.blackBtnStyle,
@@ -161,8 +169,6 @@ class Weighing extends StatelessWidget {
                           //
                           if (mealCtrl.foodItems.isEmpty) {
                             showSnackbar(context, ErrorTexts.emptyMeal);
-                          } else if (mealCtrl.totalCalories() == 0) {
-                            showSnackbar(context, ErrorTexts.weighterError);
                           } else {
                             //
                             final dataCtrl = Get.find<DataController>();
