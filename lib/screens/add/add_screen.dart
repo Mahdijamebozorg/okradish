@@ -1,32 +1,26 @@
 import 'dart:developer';
-
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:flutter/material.dart';
+
+import 'package:OKRADISH/model/food.dart';
 import 'package:OKRADISH/component/extention.dart';
 import 'package:OKRADISH/component/text_style.dart';
 import 'package:OKRADISH/constants/sizes.dart';
 import 'package:OKRADISH/constants/strings.dart';
 import 'package:OKRADISH/controllers/meal_controller.dart';
 import 'package:OKRADISH/widgets/bluetooth.dart';
-import 'package:OKRADISH/model/food.dart';
 import 'package:OKRADISH/screens/add/init.dart';
 import 'package:OKRADISH/screens/add/weighting.dart';
 import 'package:OKRADISH/screens/home_screen.dart';
 import 'package:OKRADISH/services/weighing_servce.dart';
 import 'package:OKRADISH/widgets/appbar.dart';
 
-enum AddStep {
-  init,
-  weighting,
-}
+enum AddStep { init, qWeighting, cWeighting }
 
 var _step = AddStep.init;
 
 class AddScreen extends StatefulWidget {
-  // ignore: prefer_const_constructors_in_immutables
-  AddScreen({
-    super.key,
-  });
+  AddScreen({super.key});
 
   @override
   State<AddScreen> createState() => _AddScreenState();
@@ -34,23 +28,29 @@ class AddScreen extends StatefulWidget {
 
 class _AddScreenState extends State<AddScreen> {
   final weightCtrl = Get.put(WeighingServce());
-  final Rx<Food?> selectedFood = Rx(null);
   final wKey = GlobalKey();
+  final Rx<Food?> selectedFood = Rx(null);
 
   /// Screen main widget
-  Widget get currentWidget {
+  Widget currentWidget() {
     if (_step == AddStep.init) {
-      return Init((AddStep step) {
-        _step = step;
-        selectedFood.value = null;
-        setState(() {});
-      });
+      return Init(
+        changeStep: (AddStep step) {
+          _step = step;
+          selectedFood.value = null;
+          setState(() {});
+        },
+      );
     } else {
-      // Don't try to understand (:
-      return Weighing((AddStep step) {
-        _step = step;
-        setState(() {});
-      }, selectedFood, key: wKey);
+      return Weighing(
+        step: _step,
+        selectedFood: selectedFood,
+        changeStep: (AddStep step) {
+          _step = step;
+          setState(() {});
+        },
+        key: wKey,
+      );
     }
   }
 
@@ -92,8 +92,7 @@ class _AddScreenState extends State<AddScreen> {
                               children: [
                                 // Weight
                                 Padding(
-                                  padding:
-                                      const EdgeInsets.all(Sizes.small),
+                                  padding: const EdgeInsets.all(Sizes.small),
                                   child: Text(
                                     weightCtrl.weight.value
                                         .toString()
@@ -118,7 +117,7 @@ class _AddScreenState extends State<AddScreen> {
                   height: Sizes.large,
                 ),
                 // bases on step
-                SingleChildScrollView(child: currentWidget),
+                SingleChildScrollView(child: currentWidget()),
               ],
             ),
           ),

@@ -38,7 +38,7 @@ class Signup extends StatelessWidget {
           if (context.mounted) showSnackbar(context, msg);
           dev.log(msg);
         } else {
-          // if (context.mounted) showSnackbar(context, ErrorTexts.emailVersent);
+          // if (context.mounted) showSnackbar(context, Messages.emailVersent);
           Get.offAndToNamed(Screens.home);
         }
       }

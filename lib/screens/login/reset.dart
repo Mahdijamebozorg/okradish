@@ -26,7 +26,7 @@ class ResetPwd extends StatelessWidget {
       final msg = await auth.requestResetPwd();
       if (context.mounted) showSnackbar(context, msg);
       if (msg.isEmpty) {
-        if (context.mounted) showSnackbar(context, ErrorTexts.emailVersent);
+        if (context.mounted) showSnackbar(context, Messages.emailVersent);
       }
       // Get.offAndToNamed(Screens.home);
     }

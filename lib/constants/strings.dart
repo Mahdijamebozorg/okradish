@@ -12,7 +12,8 @@ class Strings {
   static const email = "ایمیل";
   static const phone = "شماره موبایل";
   static const editAcount = "ویرایش اطلاعات حساب کاربری";
-  static const logoutAlert = "تمام اطلاعات غذاهای شما پاک میشود، میخواهید خارج شوید؟";
+  static const logoutAlert =
+      "تمام اطلاعات غذاهای شما پاک میشود، میخواهید خارج شوید؟";
   static const logout = "خروج از حساب";
 // add weight
   static const addFoodTitle = "ثبت غذای مصرفی";
@@ -20,7 +21,8 @@ class Strings {
   static const gram = "گرم";
   static const addFoodText = """آیا می‌خواهید وعده جدیدی ثبت کنید؟ 
   شروع سنجش را بفشارید""";
-  static const startWeighing = "شروع سنجش";
+  static const startqWeighing = "شروع سنجش جداگانه";
+  static const startcWeighing = "شروع سنجش پلکانی";
   static const details = "نمایش جزئیات";
 // add food
   static const chooseFood = "انتخاب غذا";
@@ -31,7 +33,6 @@ class Strings {
   static const other = "دیگر";
   static const cancel = "انصراف";
   static const finalizeMeal = "ثبت نهایی وعده";
-  static const saveMeal = "وعده غذایی ذخیره شد";
   // details
   static const food = "غذا";
   static const weight = "وزن";
@@ -48,7 +49,6 @@ class Strings {
   static const fat = "چربی";
   static const fiber = "فیبر";
   static const totalCal = "مجموع کالری دریافتی";
-  static const noEntry = "در این تاریخ وعده غذایی وجود ندارد";
 // date
   static const chooseDate = "انتخاب تاریخ";
   static const startDate = "تاریخ شروع";
@@ -67,9 +67,15 @@ class Strings {
   static const chooseMeal = "انتخاب وعده غذایی";
 }
 
-class ErrorTexts {
-  ErrorTexts._();
+class Messages {
+  Messages._();
+  // Succuss
+  static const foodAdded = "غذا اضافه شد";
+  static const saveMeal = "وعده غذایی ذخیره شد";
+
+  // Errors
   static const emptyMeal = "وعده غذایی خالی است";
+  static const noEntry = "در این تاریخ وعده غذایی وجود ندارد";
   static const emptyInput = "ورودی نباید خالی باشد";
   static const invalidPhone = "شماره وارد شده صحیح نمی باشد";
   static const invalidEmail = "آدرس ایمیل صحیح نمی باشد";
@@ -83,5 +89,5 @@ class ErrorTexts {
   static const authFailed = 'ابتدا ثبت نام کنید';
   static const wrongDevice = "لطفا دستگاه با نام OKRADISH را انتخاب کنید";
   static const weighterError = 'ترازو به درستی متصل نشده است';
+  static const cWeightingError = "در هر مرحله وزن باید اضافه شود";
 }
-

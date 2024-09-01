@@ -13,7 +13,7 @@ class AppValidator {
             return null;
           } else if ((value.length != 13 && value.length != 11) ||
               value[0] != '0') {
-            return ErrorTexts.invalidPhone;
+            return Messages.invalidPhone;
           } else {
             return null;
           }
@@ -21,7 +21,7 @@ class AppValidator {
       case TextInputType.name:
         return (String? value) {
           if (value == null || value.isEmpty) {
-            return ErrorTexts.emptyInput;
+            return Messages.emptyInput;
           } else {
             return null;
           }
@@ -29,9 +29,9 @@ class AppValidator {
       case TextInputType.visiblePassword:
         return (String? value) {
           if (value == null || value.isEmpty) {
-            return ErrorTexts.emptyInput;
+            return Messages.emptyInput;
           } else if (value.length < 8) {
-            return ErrorTexts.shortPwd;
+            return Messages.shortPwd;
           } else {
             return null;
           }
@@ -39,9 +39,9 @@ class AppValidator {
       case TextInputType.emailAddress:
         return (String? value) {
           if (value == null || value.isEmpty) {
-            return ErrorTexts.emptyInput;
+            return Messages.emptyInput;
           } else if (!value.isEmail) {
-            return ErrorTexts.invalidEmail;
+            return Messages.invalidEmail;
           } else {
             return null;
           }
@@ -49,7 +49,7 @@ class AppValidator {
       default:
         return (String? value) {
           if (value == null || value.isEmpty) {
-            return ErrorTexts.emptyInput;
+            return Messages.emptyInput;
           } else {
             return null;
           }

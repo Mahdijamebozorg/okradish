@@ -43,9 +43,9 @@ class AppTextField extends StatelessWidget {
 
   static String? _defaultValidator(String? value) {
     if (value == null) {
-      return ErrorTexts.emptyInput;
+      return Messages.emptyInput;
     } else if (value.isEmpty) {
-      return ErrorTexts.emptyInput;
+      return Messages.emptyInput;
     } else {
       return null;
     }

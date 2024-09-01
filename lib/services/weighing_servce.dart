@@ -91,42 +91,26 @@ class WeighingServce extends GetxService {
   Future<String> connectToDevice(int index) async {
     try {
       if (_searchDevices[index].advertisementData.advName != DeviceKeys.name) {
-        return ErrorTexts.wrongDevice;
+        return Messages.wrongDevice;
       }
 
       await _searchDevices[index].device.connect(autoConnect: false);
       device.value = _searchDevices[index].device;
-
-      log(name: "WEIGHT", "remoteId : ${device.value!.remoteId.str}");
-
       final services = await device.value!.discoverServices();
-      log(
-          name: "WEIGHT",
-          "traget service: ${DeviceKeys.serviceUUID.toString()}");
-      log(
-          name: "WEIGHT",
-          "target characteristic: ${DeviceKeys.chareUUID.toString()}");
-
-      log(name: "WEIGHT", "device services: ${services.toString()}");
       final service =
           services.firstWhere((s) => s.uuid.str == DeviceKeys.serviceUUID);
-      log(name: "WEIGHT", "selected service: ${service.toString()}");
       final char = service.characteristics
           .firstWhere((ch) => ch.uuid.str == DeviceKeys.chareUUID);
-      log(name: "WEIGHT", "selected characteristics: ${service.toString()}");
-
       // listen to data
       await char.setNotifyValue(true);
       char.onValueReceived.listen(
         (value) {
-          log(name: "WEIGHT", 'value list: $value');
           ByteBuffer buffer = new Int8List.fromList(value).buffer;
           ByteData byteData = new ByteData.view(buffer);
-          weight.value = byteData.getInt16(0);
+          weight.value = byteData.getInt16(0, Endian.little);
           // var strout = String.fromCharCodes(value);
           // strout = strout.trim();
           // weight.value = int.parse(strout);
-          log(name: "WEIGHT", 'parsed weight: ${weight.value.toString()}');
         },
       );
       return "";

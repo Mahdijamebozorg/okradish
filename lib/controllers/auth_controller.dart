@@ -98,7 +98,7 @@ class AuthController extends GetxController {
       // if offline
       else {
         isWorking.value = false;
-        return ErrorTexts.noInternet;
+        return Messages.noInternet;
       }
     } catch (e) {
       isWorking.value = false;
@@ -123,7 +123,7 @@ class AuthController extends GetxController {
       // if offline
       else {
         isWorking.value = false;
-        return ErrorTexts.noInternet;
+        return Messages.noInternet;
       }
     } catch (e) {
       isWorking.value = false;
@@ -145,7 +145,7 @@ class AuthController extends GetxController {
       // if offline
       else {
         isWorking.value = false;
-        return ErrorTexts.noInternet;
+        return Messages.noInternet;
       }
     } catch (e) {
       isWorking.value = false;
@@ -172,7 +172,7 @@ class AuthController extends GetxController {
       // if offline
       else {
         isWorking.value = false;
-        return ErrorTexts.noInternet;
+        return Messages.noInternet;
       }
     } catch (e) {
       isWorking.value = false;
@@ -196,7 +196,7 @@ class AuthController extends GetxController {
       // if offline
       else {
         isWorking.value = false;
-        return ErrorTexts.noInternet;
+        return Messages.noInternet;
       }
     } catch (e) {
       isWorking.value = false;
@@ -242,7 +242,7 @@ class AuthController extends GetxController {
       return e.toString();
     }
     isWorking.value = false;
-    return ErrorTexts.authFailed;
+    return Messages.authFailed;
   }
 
   Future<String> signOut() async {
@@ -265,7 +265,7 @@ class AuthController extends GetxController {
       // if offline
       else {
         isWorking.value = false;
-        return ErrorTexts.noInternet;
+        return Messages.noInternet;
       }
     } catch (e) {
       isWorking.value = false;
@@ -310,7 +310,7 @@ class AuthController extends GetxController {
       log(name: "AUTH", "userdata on cloud updated");
     } catch (e) {
       isWorking.value = false;
-      return ErrorTexts.internet;
+      return Messages.internet;
     }
 
     await saveOnLocal();
@@ -327,7 +327,7 @@ class AuthController extends GetxController {
       await parse.requestPasswordReset(email);
     } catch (e) {
       isWorking.value = false;
-      return ErrorTexts.internet;
+      return Messages.internet;
     }
     // local
     await saveOnLocal();

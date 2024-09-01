@@ -1,6 +1,7 @@
-import 'package:OKRADISH/utils/random.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:flutter/material.dart';
+
+import 'package:OKRADISH/utils/random.dart';
 import 'package:OKRADISH/component/button_style.dart';
 import 'package:OKRADISH/component/extention.dart';
 import 'package:OKRADISH/component/text_style.dart';
@@ -19,17 +20,24 @@ import 'package:OKRADISH/dialogs/meal_detail.dart';
 import 'package:OKRADISH/widgets/snackbar.dart';
 
 class Weighing extends StatelessWidget {
-  final void Function(AddStep step) changeState;
-  Weighing(this.changeState, this.selectedFood, {super.key});
+  final void Function(AddStep step) changeStep;
+  final AddStep step;
+  Weighing({
+    required this.selectedFood,
+    required this.step,
+    required this.changeStep,
+    super.key,
+  });
 
   final weighingService = Get.find<WeighingServce>();
 
   final mealCtrl = Get.isRegistered<MealController>()
       ? Get.find<MealController>()
-      : Get.put(MealController.create());
+      : MealController.create();
 
   final Rx<Food?> selectedFood;
   final RxBool waiting = false.obs;
+  final RxInt lastWeight = 0.obs;
 
   @override
   Widget build(BuildContext context) {
@@ -73,21 +81,31 @@ class Weighing extends StatelessWidget {
                 onPressed: () {
                   // if no food selcted
                   if (selectedFood.value == null) {
-                    showSnackbar(context, ErrorTexts.emptyMeal);
+                    showSnackbar(context, Messages.emptyMeal);
                     return;
                   }
                   // if weigher is not connected properly
                   else if (weighingService.weight.value <= 0) {
-                    showSnackbar(context, ErrorTexts.weighterError);
+                    showSnackbar(context, Messages.weighterError);
+                    return;
+                  } else if (step == AddStep.cWeighting &&
+                      (weighingService.weight.value - lastWeight.value) <= 0) {
+                    showSnackbar(context, Messages.cWeightingError);
                     return;
                   } else {
                     mealCtrl.add(
                       FoodQuantity(
                         id: RandomUtills().randomId(),
                         food: selectedFood.value!,
-                        weight: weighingService.weight.value.toDouble(),
+                        weight: (step == AddStep.qWeighting
+                                ? weighingService.weight.value
+                                : weighingService.weight.value -
+                                    lastWeight.value)
+                            .toDouble(),
                       ),
                     );
+                    showSnackbar(context, Messages.foodAdded);
+                    lastWeight.value = weighingService.weight.value;
                     selectedFood.value = null;
                   }
                 },
@@ -141,7 +159,7 @@ class Weighing extends StatelessWidget {
                             style: AppButtonStyles.highlightBtn,
                             onPressed: () {
                               if (mealCtrl.foodItems.isEmpty) {
-                                showSnackbar(context, ErrorTexts.emptyMeal);
+                                showSnackbar(context, Messages.emptyMeal);
                               } else {
                                 Get.dialog<Meal>(
                                   MealDetial(key: UniqueKey()),
@@ -166,19 +184,23 @@ class Weighing extends StatelessWidget {
                       child: ElevatedButton(
                         style: AppButtonStyles.orangeBtn,
                         onPressed: () async {
-                          //
+                          // Function
                           if (mealCtrl.foodItems.isEmpty) {
-                            showSnackbar(context, ErrorTexts.emptyMeal);
+                            showSnackbar(context, Messages.emptyMeal);
                           } else {
                             //
                             final data = Get.find<DataSevice>();
                             waiting.value = true;
                             await data.addMeal(mealCtrl.meal);
                             waiting.value = false;
-                            changeState(AddStep.init);
-                            showSnackbar(context, Strings.saveMeal);
+                            // reset meal
+                            selectedFood.value = null;
+                            lastWeight.value = 0;
+                            showSnackbar(context, Messages.saveMeal);
+                            changeStep(AddStep.init);
                           }
                         },
+                        // View
                         child: waiting.value
                             ? const Center(child: CircularProgressIndicator())
                             : const Text(

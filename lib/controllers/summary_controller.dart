@@ -1,4 +1,3 @@
-import 'package:OKRADISH/dummy_data.dart';
 import 'package:get/get.dart';
 import 'package:OKRADISH/constants/nutrient.dart';
 import 'package:OKRADISH/controllers/daily_controller.dart';

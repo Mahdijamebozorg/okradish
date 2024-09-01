@@ -103,7 +103,7 @@ class _ReportScreenState extends State<ReportScreen> {
                                   ? const Expanded(
                                       child: Center(
                                         child: Text(
-                                          Strings.noEntry,
+                                          Messages.noEntry,
                                           style: AppTextStyles.bodyMeduim,
                                         ),
                                       ),
