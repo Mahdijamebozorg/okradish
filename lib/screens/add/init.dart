@@ -8,8 +8,7 @@ import 'package:OKRADISH/screens/add/add_screen.dart';
 import 'package:OKRADISH/widgets/app_card.dart';
 
 class Init extends StatelessWidget {
-  final void Function(AddStep) changeStep;
-  const Init({required this.changeStep, super.key});
+  const Init({super.key});
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
@@ -27,7 +26,7 @@ class Init extends StatelessWidget {
             width: size.width * 0.9,
             child: ElevatedButton(
               style: AppButtonStyles.orangeBtn,
-              onPressed: () => changeStep(AddStep.qWeighting),
+              onPressed: () => addStep.value = AddStep.qWeighting,
               child: const Text(
                 textAlign: TextAlign.center,
                 Strings.startqWeighing,
@@ -41,7 +40,7 @@ class Init extends StatelessWidget {
             width: size.width * 0.9,
             child: ElevatedButton(
               style: AppButtonStyles.orangeBtn,
-              onPressed: () => changeStep(AddStep.cWeighting),
+              onPressed: () => addStep.value = AddStep.cWeighting,
               child: const Text(
                 textAlign: TextAlign.center,
                 Strings.startcWeighing,

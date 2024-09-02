@@ -19,23 +19,23 @@ import 'package:OKRADISH/widgets/app_card.dart';
 import 'package:OKRADISH/dialogs/meal_detail.dart';
 import 'package:OKRADISH/widgets/snackbar.dart';
 
-class Weighing extends StatelessWidget {
-  final void Function(AddStep step) changeStep;
-  final AddStep step;
-  Weighing({
-    required this.selectedFood,
-    required this.step,
-    required this.changeStep,
+class Weighing extends StatefulWidget {
+  const Weighing({
     super.key,
   });
 
+  @override
+  State<Weighing> createState() => _WeighingState();
+}
+
+class _WeighingState extends State<Weighing> {
+  final Rx<Food?> selectedFood = Rx(null);
   final weighingService = Get.find<WeighingServce>();
 
   final mealCtrl = Get.isRegistered<MealController>()
       ? Get.find<MealController>()
-      : MealController.create();
+      : Get.put(MealController.create());
 
-  final Rx<Food?> selectedFood;
   final RxBool waiting = false.obs;
   final RxInt lastWeight = 0.obs;
 
@@ -88,7 +88,7 @@ class Weighing extends StatelessWidget {
                   else if (weighingService.weight.value <= 0) {
                     showSnackbar(context, Messages.weighterError);
                     return;
-                  } else if (step == AddStep.cWeighting &&
+                  } else if (addStep.value == AddStep.cWeighting &&
                       (weighingService.weight.value - lastWeight.value) <= 0) {
                     showSnackbar(context, Messages.cWeightingError);
                     return;
@@ -97,7 +97,7 @@ class Weighing extends StatelessWidget {
                       FoodQuantity(
                         id: RandomUtills().randomId(),
                         food: selectedFood.value!,
-                        weight: (step == AddStep.qWeighting
+                        weight: (addStep.value == AddStep.qWeighting
                                 ? weighingService.weight.value
                                 : weighingService.weight.value -
                                     lastWeight.value)
@@ -197,7 +197,7 @@ class Weighing extends StatelessWidget {
                             selectedFood.value = null;
                             lastWeight.value = 0;
                             showSnackbar(context, Messages.saveMeal);
-                            changeStep(AddStep.init);
+                            addStep.value = AddStep.init;
                           }
                         },
                         // View
