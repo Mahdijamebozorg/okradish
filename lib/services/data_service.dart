@@ -79,7 +79,6 @@ class DataSevice extends GetxController {
   }
 
   Future<void> saveOnLocal(DailyEntry daily) async {
-    // TODO: save with id to load quickly
     log(name: "DATA", "saving ${daily.date.toString()} to device");
     var box = Hive.box<DailyEntry>(StorageKeys.entries);
     await box.put(daily.id, daily);

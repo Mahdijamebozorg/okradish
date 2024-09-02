@@ -11,7 +11,7 @@ import 'package:OKRADISH/controllers/summary_controller.dart';
 class MyPieChart extends StatelessWidget {
   MyPieChart({super.key});
 
-  final SummaryController summary = Get.find<SummaryController>();
+  final SummaryController summary = Get.find<SummaryController>(tag: 'report');
 
   @override
   Widget build(BuildContext context) {
@@ -99,15 +99,15 @@ class PieDiagram extends StatefulWidget {
 }
 
 class _PieDiagramState extends State<PieDiagram> {
-  final summary = Get.find<SummaryController>();
   var touchedIndex = 0;
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder(
+    return GetBuilder<SummaryController>(
+        key: UniqueKey(),
         id: "summary",
-        init: summary,
-        builder: (context) {
+        init: Get.find<SummaryController>(tag: 'report'),
+        builder: (summary) {
           return PieChart(
             PieChartData(
               pieTouchData: PieTouchData(
@@ -141,11 +141,10 @@ class _PieDiagramState extends State<PieDiagram> {
                       : ""),
                   titleStyle: AppTextStyles.blackBtn,
                   color: AppColors.trunks,
-                  value:
-                      summary.totalCarboCalory() / (summary.totalCalories()),
+                  value: summary.totalCarboCalory() / (summary.totalCalories()),
                   radius: touchedIndex == 0 ? 70 : 65,
                 ),
-    
+
                 // Protein
                 PieChartSectionData(
                   title: touchedIndex == 1
@@ -158,11 +157,11 @@ class _PieDiagramState extends State<PieDiagram> {
                       : "",
                   titleStyle: AppTextStyles.blackBtn,
                   color: AppColors.primaryColor,
-                  value: summary.totalProteinCalory() /
-                      (summary.totalCalories()),
+                  value:
+                      summary.totalProteinCalory() / (summary.totalCalories()),
                   radius: touchedIndex == 1 ? 70 : 65,
                 ),
-    
+
                 // Fat
                 PieChartSectionData(
                   title: touchedIndex == 2
@@ -178,7 +177,7 @@ class _PieDiagramState extends State<PieDiagram> {
                   value: summary.totalFatCalory() / (summary.totalCalories()),
                   radius: touchedIndex == 2 ? 70 : 65,
                 ),
-    
+
                 // Fiber
                 PieChartSectionData(
                   title: touchedIndex == 3
@@ -191,8 +190,7 @@ class _PieDiagramState extends State<PieDiagram> {
                       : "",
                   titleStyle: AppTextStyles.blackBtn,
                   color: AppColors.grey,
-                  value:
-                      summary.totalFiberCalory() / (summary.totalCalories()),
+                  value: summary.totalFiberCalory() / (summary.totalCalories()),
                   radius: touchedIndex == 3 ? 70 : 65,
                 ),
               ],

@@ -62,6 +62,7 @@ class _BluetoothDialogState extends State<BluetoothDialog> {
                             itemCount: ws.deviceNames.length,
                             itemBuilder: (context, index) {
                               return Container(
+                                key: UniqueKey(),
                                 decoration: BoxDecoration(
                                   color: AppColors.greyBack,
                                   borderRadius: BorderRadius.all(

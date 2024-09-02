@@ -64,8 +64,8 @@ class MyBarChart extends StatefulWidget {
 }
 
 class MyBarChartState extends State<MyBarChart> {
-  var nutrient = _Nutrient.calory;
-  final summary = Get.find<SummaryController>();
+  static var nutrient = _Nutrient.calory;
+  final summary = Get.find<SummaryController>(tag: 'report');
 
   _BarType get _barType {
     if (summary.entries.length == 1) {

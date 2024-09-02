@@ -7,12 +7,10 @@ import 'package:OKRADISH/component/text_style.dart';
 import 'package:OKRADISH/constants/colors.dart';
 import 'package:OKRADISH/constants/sizes.dart';
 import 'package:OKRADISH/constants/strings.dart';
-import 'package:OKRADISH/controllers/daily_controller.dart';
 import 'package:OKRADISH/services/data_service.dart';
 import 'package:OKRADISH/controllers/summary_controller.dart';
 import 'package:OKRADISH/dialogs/choose_date.dart';
-import 'package:OKRADISH/dialogs/edit_meal.dart';
-import 'package:OKRADISH/model/daily.dart';
+import 'package:OKRADISH/dialogs/meals_detail.dart';
 import 'package:OKRADISH/model/meal.dart';
 import 'package:OKRADISH/screens/report/bar_chart.dart';
 import 'package:OKRADISH/screens/report/pie_chart.dart';
@@ -27,10 +25,15 @@ class ReportScreen extends StatefulWidget {
 }
 
 class _ReportScreenState extends State<ReportScreen> {
-  int _index = 0;
+  static int _index = 0;
+  RxBool waiting = false.obs;
   // set this week as entry
-  final summary =
-      Get.put(SummaryController.value(Get.find<DataSevice>().thisWeek));
+  final summary = Get.isRegistered<SummaryController>(tag: 'report')
+      ? Get.find<SummaryController>(tag: 'report')
+      : Get.put(
+          SummaryController.value(Get.find<DataSevice>().thisWeek),
+          tag: 'report',
+        );
 
   @override
   Widget build(BuildContext context) {
@@ -40,9 +43,10 @@ class _ReportScreenState extends State<ReportScreen> {
         backgroundColor: Colors.transparent,
         appBar: const MyAppBar(title: Strings.report),
         body: GetBuilder<SummaryController>(
+            key: UniqueKey(),
             id: 'summary',
             init: summary,
-            builder: (context) {
+            builder: (summary) {
               log('----- Reportscreen rebuilt');
               return SizedBox.expand(
                 child: Padding(
@@ -97,9 +101,12 @@ class _ReportScreenState extends State<ReportScreen> {
                                   ),
                                 ],
                               ),
+
+                              // body widget
                               const SizedBox(height: Sizes.medium),
                               summary.meals.isEmpty ||
                                       summary.totalCalories() <= 0
+                                  // Empty
                                   ? const Expanded(
                                       child: Center(
                                         child: Text(
@@ -129,18 +136,14 @@ class _ReportScreenState extends State<ReportScreen> {
                           width: size.width * 0.9,
                           child: ElevatedButton(
                             onPressed: () {
-                              Get.put(
-                                DailyController.value(
-                                    DailyEntry.dummy()..meals = summary.meals),
-                              );
-                              Get.dialog<List<Meal>>(EditMeal(
+                              Get.dialog<List<Meal>>(MealsDetail(
+                                meals: summary.meals,
                                 key: UniqueKey(),
-                              )).then((editedMeals) {
+                              )).then((editedMeals) async {
                                 if (editedMeals!.isEmpty) return;
-                                for (var meal in editedMeals) {
-                                  summary.updateMeal(meal);
-                                }
-                                Get.delete<DailyController>();
+                                waiting.value = true;
+                                await summary.updateMeals(editedMeals);
+                                waiting.value = false;
                               });
                             },
                             style: AppButtonStyles.highlightBtn,
@@ -151,7 +154,6 @@ class _ReportScreenState extends State<ReportScreen> {
                           ),
                         ),
                       ),
-                      //
                     ],
                   ),
                 ),

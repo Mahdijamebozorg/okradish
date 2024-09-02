@@ -18,7 +18,7 @@ class DailyEntry extends HiveObject {
     required this.date,
   });
 
-  factory DailyEntry.dummy() {
+  factory DailyEntry.today() {
     return DailyEntry(
         id: RandomUtills().randomId(), meals: [], date: DateTime.now());
   }

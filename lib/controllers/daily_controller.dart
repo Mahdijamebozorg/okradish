@@ -7,7 +7,7 @@ import 'package:OKRADISH/model/meal.dart';
 class DailyController extends GetxController {
   final DailyEntry _daily;
   DailyController.value(this._daily);
-  DailyController.create() : _daily = DailyEntry.dummy();
+  DailyController.create() : _daily = DailyEntry.today();
 
   // ---------------------------------------------------------------
   // Local DateBase Management
@@ -17,21 +17,26 @@ class DailyController extends GetxController {
     await box.add(_daily);
   }
 
-  DailyEntry? loadMealFromLocal(String id) {
-    var box = Hive.box<DailyEntry>('meal');
-    final values = box.values.where((ent) => ent.id == id).toList();
-    if (values.isEmpty) {
-      return null;
-    } else {
-      return values[0];
-    }
-  }
+  // DailyEntry? loadMealFromLocal(String id) {
+  //   var box = Hive.box<DailyEntry>('meal');
+  //   final values = box.values.where((ent) => ent.id == id).toList();
+  //   if (values.isEmpty) {
+  //     return null;
+  //   } else {
+  //     return values[0];
+  //   }
+  // }
 
   // ---------------------------------------------------------------
   // Cloud DateBase Management
 
   // ---------------------------------------------------------------
   // Data
+
+  void sortMeals() {
+    this._daily.meals.sort((a, b) => a.date.compareTo(b.date));
+    update(['daily']);
+  }
 
   void add(Meal meal) {
     _daily.meals.add(meal);

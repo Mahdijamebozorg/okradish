@@ -1,3 +1,4 @@
+import 'package:OKRADISH/controllers/meal_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:OKRADISH/component/button_style.dart';
@@ -6,13 +7,12 @@ import 'package:OKRADISH/component/text_style.dart';
 import 'package:OKRADISH/constants/colors.dart';
 import 'package:OKRADISH/constants/sizes.dart';
 import 'package:OKRADISH/constants/strings.dart';
-import 'package:OKRADISH/controllers/meal_controller.dart';
 import 'package:OKRADISH/model/meal.dart';
 import 'package:OKRADISH/widgets/app_card.dart';
 
 class MealDetial extends StatelessWidget {
-  final meal = Get.find<MealController>();
-  MealDetial({super.key});
+  final Meal meal;
+  MealDetial({required this.meal, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -20,8 +20,10 @@ class MealDetial extends StatelessWidget {
     return PopScope(
       canPop: false,
       child: GetBuilder<MealController>(
+          key: UniqueKey(),
           id: 'meal',
-          builder: (context) {
+          init: MealController.value(meal),
+          builder: (mealCtrl) {
             return AppCard(
               child: Column(
                 children: [
@@ -84,11 +86,12 @@ class MealDetial extends StatelessWidget {
                           Expanded(
                               child: ListView.separated(
                             physics: const BouncingScrollPhysics(),
-                            itemCount: meal.foodItems.length,
+                            itemCount: mealCtrl.foodItems.length,
                             separatorBuilder: (context, index) =>
                                 const SizedBox(height: Sizes.tiny),
                             itemBuilder: (context, index) {
                               return Container(
+                                key: UniqueKey(),
                                 decoration: const BoxDecoration(
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(8.0)),
@@ -110,7 +113,7 @@ class MealDetial extends StatelessWidget {
                                     // Name
                                     Expanded(
                                       child: Text(
-                                        meal.foodItems[index].food.name,
+                                        mealCtrl.foodItems[index].food.name,
                                         style: AppTextStyles.borderBtn,
                                       ),
                                     ),
@@ -120,7 +123,7 @@ class MealDetial extends StatelessWidget {
                                       width: 60,
                                       child: Text(
                                         textDirection: TextDirection.ltr,
-                                        meal.foodItems[index].weight
+                                        mealCtrl.foodItems[index].weight
                                             .toString()
                                             .toPersian,
                                         style: AppTextStyles.borderBtn,
@@ -132,7 +135,7 @@ class MealDetial extends StatelessWidget {
                                       width: 60,
                                       child: Text(
                                         textDirection: TextDirection.ltr,
-                                        meal.foodItems[index].calories
+                                        mealCtrl.foodItems[index].calories
                                             .toStringAsFixed(1)
                                             .toPersian,
                                         style: AppTextStyles.borderBtn,
@@ -146,7 +149,7 @@ class MealDetial extends StatelessWidget {
                                         padding: EdgeInsets.zero,
                                         alignment: Alignment.center,
                                         onPressed: () {
-                                          meal.removeFoodAt(index);
+                                          mealCtrl.removeFoodAt(index);
                                         },
                                         icon: const Center(
                                           child: Icon(
@@ -184,24 +187,27 @@ class MealDetial extends StatelessWidget {
                         SizedBox(width: Sizes.medium),
                         // Sum
                         const SizedBox(
-                          width: 50,
+                          width: 55,
                           child: Text(
                             Strings.sum,
                             style: AppTextStyles.highlight,
                           ),
                         ),
-                        Expanded(flex: 1,child:SizedBox()),
+                        Expanded(flex: 1, child: SizedBox()),
                         // Weight
-                        Expanded(flex: 2,
+                        Expanded(
                           child: Text(
-                            "${meal.totalWeight()}".toPersian,
+                            "${mealCtrl.totalWeight()}".toPersian,
                             style: AppTextStyles.highlight,
                           ),
                         ),
                         // Calories
-                        Expanded(flex: 2,
+                        Expanded(
                           child: Text(
-                            meal.totalCalories().toStringAsFixed(1).toPersian,
+                            mealCtrl
+                                .totalCalories()
+                                .toStringAsFixed(1)
+                                .toPersian,
                             style: AppTextStyles.highlight,
                           ),
                         ),
@@ -218,7 +224,7 @@ class MealDetial extends StatelessWidget {
                     child: ElevatedButton(
                       style: AppButtonStyles.blackBtnStyle,
                       onPressed: () {
-                        Get.back<Meal>(result: meal.meal);
+                        Get.back<Meal>(result: mealCtrl.meal);
                       },
                       child: const Text(
                         Strings.back,

@@ -1,10 +1,9 @@
 import 'dart:math';
-
-import 'package:flutter/material.dart';
+import 'package:uuid/uuid.dart';
 
 class RandomUtills {
   String randomId() {
-    return UniqueKey().toString();
+    return Uuid().v1();
   }
 
   int randomHour() {

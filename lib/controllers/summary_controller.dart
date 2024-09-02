@@ -26,8 +26,8 @@ class SummaryController extends GetxController {
   // ---------------------------------------------------------------
   // Local DateBase Management
 
-  void saveOnLocal(DailyEntry daily) async {
-    return await Get.find<DataSevice>().saveOnLocal(daily);
+  Future<void> saveOnLocal(DailyEntry daily) async {
+    await Get.find<DataSevice>().saveOnLocal(daily);
   }
 
   Future<DailyEntry?> loadFromLocal(DateTime date) async {
@@ -99,17 +99,51 @@ class SummaryController extends GetxController {
     update(['summary']);
   }
 
-  Future<void> updateMeal(Meal meal) async {
-    final entIndex = entries.indexWhere((ent) => ent.meals.contains(meal));
-    final mealIndex =
-        _entries[entIndex].meals.indexWhere((ml) => ml.id == meal.id);
+  // Future<void> updateMeal(Meal meal) async {
+  //   final entIndex = entries.indexWhere((ent) => ent.meals.contains(meal));
+  //   final mealIndex =
+  //       _entries[entIndex].meals.indexWhere((ml) => ml.id == meal.id);
 
-    if (meal.foodItems.isEmpty) {
-      _entries[entIndex].meals.removeAt(mealIndex);
-    } else {
-      _entries[entIndex] = entries[entIndex]..meals[mealIndex] = meal;
+  //   if (meal.foodItems.isEmpty) {
+  //     _entries[entIndex].meals.removeAt(mealIndex);
+  //   } else {
+  //     _entries[entIndex] = entries[entIndex]..meals[mealIndex] = meal;
+  //   }
+  //   await Get.find<DataSevice>().saveOnLocal(_entries[entIndex]);
+  //   update(['summary']);
+  // }
+
+  void addMeal(Meal meal) {
+    final today =
+        _entries.indexWhere((ent) => ent.date.day == DateTime.now().day);
+    if (today == -1) return;
+    if (_entries[today].meals.contains(meal)) return;
+    _entries[today].meals.add(meal);
+    update(['summary']);
+  }
+
+  Future<void> updateMeals(List<Meal> meal) async {
+    final List<DailyEntry> changedEnts = [];
+    for (var meal in meals) {
+      final entIndex = entries.indexWhere((ent) => ent.meals.contains(meal));
+      final mealIndex =
+          _entries[entIndex].meals.indexWhere((ml) => ml.id == meal.id);
+
+      if (meal.foodItems.isEmpty) {
+        _entries[entIndex].meals.removeAt(mealIndex);
+      } else {
+        _entries[entIndex] = entries[entIndex]..meals[mealIndex] = meal;
+      }
+
+      // put if absent
+      if (!changedEnts.contains(_entries[entIndex])) {
+        changedEnts.add(_entries[entIndex]);
+      }
     }
-    await Get.find<DataSevice>().saveOnLocal(_entries[entIndex]);
+    // apply changes
+    for (var ent in changedEnts) {
+      await saveOnLocal(ent);
+    }
     update(['summary']);
   }
 

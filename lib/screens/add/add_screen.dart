@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:OKRADISH/screens/home_screen.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
@@ -6,15 +7,14 @@ import 'package:OKRADISH/component/extention.dart';
 import 'package:OKRADISH/component/text_style.dart';
 import 'package:OKRADISH/constants/sizes.dart';
 import 'package:OKRADISH/constants/strings.dart';
-import 'package:OKRADISH/controllers/meal_controller.dart';
 import 'package:OKRADISH/widgets/bluetooth.dart';
 import 'package:OKRADISH/screens/add/init.dart';
 import 'package:OKRADISH/screens/add/weighting.dart';
-import 'package:OKRADISH/screens/home_screen.dart';
 import 'package:OKRADISH/services/weighing_servce.dart';
 import 'package:OKRADISH/widgets/appbar.dart';
 
 enum AddStep { init, qWeighting, cWeighting }
+
 var addStep = AddStep.init.obs;
 
 class AddScreen extends StatefulWidget {
@@ -25,7 +25,9 @@ class AddScreen extends StatefulWidget {
 }
 
 class _AddScreenState extends State<AddScreen> {
-  final weightCtrl = Get.put(WeighingServce());
+  final weightCtrl = Get.isRegistered<WeighingServce>()
+      ? Get.find<WeighingServce>()
+      : Get.put(WeighingServce());
 
   @override
   void initState() {
@@ -35,10 +37,8 @@ class _AddScreenState extends State<AddScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // on change page
     if (homeIndex != HomeScreenIndex.add) {
       addStep.value = AddStep.init;
-      Get.delete<MealController>();
     }
     log('----- AddScreen rebuilt');
     return SafeArea(
@@ -86,7 +86,9 @@ class _AddScreenState extends State<AddScreen> {
               // bases on step
               SingleChildScrollView(
                   child: Obx(
-                () => addStep == AddStep.init ? const Init() : const Weighing(),
+                () => addStep.value == AddStep.init
+                    ? const Init()
+                    : const Weighing(),
               )),
             ],
           ),

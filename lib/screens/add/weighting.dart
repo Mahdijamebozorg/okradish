@@ -1,3 +1,4 @@
+import 'package:OKRADISH/controllers/summary_controller.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
@@ -32,101 +33,106 @@ class _WeighingState extends State<Weighing> {
   final Rx<Food?> selectedFood = Rx(null);
   final weighingService = Get.find<WeighingServce>();
 
-  final mealCtrl = Get.isRegistered<MealController>()
-      ? Get.find<MealController>()
-      : Get.put(MealController.create());
-
   final RxBool waiting = false.obs;
   final RxInt lastWeight = 0.obs;
 
   @override
+  void dispose() {
+    Get.delete<MealController>(tag: 'add');
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
-    return Column(
-      children: [
-        // Search
-        AppCard(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return GetBuilder<MealController>(
+        key: UniqueKey(),
+        id: 'meal',
+        init: MealController.create(),
+        builder: (mealCtrl) {
+          return Column(
             children: [
-              Obx(
-                () => (selectedFood.value == null)
-                    ? GestureDetector(
-                        onTap: () async {
-                          Get.dialog<Food>(
-                            const ChooseFood(),
-                          ).then(
-                            (food) => selectedFood.value = food,
+              // Search
+              AppCard(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Obx(
+                      () => (selectedFood.value == null)
+                          ? GestureDetector(
+                              onTap: () async {
+                                Get.dialog<Food>(
+                                  const ChooseFood(),
+                                ).then(
+                                  (food) => selectedFood.value = food,
+                                );
+                              },
+                              child: const Hero(
+                                tag: "search",
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Icon(Icons.search, size: 14),
+                                    SizedBox(width: Sizes.tiny),
+                                    Text(Strings.search,
+                                        style: AppTextStyles.search),
+                                  ],
+                                ),
+                              ),
+                            )
+                          : Text(
+                              selectedFood.value!.name,
+                              style: AppTextStyles.bodyMeduim,
+                            ),
+                    ),
+                    // add food to meal
+                    ElevatedButton(
+                      onPressed: () {
+                        // if no food selcted
+                        if (selectedFood.value == null) {
+                          showSnackbar(context, Messages.emptyMeal);
+                          return;
+                        }
+                        // if weigher is not connected properly
+                        else if (weighingService.weight.value <= 0) {
+                          showSnackbar(context, Messages.weighterError);
+                          return;
+                        } else if (addStep.value == AddStep.cWeighting &&
+                            (weighingService.weight.value - lastWeight.value) <=
+                                0) {
+                          showSnackbar(context, Messages.cWeightingError);
+                          return;
+                        } else {
+                          mealCtrl.add(
+                            FoodQuantity(
+                              id: RandomUtills().randomId(),
+                              food: selectedFood.value!,
+                              weight: (addStep.value == AddStep.qWeighting
+                                      ? weighingService.weight.value
+                                      : weighingService.weight.value -
+                                          lastWeight.value)
+                                  .toDouble(),
+                            ),
                           );
-                        },
-                        child: const Hero(
-                          tag: "search",
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              Icon(Icons.search, size: 14),
-                              SizedBox(width: Sizes.tiny),
-                              Text(Strings.search, style: AppTextStyles.search),
-                            ],
-                          ),
-                        ),
-                      )
-                    : Text(
-                        selectedFood.value!.name,
-                        style: AppTextStyles.bodyMeduim,
+                          showSnackbar(context, Messages.foodAdded);
+                          lastWeight.value = weighingService.weight.value;
+                          selectedFood.value = null;
+                        }
+                      },
+                      style: AppButtonStyles.blackBtnStyle,
+                      child: const Text(
+                        Strings.addFood,
+                        style: AppTextStyles.blackBtn,
                       ),
-              ),
-              // add food to meal
-              ElevatedButton(
-                onPressed: () {
-                  // if no food selcted
-                  if (selectedFood.value == null) {
-                    showSnackbar(context, Messages.emptyMeal);
-                    return;
-                  }
-                  // if weigher is not connected properly
-                  else if (weighingService.weight.value <= 0) {
-                    showSnackbar(context, Messages.weighterError);
-                    return;
-                  } else if (addStep.value == AddStep.cWeighting &&
-                      (weighingService.weight.value - lastWeight.value) <= 0) {
-                    showSnackbar(context, Messages.cWeightingError);
-                    return;
-                  } else {
-                    mealCtrl.add(
-                      FoodQuantity(
-                        id: RandomUtills().randomId(),
-                        food: selectedFood.value!,
-                        weight: (addStep.value == AddStep.qWeighting
-                                ? weighingService.weight.value
-                                : weighingService.weight.value -
-                                    lastWeight.value)
-                            .toDouble(),
-                      ),
-                    );
-                    showSnackbar(context, Messages.foodAdded);
-                    lastWeight.value = weighingService.weight.value;
-                    selectedFood.value = null;
-                  }
-                },
-                style: AppButtonStyles.blackBtnStyle,
-                child: const Text(
-                  Strings.addFood,
-                  style: AppTextStyles.blackBtn,
+                    ),
+                  ],
                 ),
               ),
-            ],
-          ),
-        ),
 
-        const SizedBox(height: Sizes.medium),
+              const SizedBox(height: Sizes.medium),
 
-        // Meal status
-        GetBuilder<MealController>(
-            id: "meal",
-            init: mealCtrl,
-            builder: (ctrl) {
-              return AppCard(
+              // Meal status
+              AppCard(
                 child: Column(
                   children: [
                     Row(
@@ -162,7 +168,10 @@ class _WeighingState extends State<Weighing> {
                                 showSnackbar(context, Messages.emptyMeal);
                               } else {
                                 Get.dialog<Meal>(
-                                  MealDetial(key: UniqueKey()),
+                                  MealDetial(
+                                    meal: mealCtrl.meal,
+                                    key: UniqueKey(),
+                                  ),
                                 ).then((meal) =>
                                     mealCtrl.foodItems = meal!.foodItems);
                               }
@@ -188,15 +197,24 @@ class _WeighingState extends State<Weighing> {
                           if (mealCtrl.foodItems.isEmpty) {
                             showSnackbar(context, Messages.emptyMeal);
                           } else {
-                            //
-                            final data = Get.find<DataSevice>();
                             waiting.value = true;
+                            // save on local
+                            final data = Get.find<DataSevice>();
                             await data.addMeal(mealCtrl.meal);
+                            // update reports
+                            if (Get.isRegistered<SummaryController>(
+                                tag: 'report')) {
+                              Get.find<SummaryController>(tag: 'report')
+                                  .addMeal(mealCtrl.meal);
+                            }
                             waiting.value = false;
                             // reset meal
                             selectedFood.value = null;
                             lastWeight.value = 0;
                             showSnackbar(context, Messages.saveMeal);
+                            // reset meal ctrl
+                            await Get.delete<MealController>(tag: 'add');
+                            // exit
                             addStep.value = AddStep.init;
                           }
                         },
@@ -212,9 +230,9 @@ class _WeighingState extends State<Weighing> {
                     )
                   ],
                 ),
-              );
-            }),
-      ],
-    );
+              ),
+            ],
+          );
+        });
   }
 }

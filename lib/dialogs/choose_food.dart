@@ -304,7 +304,7 @@ class FoodList extends StatelessWidget {
         itemBuilder: (context, index) {
           // Decoration
           return Container(
-            key: Key(foodList[index].id),
+            key: UniqueKey(),
             margin: const EdgeInsets.symmetric(vertical: Sizes.tiny / 2),
             width: double.maxFinite,
             decoration: BoxDecoration(
