@@ -5,6 +5,7 @@ import 'package:OKRADISH/component/themes.dart';
 import 'package:OKRADISH/route/routes.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
