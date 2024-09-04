@@ -60,19 +60,19 @@ jobs:
       - name: Build IPA
         run: flutter build ipa --no-codesign
 
-      # 9. Compress Archives and IPAs
-      # - name: Compress Archives and IPAs
-      #   run: |
-      #     cd build
-      #     tar -czf ios_build.tar.gz ios
+      9. Compress Archives and IPAs
+      - name: Compress Archives and IPAs
+        run: |
+          cd build
+          tar -czf ios_build.tar.gz ios
 
       # 10. Upload Artifacts
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Releases
           path: |
-            build/ios/ipa/*.ipa
+            build/ios_build.tar.gz
           # build/app/outputs/flutter-apk/app-release.apk
           # build/app/outputs/bundle/release/app-release.aab
 
