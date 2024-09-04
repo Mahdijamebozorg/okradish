@@ -18,11 +18,11 @@ jobs:
         uses: actions/checkout@v4
 
       # 2. Setup Java
-      # - name: Set Up Java
-      #   uses: actions/setup-java@v4
-      #   with:
-      #     distribution: 'oracle'
-      #     java-version: '17'
+      - name: Set Up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'oracle'
+          java-version: '17'
 
       # 3. Setup Flutter
       - name: Set Up Flutter
@@ -33,24 +33,23 @@ jobs:
           git config --global --add safe.directory /opt/hostedtoolcache/flutter/stable-3.22.2-x64
       # architecture: 'x64'
 
+      - name: Decode API keys
+        run: |
+          echo "${{ secrets.API_KEYS }}" | base64 --decode > lib/constants/api_keys.dart
+
       # 4. Install Dependencies
       - name: Install Dependencies
         run: flutter pub get
 
       # 5. Setup Keystore
-      # - name: Decode Keystore
-      #   run: |
-      #     echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/app/keystore.jks
-      # - name: Create key.properties
-      #   run: |
-      #     echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}" > android/key.properties
-      #     echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> android/key.properties
-      #     echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> android/key.properties
-      #     echo "storeFile=keystore.jks" >> android/key.properties
+      - name: Decode android Keys
+        run: |
+          echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 --decode > android/keystore.jks
+          echo "${{ secrets.ANDROID_KEYPROPS }}" | base64 --decode > android/key.properties
 
       # 6. Building APK
-      # - name: Build APK
-      #   run: flutter build apk --release
+      - name: Build APK
+        run: flutter build apk --release
 
       # 7. Building App Bundle (aab)
       # - name: Build App Bundle
@@ -64,7 +63,7 @@ jobs:
       - name: Create IPA
         run: |
           mkdir -p Payload
-          cp -r build/ios/iphoneos/Runner.app Payload/
+          cp -r build/ios/Release-iphoneos/Runner.app Payload/
           zip -r Runner.ipa Payload
           mv Runner.ipa build/ios/Runner.ipa
 
@@ -81,7 +80,7 @@ jobs:
           name: Releases
           path: |
             build/ios_build.tar.gz
-          # build/app/outputs/flutter-apk/app-release.apk
+            build/app/outputs/flutter-apk/app-release.apk
           # build/app/outputs/bundle/release/app-release.aab
 
       # 11. Extract Version
@@ -113,6 +112,6 @@ jobs:
       - name: Create Release
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "build/ios_build.tar.gz"
+          artifacts: "build/ios_build.tar.gz, build/app/outputs/flutter-apk/app-release.apk"
           tag: v${{ env.VERSION }}
           # token: ${{ secrets.GITHUB_TOKEN }}
