@@ -87,7 +87,7 @@ jobs:
           name: Releases
           path: |
             build/ios_build.tar.gz
-            build/app/outputs/flutter-apk/app-release.apk
+          # build/app/outputs/flutter-apk/app-release.apk
           # build/app/outputs/bundle/release/app-release.aab
 
       # 11. Extract Version
@@ -119,6 +119,6 @@ jobs:
       - name: Create Release
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "build/ios_build.tar.gz, build/app/outputs/flutter-apk/app-release.apk"
+          artifacts: "build/ios_build.tar.gz"
           tag: v${{ env.VERSION }}
           # token: ${{ secrets.GITHUB_TOKEN }}
