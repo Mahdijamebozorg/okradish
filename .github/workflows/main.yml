@@ -56,34 +56,25 @@ jobs:
       # - name: Build App Bundle
       #   run: flutter build appbundle
 
-      # 3. Install CocoaPods Dependencies
-      - name: Install CocoaPods
-        run: |
-          sudo gem install cocoapods
-          pod install --project-directory=ios/
-
       # 5. Build iOS App without Codesign
       - name: Build iOS App
         run: flutter build ios --release --no-codesign
 
-      # 6. Archive the iOS Build
-      - name: Archive iOS Build
-        run: |
-          cd ios
-          xcodebuild -scheme Runner -archivePath ../build/ios/Runner.xcarchive archive
-
-      # 7. Export IPA Manually
+      # 9. Create IPA
       - name: Create IPA
         run: |
-          mkdir -p build/ios/ipa
-          xcodebuild -exportArchive \
-            -archivePath build/ios/Runner.xcarchive \
-            -exportOptionsPlist ios/ExportOptions.plist \
-            -exportPath build/ios/ipa/
+          cd ios
+          xcodebuild -workspace Runner.xcworkspace \
+            -scheme Runner \
+            -sdk iphoneos \
+            -configuration Release \
+            -archivePath ../build/ios/Runner.xcarchive archive \
+            -destination 'generic/platform=iOS'
 
-      # 8. List IPA Directory for Debugging
-      - name: List IPA Directory
-        run: ls -R build/ios/ipa/
+          xcodebuild -exportArchive \
+            -archivePath ../build/ios/Runner.xcarchive \
+            -exportOptionsPlist exportOptions.plist \
+            -exportPath ../build/ios/Runner.ipa
 
       # 9. Compress Archives and IPAs (Optional)
       - name: Compress Archives and IPAs
@@ -130,6 +121,6 @@ jobs:
       - name: Create Release
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "build/ios/ipa/*.ipa"
+          artifacts: "build/ios_build.tar.gz"
           tag: v${{ env.VERSION }}
           # token: ${{ secrets.GITHUB_TOKEN }}
