@@ -58,13 +58,22 @@ jobs:
 
       # 8. Build IPA (iOS Build)
       - name: Build IPA
-        run: flutter build ipa --no-codesign
+        # run: flutter build ipa --no-codesign
+        run: flutter build ios --release --no-codesign
 
       # 9. Compress Archives and IPAs
       - name: Compress Archives and IPAs
+        # run: |
+        #   cd build
+        #   mkdir PayLoad
+        #   cp -R /iphoneos /PayLoad/iphoneos
+        #   tar -czf ios_build.tar.gz PayLoad
         run: |
-          cd build
-          tar -czf ios_build.tar.gz ios
+          cd build/ios/iphoneos
+          mkdir -p output
+          cp *.app output/
+          cd output
+          xcodebuild -exportArchive -archivePath ../Runner.xcarchive -exportPath . -exportOptionsPlist ../../ExportOptions.plist
 
       # 10. Upload Artifacts
       - name: Upload Artifacts
@@ -72,7 +81,8 @@ jobs:
         with:
           name: Releases
           path: |
-            build/ios_build.tar.gz
+            build/ios/iphoneos/output/*.ipa
+          # build/ios_build.tar.gz
           # build/app/outputs/flutter-apk/app-release.apk
           # build/app/outputs/bundle/release/app-release.aab
 
