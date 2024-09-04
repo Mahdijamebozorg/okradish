@@ -45,7 +45,7 @@ jobs:
       # 5. Setup Keystore
       - name: Decode android Keys
         run: |
-          echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 --decode > android/app/keystore.jks
+          echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 --decode > android/app/OKRADISH.jks
           echo "${{ secrets.ANDROID_KEYPROPS }}" | base64 --decode > android/key.properties
 
       # 6. Building APK
