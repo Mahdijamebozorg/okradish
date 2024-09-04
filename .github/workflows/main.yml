@@ -71,7 +71,7 @@ jobs:
         run: |
           cd build/ios/iphoneos
           mkdir -p output
-          cp *.app output/
+          cp -R Runner.app output/
           cd output
           xcodebuild -exportArchive -archivePath ../Runner.xcarchive -exportPath . -exportOptionsPlist ../../ExportOptions.plist
 
