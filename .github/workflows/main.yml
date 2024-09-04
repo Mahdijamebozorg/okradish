@@ -69,7 +69,8 @@ jobs:
       # 6. Archive the iOS Build
       - name: Archive iOS Build
         run: |
-          xcodebuild -scheme Runner -archivePath build/ios/Runner.xcarchive archive
+          cd ios
+          xcodebuild -scheme Runner -archivePath ../build/ios/Runner.xcarchive archive
 
       # 7. Export IPA Manually
       - name: Create IPA
