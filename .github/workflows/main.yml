@@ -60,7 +60,7 @@ jobs:
       - name: Build IPA
         run: flutter build ipa --no-codesign
 
-      9. Compress Archives and IPAs
+      # 9. Compress Archives and IPAs
       - name: Compress Archives and IPAs
         run: |
           cd build
