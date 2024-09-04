@@ -63,18 +63,10 @@ jobs:
       # 9. Create IPA
       - name: Create IPA
         run: |
-          cd ios
-          xcodebuild -workspace Runner.xcworkspace \
-            -scheme Runner \
-            -sdk iphoneos \
-            -configuration Release \
-            -archivePath ../build/ios/Runner.xcarchive archive \
-            -destination 'generic/platform=iOS'
-
-          xcodebuild -exportArchive \
-            -archivePath ../build/ios/Runner.xcarchive \
-            -exportOptionsPlist exportOptions.plist \
-            -exportPath ../build/ios/Runner.ipa
+          mkdir -p Payload
+          cp -r build/ios/iphoneos/Runner.app Payload/
+          zip -r Runner.ipa Payload
+          mv Runner.ipa build/ios/Runner.ipa
 
       # 9. Compress Archives and IPAs (Optional)
       - name: Compress Archives and IPAs
