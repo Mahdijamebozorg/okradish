@@ -17,64 +17,58 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      # 2. Setup Java
-      # - name: Set Up Java
-      #   uses: actions/setup-java@v4
-      #   with:
-      #     distribution: 'oracle'
-      #     java-version: '17'
-
-      # 3. Setup Flutter
+      # 2. Setup Flutter
       - name: Set Up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.22.2'
-      - run: |
-          git config --global --add safe.directory /opt/hostedtoolcache/flutter/stable-3.22.2-x64
-      # architecture: 'x64'
+          flutter-version: 'stable' # Use 'stable' instead of a specific version
+
+      # 3. Install CocoaPods Dependencies
+      - name: Install CocoaPods
+        run: |
+          sudo gem install cocoapods
+          pod install --project-directory=ios/
 
       # 4. Install Dependencies
       - name: Install Dependencies
         run: flutter pub get
 
-      # 5. Setup Keystore
-      # - name: Decode Keystore
-      #   run: |
-      #     echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/app/keystore.jks
-      # - name: Create key.properties
-      #   run: |
-      #     echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}" > android/key.properties
-      #     echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> android/key.properties
-      #     echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> android/key.properties
-      #     echo "storeFile=keystore.jks" >> android/key.properties
+      # 5. Build iOS App without Codesign
+      - name: Build iOS App
+        run: flutter build ios --release --no-codesign
 
-      # 6. Building APK
-      # - name: Build APK
-      #   run: flutter build apk --release
+      # 6. Archive the iOS Build
+      - name: Archive iOS Build
+        run: |
+          xcodebuild -scheme Runner -archivePath build/ios/Runner.xcarchive archive
 
-      # 7. Building App Bundle (aab)
-      # - name: Build App Bundle
-      #   run: flutter build appbundle
+      # 7. Export IPA Manually
+      - name: Create IPA
+        run: |
+          mkdir -p build/ios/ipa
+          xcodebuild -exportArchive \
+            -archivePath build/ios/Runner.xcarchive \
+            -exportOptionsPlist ios/ExportOptions.plist \
+            -exportPath build/ios/ipa/
 
-      # 8. Build IPA (iOS Build)
-      - name: Build IPA
-        run: flutter build ipa --no-codesign
+      # 8. List IPA Directory for Debugging
+      - name: List IPA Directory
+        run: ls -R build/ios/ipa/
 
-      # 9. Compress Archives and IPAs
+      # 9. Compress Archives and IPAs (Optional)
       - name: Compress Archives and IPAs
         run: |
           cd build
-          tar -czf ios_build.tar.gz ios
+          tar -czf ios_build.tar.gz ios/
 
       # 10. Upload Artifacts
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v3
         with:
           name: Releases
-          path: |
-            build/ios_build.tar.gz
-          # build/app/outputs/flutter-apk/app-release.apk
-          # build/app/outputs/bundle/release/app-release.aab
+          path: build/ios/ipa/*.ipa
+          # If you prefer to upload the tar.gz instead, uncomment the below line and comment the above line
+          # path: build/ios_build.tar.gz
 
       # 11. Extract Version
       - name: Extract version from pubspec.yaml
@@ -105,7 +99,6 @@ jobs:
       - name: Create Release
         uses: ncipollo/release-action@v1
         with:
-          # artifacts: "build/app/outputs/flutter-apk/app-release.apk,build/app/outputs/bundle/release/app-release.aab,build/ios_build.tar.gz"
-          artifacts: "build/ios_build.tar.gz"
+          artifacts: "build/ios/ipa/*.ipa"
           tag: v${{ env.VERSION }}
           # token: ${{ secrets.GITHUB_TOKEN }}
