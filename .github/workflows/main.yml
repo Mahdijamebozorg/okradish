@@ -73,7 +73,7 @@ jobs:
           mkdir -p output
           cp -R Runner.app output/
           cd output
-          xcodebuild -exportArchive -archivePath ../Runner.xcarchive -exportPath . -exportOptionsPlist ../../ExportOptions.plist
+          xcodebuild -exportArchive -archivePath ../Runner.xcarchive -exportPath . -exportOptionsPlist ../../../../ExportOptions.plist
 
       # 10. Upload Artifacts
       - name: Upload Artifacts

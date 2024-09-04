@@ -3,8 +3,8 @@
 <plist version="1.0">
 <dict>
     <key>method</key>
-    <string>development</string> <!-- Change to 'ad-hoc' or 'app-store' as needed -->
+    <string>development</string> <!-- Change to 'ad-hoc' or 'app-store' if signed -->
     <key>teamID</key>
-    <string>YourTeamID</string> <!-- Optional, can be left out for unsigned -->
+    <string>MahdiJamebozorg</string> <!-- Optional, can be left out for unsigned -->
 </dict>
 </plist>
