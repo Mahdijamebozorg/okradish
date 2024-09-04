@@ -17,13 +17,6 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      # 2. Setup Java
-      - name: Set Up Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'oracle'
-          java-version: '17'
-
       # 3. Setup Flutter
       - name: Set Up Flutter
         uses: subosito/flutter-action@v2
@@ -42,15 +35,28 @@ jobs:
       - name: Install Dependencies
         run: flutter pub get
 
+      # 2. Setup Java
+      # - name: Set Up Java
+      #   uses: actions/setup-java@v4
+      #   with:
+      #     distribution: 'oracle'
+      #     java-version: '17'
+
       # 5. Setup Keystore
-      - name: Decode android Keys
-        run: |
-          echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 --decode > android/app/OKRADISH.jks
-          echo "${{ secrets.ANDROID_KEYPROPS }}" | base64 --decode > android/key.properties
+      # - name: Decode android Keys
+      #   run: |
+      #     echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 --decode > android/app/OKRADISH.jks
+      #     echo "${{ secrets.ANDROID_KEYPROPS }}" | base64 --decode > android/key.properties
+
+      # Debugging Step
+      # - name: List Files
+      #   run: |
+      #     ls -R android
+      #     ls -R android/app
 
       # 6. Building APK
-      - name: Build APK
-        run: flutter build apk --release
+      # - name: Build APK
+      #   run: flutter build apk --release
 
       # 7. Building App Bundle (aab)
       # - name: Build App Bundle
