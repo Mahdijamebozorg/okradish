@@ -61,6 +61,12 @@ jobs:
         # run: flutter build ipa --no-codesign
         run: flutter build ios --release --no-codesign
 
+
+       - name: Create Xcode Archive
+        run: |
+          cd ios
+          xcodebuild -scheme Runner -archivePath ../build/ios/Runner.xcarchive archive
+
       # 9. Compress Archives and IPAs
       - name: Compress Archives and IPAs
         # run: |
