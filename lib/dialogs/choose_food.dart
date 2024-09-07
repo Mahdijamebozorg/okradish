@@ -30,27 +30,33 @@ class _ChooseFoodState extends State<ChooseFood> {
     [...other],
   ];
 
-  final RxList<List<Food>> editigFoods = [
-    [...mainfood],
-    [...snack],
-    [...drinks],
-    [...other],
-  ].obs;
-
   final searchCtrl = TextEditingController();
+
+  List<Food> editigFoods = [];
+
+  @override
+  void initState() {
+    // setup food search
+    searchCtrl.addListener(
+      () {
+        editigFoods = foods
+            .expand((i) => i)
+            .where((food) => food.name.contains(searchCtrl.text))
+            .toList();
+        setState(() {});
+      },
+    );
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    searchCtrl.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    searchCtrl.addListener(
-      () {
-        for (var i = 0; i < editigFoods.length; i++) {
-          editigFoods[i] = foods[i];
-          editigFoods[i] = editigFoods[i]
-              .where((food) => food.name.contains(searchCtrl.text))
-              .toList();
-        }
-      },
-    );
     final size = MediaQuery.sizeOf(context);
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -60,7 +66,7 @@ class _ChooseFoodState extends State<ChooseFood> {
         child: Stack(
           alignment: Alignment.center,
           children: [
-            // Tabbars
+            // Table
             Positioned(
               top: Sizes.medium,
               left: Sizes.medium,
@@ -100,23 +106,74 @@ class _ChooseFoodState extends State<ChooseFood> {
                       ),
                     ),
 
-                    const SizedBox(height: Sizes.tiny),
-
-                    // Tabbars
                     Expanded(
-                      child: Obx(
-                        () => MyTabBar(
-                          // TODO: Revice from database
-                          foodList: [
-                            editigFoods[0],
-                            editigFoods[1],
-                            editigFoods[2],
-                            editigFoods[3],
-                          ],
-                          setFood: (Food? food) {
-                            selecetedFood.value = food;
-                          },
-                        ),
+                      child: Stack(
+                        fit: StackFit.expand,
+                        children: [
+                          const SizedBox(height: Sizes.tiny),
+                          // Tabbars
+                          Positioned.fill(
+                            child: MyTabBar(
+                              // TODO: Revice from database
+                              foodList: [
+                                foods[0],
+                                foods[1],
+                                foods[2],
+                                foods[3],
+                              ],
+                              setFood: (Food? food) {
+                                selecetedFood.value = food;
+                              },
+                            ),
+                          ),
+                          // Search list
+                          Visibility(
+                            visible: searchCtrl.text.isNotEmpty,
+                            child: Positioned.fill(
+                              child: AnimatedContainer(
+                                color: AppColors.greyBack,
+                                duration: const Duration(milliseconds: 500),
+                                // height: searchCtrl.text.isEmpty ? 0 : double.infinity,
+                                child: ListView.builder(
+                                  physics: const BouncingScrollPhysics(),
+                                  itemCount: editigFoods.length,
+                                  itemExtent: Sizes.smallBtnH + Sizes.tiny,
+                                  itemBuilder: (context, index) {
+                                    // Decoration
+                                    return Container(
+                                      key: UniqueKey(),
+                                      margin: const EdgeInsets.symmetric(
+                                          vertical: Sizes.tiny / 2),
+                                      width: double.maxFinite,
+                                      decoration: BoxDecoration(
+                                        borderRadius: const BorderRadius.all(
+                                            Radius.circular(8.0)),
+                                        color: AppColors.transparent,
+                                      ),
+                                      // Action
+                                      child: TextButton(
+                                        style: AppButtonStyles.textButton,
+                                        onPressed: () {
+                                          Navigator.of(context)
+                                              .pop(editigFoods[index]);
+                                        },
+                                        child: Row(
+                                          children: [
+                                            Text(
+                                              editigFoods[index].name,
+                                              style: AppTextStyles.bodyMeduim,
+                                              textAlign: TextAlign.right,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
