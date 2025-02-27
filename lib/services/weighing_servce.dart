@@ -12,7 +12,7 @@ import 'package:OKRADISH/constants/device.dart';
 class WeighingServce extends GetxService {
   // web.BluetoothDevice? device2;
 
-  final RxInt weight = 0.obs;
+  final RxInt weight = 100.obs;
   final Rx<mobile.BluetoothDevice?> device = Rx(null);
   var _searchDevices = <mobile.ScanResult>[];
   final RxList<String> deviceNames = RxList([]);
@@ -26,7 +26,7 @@ class WeighingServce extends GetxService {
         .listen((mobile.BluetoothAdapterState state) async {
       // if off
       if (state == mobile.BluetoothAdapterState.off) {
-        weight.value = 0;
+        // weight.value = 0;
         device.value = null;
         await turnOnBluetooth();
         return;
