@@ -1,5 +1,5 @@
 import 'package:intl/intl.dart';
-import 'package:OKRADISH/persian_datetime_picker-2.7.0/date/shamsi_date.dart';
+import 'package:persian_datetime_picker/persian_datetime_picker.dart';
 
 extension IntExtention on int {
   String get separateWithComma {

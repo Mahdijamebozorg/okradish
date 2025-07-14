@@ -12,7 +12,7 @@ import 'package:OKRADISH/controllers/meal_controller.dart';
 import 'package:OKRADISH/controllers/summary_controller.dart';
 import 'package:OKRADISH/model/daily.dart';
 import 'package:OKRADISH/model/meal.dart';
-import 'package:OKRADISH/persian_datetime_picker-2.7.0/date/shamsi_date.dart';
+import 'package:persian_datetime_picker/persian_datetime_picker.dart';
 
 enum _Nutrient { carbo, protein, fat, fiber, calory }
 

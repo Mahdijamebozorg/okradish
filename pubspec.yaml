@@ -33,13 +33,13 @@ dependencies:
   parse_server_sdk_flutter: ^8.0.0
   flutter_blue_plus: ^1.32.11
   get: ^4.6.6
-  persian_datetime_picker: ^2.7.0
   fl_chart: ^0.68.0
   hive: ^2.2.3
   hive_flutter: ^1.1.0
   connectivity_plus: ^5.0.2
   path_provider: ^2.1.4
   video_player: ^2.9.1
+  persian_datetime_picker: ^3.1.0
   # flutter_web_bluetooth: ^0.2.3
 
 dev_dependencies:

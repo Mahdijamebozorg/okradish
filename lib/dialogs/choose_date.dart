@@ -8,10 +8,9 @@ import 'package:OKRADISH/constants/strings.dart';
 import 'package:OKRADISH/utils/date.dart';
 import 'package:OKRADISH/widgets/app_card.dart';
 import 'package:OKRADISH/widgets/appbar.dart';
+import 'package:persian_datetime_picker/persian_datetime_picker.dart';
 // import 'package:persian_datetime_picker/persian_datetime_picker.dart' as date;
 // import 'package:jalali_flutter_datepicker/jalali_flutter_datepicker.dart';
-import 'package:OKRADISH/persian_datetime_picker-2.7.0/pcalendar_date_picker.dart';
-import 'package:OKRADISH/persian_datetime_picker-2.7.0/date/shamsi_date.dart';
 
 enum _DateType {
   yesterday,
@@ -103,7 +102,7 @@ class _ChooseDateState extends State<ChooseDate> {
 
                           // Date
                           Expanded(
-                            child: PCalendarDatePicker(
+                            child: PersianCalendarDatePicker(
                               initialDate: Jalali.now(),
                               firstDate: Jalali.now().copy(month: 1, day: 1),
                               lastDate: Jalali.now(),
