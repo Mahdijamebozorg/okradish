@@ -2,6 +2,8 @@
 
 **OKARDISH** is a Flutter-based diet monitoring application that helps users track nutrients, measure weight using BLE devices, and manage their food intake. This repository showcases my work as a **Flutter developer** on the OKARDISH project.  
 
+<p>&nbsp;</p> <div align="center"> <a> <img src="screenShots/logo.png" alt="Icon" width="200" height="80"> </a> </div>
+
 ---
 
 ## 📱 About the App  
