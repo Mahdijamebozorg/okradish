@@ -1,103 +1,100 @@
-# OKARDISH
+# OKARDISH  
 
-A comprehensive diet monitoring app that provides detailed statistics on nutrient intake
- 
-<p>&nbsp;</p>
+**OKARDISH** is a Flutter-based diet monitoring application that helps users track nutrients, measure weight using BLE devices, and manage their food intake. This repository showcases my work as a **Flutter developer** on the OKARDISH project.  
 
-<div align="center">
-  <a>
-    <img src="screenShots/logo.png" alt="Icon" width="200" height="80">
-  </a>
-</div>
+---
 
-[PWA](https://mahdijamebozorg.github.io/okradish)
+## 📱 About the App  
 
-## Key features:
-- Accurate calorie tracking based on food intake.
-- Measuring accurate real-time weight with BLE(Bluetooth Low Enenrgy) ESP32 scale
-- Detailed breakdown of macronutrients (protein, carbohydrates, fats).
-- Micronutrient tracking (vitamins, minerals).
-- Customizable food database with options to add new foods.
+OKARDISH is a powerful tool that allows users to:  
 
-<p>&nbsp;</p>
+- Track calories and nutrients based on food intake  
+- Measure accurate real-time weight with BLE (Bluetooth Low Energy) ESP32 scale  
+- View detailed breakdown of macronutrients (protein, carbohydrates, fats)  
+- Monitor micronutrients (vitamins, minerals)  
+- Customize their food database with options to add new foods  
+- Explore daily, weekly, and monthly nutrition statistics  
 
-## Authentication
-<center><img src="screenShots/login.jpg" width="300"></center>
+---
 
-<p>&nbsp;</p>
+## 📌 Key Highlights  
 
-## Search and add foods
-<center><img src="screenShots/search.jpg" width="300"></center>
+- Real-time BLE scale integration  
+- Clean and maintainable Flutter codebase using modern architecture  
+- Smooth user experience with responsive UI  
+- Efficient state management with GetX  
+- Local data storage with Hive  
+- Comprehensive error handling  
+- Rich UI with custom components  
 
-<p>&nbsp;</p>
+---
 
-## Explore statics by date
-<center><img src="screenShots/date.jpg" width="300"></center>
-<p>&nbsp;</p>
-<center><img src="screenShots/bar.jpg" width="300"></center>
-<p>&nbsp;</p>
-<center><img src="screenShots/pie.jpg" width="300"></center>
+## 🛠️ Tech Stack & Dependencies  
 
-<p>&nbsp;</p>
+Here’s a summary of the main technologies and packages used in the project:  
 
-## Show, edit and remove meals
-<center><img src="screenShots/meal.jpg" width="300"></center>
+| Category | Package |
+| -------- | ------- |
+| **Framework** | [Flutter](https://flutter.dev) |
+| **State Management** | [GetX](https://pub.dev/packages/get) |
+| **Bluetooth** | [Flutter Blue Plus](https://pub.dev/packages/flutter_blue_plus) |
+| **Charts & Visualization** | [Fl Chart](https://pub.dev/packages/fl_chart) |
+| **Storage** | [Hive](https://pub.dev/packages/hive), [Hive Flutter](https://pub.dev/packages/hive_flutter), [Path Provider](https://pub.dev/packages/path_provider) |
+| **Localization** | [Flutter Localization](https://pub.dev/packages/flutter_localization), [intl](https://pub.dev/packages/intl) |
+| **UI Components** | [Flutter SVG](https://pub.dev/packages/flutter_svg), [Video Player](https://pub.dev/packages/video_player), [Persian DateTime Picker](https://pub.dev/packages/persian_datetime_picker) |
+| **Networking / Backend** | [Parse Server SDK Flutter](https://pub.dev/packages/parse_server_sdk_flutter) |
+| **Connectivity** | [Connectivity Plus](https://pub.dev/packages/connectivity_plus) |
+| **Splash / Branding** | [Flutter Native Splash](https://pub.dev/packages/flutter_native_splash), [Flutter Launcher Icons](https://pub.dev/packages/flutter_launcher_icons) |
+| **Code Generation / Dev Tools** | [Build Runner](https://pub.dev/packages/build_runner), [Flutter Gen](https://pub.dev/packages/flutter_gen), [Hive Generator](https://pub.dev/packages/hive_generator) |
+| **Linting / Testing** | [Flutter Lints](https://pub.dev/packages/flutter_lints), Flutter Test |
 
-<p>&nbsp;</p>
+---
 
-## Built With
-<img src="https://storage.googleapis.com/cms-storage-bucket/6a07d8a62f4308d2b854.svg" width=100 height=50>
-<img src="https://dart.dev/assets/img/logo/logo-white-text.svg" width=100 height=50>
+## 🗂️ Project Structure  
+
+lib/
+├── components/ # Reusable UI components
+├── db/ # Database related code (Hive)
+├── extensions/ # Dart extensions
+├── generated/ # Generated code
+├── models/ # Data models
+├── pages/ # Application screens
+├── services/ # Business logic & BLE integration
+├── states/ # State management
+├── utils/ # Utility functions
+├── constant.dart # App constants
+├── deps.dart # Dependency injection
+├── main.dart # App entry point
+└── routes.dart # App routing
 
 
+---
 
+## 📸 Screenshots  
 
-<!---
-## Game rules:
-This game is a modified 2P chess with all chess rules plus some features:
+| Screen | Screenshot |
+| ------ | ----------- |
+| Login | <img src="./screenShots/login.jpg" alt="login" width="300"/> |
+| Search | <img src="./screenShots/search.jpg" alt="search" width="300"/> |
+| Date Stats | <img src="./screenShots/date.jpg" alt="date" width="300"/> |
+| Bar Chart | <img src="./screenShots/bar.jpg" alt="bar chart" width="300"/> |
+| Pie Chart | <img src="./screenShots/pie.jpg" alt="pie chart" width="300"/> |
+| Meals | <img src="./screenShots/meal.jpg" alt="meals" width="300"/> |
 
-<p>&nbsp;</p>
+---
 
-### Winner:
-If game ends by checkmate or stalemate, winner is player who has more scores,
-but if a player presses Surrend, other player wins.
+## 📄 License  
 
-<p>&nbsp;</p>
+This is a proprietary project. All rights reserved.  
 
-### Score:
-Score is the key to win in this game, some movement have score:
-- Hit: Pawn-> +3 , Queen-> +15 , others-> +8 (you can't hit the king!)
-- Pawn pass away half of board: +3 
-- Check enemy king: +10
-- Checkmate: +50
-- Extra move: if you have 30 scores, you can make an extra move!
+---
 
-<p>&nbsp;</p>
+## 🔄 Dev Setup  
 
-### Negative score:
-Some works increases your negative score , if your negative score reachs 15 , you will have a random move on a random piece.
-- Undo: return last moved piece and adds 5 negative scores
-- Touch piece: if you choose a moveable piece and reselct in this turn, you'll get 5 negative scores 
+For development:  
 
-<p>&nbsp;</p>
+- Flutter SDK: 3.x  
+- Dart SDK: 3.x  
+- VS Code or Android Studio with Flutter plugins  
 
-### Important notes
-- Game has auto save and you can continue crashed or closed games
-- Negative scores won't be saved in file
-- For game name, if a file exists with the same name, file will be overwriten
-- In promotion, if you don't choose any chessman, game will crash, but you can continue game by laoding it
-- Canceling game will delete save file and restarting will clear move history in file
-- Saved Files with free spaces or unreadable moves, won't be opened
- 
-<p>&nbsp;</p>
-
- 
-## Load Game
-[![Load Screen Shot][Load]][Load]
-
-<p>&nbsp;</p>
-
-## Promotion Dialog
-[![Promotion Screen Shot][Promotion]][Promotion]
-
---->
+_For more information about the app’s features and development, please contact the development team._  
