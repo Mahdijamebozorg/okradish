@@ -1,102 +1,69 @@
-# OKARDISH  
+# Okardish (Diet & Hardware-Integrated Nutrition Platform)
 
-**OKARDISH** is a Flutter-based diet monitoring application that helps users track nutrients, measure weight using BLE devices, and manage their food intake. This repository showcases my work as a **Flutter developer** on the OKARDISH project.  
+[![Flutter](https://img.shields.io/badge/Platform-Flutter-02569B?logo=flutter&logoColor=white)](https://flutter.dev)
+[![Hardware Interface](https://img.shields.io/badge/Hardware-BLE%20%2F%20ESP32-blue?logo=bluetooth&logoColor=white)](#)
+[![Database](https://img.shields.io/badge/Database-Hive%20NoSQL-green)](#)
 
-<p>&nbsp;</p> <div align="center"> <a> <img src="screenShots/logo.png" alt="Icon" width="200" height="80"> </a> </div>
+**Okardish** is an advanced IoT-integrated health and telemetry application that synchronizes local nutrition tracking with external physical hardware. The repository architecture showcases a robust implementation of real-time wireless data acquisition, local asynchronous caching, and state-driven metric visualization.
 
----
-
-## 📱 About the App  
-
-OKARDISH is a powerful tool that allows users to:  
-
-- Track calories and nutrients based on food intake  
-- Measure accurate real-time weight with BLE (Bluetooth Low Energy) ESP32 scale  
-- View detailed breakdown of macronutrients (protein, carbohydrates, fats)  
-- Monitor micronutrients (vitamins, minerals)  
-- Customize their food database with options to add new foods  
-- Explore daily, weekly, and monthly nutrition statistics  
+<div align="center">
+  <a>
+    <img src="screenShots/logo.png" alt="Okardish Logo" width="220" height="90">
+  </a>
+</div>
 
 ---
 
-## 📌 Key Highlights  
+## 📌 Core Engineering Highlights & Innovations
 
-- Real-time BLE scale integration  
-- Clean and maintainable Flutter codebase using modern architecture  
-- Smooth user experience with responsive UI  
-- Efficient state management with GetX  
-- Local data storage with Hive  
-- Comprehensive error handling  
-- Rich UI with custom components  
+*   **Cyber-Physical BLE Integration:** Established a low-latency connection with an custom ESP32-based weighing scale via Bluetooth Low Energy (BLE), handling automatic device discovery and state synchronization.
+*   **Asynchronous Local Database Storage:** Deployed a lightweight NoSQL engine (`Hive`) to process high-frequency nutritional transactions and metrics entirely offline, ensuring atomic disk writes.
+*   **Real-time Sensor Stream Parsing:** Managed continuous byte arrays arriving from hardware sensors, utilizing reactive Dart streams to decode, smooth, and map input weights into data models instantly.
+*   **Modular Analytical Profiling:** Developed data visualization modules mapping macronutrient matrices (Proteins, Carbs, Fats) and micronutrient distributions over custom time series.
 
 ---
 
-## 🛠️ Tech Stack & Dependencies  
+## ⚙️ Core Engineering Challenges & System Architecture
 
-Here’s a summary of the main technologies and packages used in the project:  
+Integrating consumer software with volatile wireless hardware components presented structural challenges:
 
-| Category | Package |
-| -------- | ------- |
-| **Framework** | [Flutter](https://flutter.dev) |
-| **State Management** | [GetX](https://pub.dev/packages/get) |
-| **Bluetooth** | [Flutter Blue Plus](https://pub.dev/packages/flutter_blue_plus) |
-| **Charts & Visualization** | [Fl Chart](https://pub.dev/packages/fl_chart) |
-| **Storage** | [Hive](https://pub.dev/packages/hive), [Hive Flutter](https://pub.dev/packages/hive_flutter), [Path Provider](https://pub.dev/packages/path_provider) |
-| **Localization** | [Flutter Localization](https://pub.dev/packages/flutter_localization), [intl](https://pub.dev/packages/intl) |
-| **UI Components** | [Flutter SVG](https://pub.dev/packages/flutter_svg), [Video Player](https://pub.dev/packages/video_player), [Persian DateTime Picker](https://pub.dev/packages/persian_datetime_picker) |
-| **Networking / Backend** | [Parse Server SDK Flutter](https://pub.dev/packages/parse_server_sdk_flutter) |
-| **Connectivity** | [Connectivity Plus](https://pub.dev/packages/connectivity_plus) |
-| **Splash / Branding** | [Flutter Native Splash](https://pub.dev/packages/flutter_native_splash), [Flutter Launcher Icons](https://pub.dev/packages/flutter_launcher_icons) |
-| **Code Generation / Dev Tools** | [Build Runner](https://pub.dev/packages/build_runner), [Flutter Gen](https://pub.dev/packages/flutter_gen), [Hive Generator](https://pub.dev/packages/hive_generator) |
-| **Linting / Testing** | [Flutter Lints](https://pub.dev/packages/flutter_lints), Flutter Test |
+1.  **Volatile Wireless Connection Lifecycle:** High-frequency disconnections and peripheral state drift common in BLE environments.
+    *   *Solution:* Built automated connection retry policies, asynchronous state listeners, and dynamic connection timeout handling inside a dedicated BLE Service Layer.
+2.  **Telemetry Data Buffering & Precision:** Converting unparsed byte matrices streamed from the ESP32 scale into deterministic numeric data.
+    *   *Solution:* Designed data parsing micro-services to decrypt peripheral MTU packets, filter sensory noise, and convert raw inputs into real-time metrics.
+3.  **Cross-Platform Bluetooth State Permissions:** Navigating structural OS architecture differences (Android & iOS runtime permissions for location/scanning).
+    *   *Solution:* Abstracted hardware-scanning pipelines away from the UI, ensuring consistent state behavior regardless of background system policies.
 
 ---
 
-## 🗂️ Project Structure  
+## 🛠️ Deep Tech Stack & Dependency Layout
 
+| Category | Technical Packages & Frameworks | Systemic Purpose |
+| :--- | :--- | :--- |
+| **Wireless Telemetry** | `flutter_blue_plus` | Low-level peripheral scanning, MTU updates, GATT characteristic notification loops |
+| **State Management** | `GetX` | Synchronous hardware event dispatching, view dependency injection (`deps.dart`) |
+| **Local Datastore** | `hive`, `hive_flutter`, `build_runner` | Strongly-typed adapters, zero-boilerplate NoSQL byte caching for macro/micronutrients |
+| **Network Framework** | `parse_server_sdk_flutter`, `connectivity_plus` | Asynchronous cloud sync engine with local-first offline fallback behaviors |
+| **Data Visualization**| `fl_chart` | Time-series distribution charts, progressive rendering of caloric trends |
+| **Branding & Layout** | `flutter_svg`, `video_player`, `persian_datetime_picker` | Polished interface integration, asset handling, and localized date parsing |
+
+---
+
+## 🗂️ Architectural Directory Architecture
+
+The repository enforces a decoupled, modular directory flow to ensure that core business rules remain decoupled from hardware components and databases:
+
+```text
 lib/
-├── components/ # Reusable UI components
-├── db/ # Database related code (Hive)
-├── extensions/ # Dart extensions
-├── generated/ # Generated code
-├── models/ # Data models
-├── pages/ # Application screens
-├── services/ # Business logic & BLE integration
-├── states/ # State management
-├── utils/ # Utility functions
-├── constant.dart # App constants
-├── deps.dart # Dependency injection
-├── main.dart # App entry point
-└── routes.dart # App routing
-
-
----
-
-## 📸 Screenshots  
-
-| Screen | Screenshot |
-| ------ | ----------- |
-| Login | <img src="./screenShots/login.jpg" alt="login" width="300"/> |
-| Search | <img src="./screenShots/search.jpg" alt="search" width="300"/> |
-| Date Stats | <img src="./screenShots/date.jpg" alt="date" width="300"/> |
-| Bar Chart | <img src="./screenShots/bar.jpg" alt="bar chart" width="300"/> |
-| Pie Chart | <img src="./screenShots/pie.jpg" alt="pie chart" width="300"/> |
-| Meals | <img src="./screenShots/meal.jpg" alt="meals" width="300"/> |
-
----
-
-## 📄 License  
-
-This is a proprietary project. All rights reserved.  
-
----
-
-## 🔄 Dev Setup  
-
-For development:  
-
-- Flutter SDK: 3.x  
-- Dart SDK: 3.x  
-- VS Code or Android Studio with Flutter plugins  
-
-_For more information about the app’s features and development, please contact the development team._  
+ ├── components/           # Atomic, domain-agnostic UI presentation assets
+ ├── db/                   # Hive boxes initialization, type adapters, and entity schemes
+ ├── extensions/           # Functional Dart wrappers for data and temporal mutation
+ ├── generated/            # Automated assets and localized generation files (`flutter_gen`)
+ ├── models/               # Immutable domain entities (Nutrient profiles, Weight structures)
+ ├── pages/                # Clean presentation layers and layout views
+ ├── services/             # Hardware abstractions, BLE Stream controller logic, and Parse integrations
+ ├── states/               # Reactive controller logic separating IO from view triggers
+ ├── utils/                # Pure utility matrices and telemetry helpers
+ ├── constant.dart         # Global hardware specifications and immutable keys
+ ├── deps.dart             # Unified service locator and dependency injector matrix
+ └── routes.dart           # Static named navigation matrix
