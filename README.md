@@ -67,3 +67,25 @@ lib/
  ├── constant.dart         # Global hardware specifications and immutable keys
  ├── deps.dart             # Unified service locator and dependency injector matrix
  └── routes.dart           # Static named navigation matrix
+```
+
+---
+
+## 📸 Screenshots  
+
+| Screen | Screenshot |
+| ------ | ----------- |
+| Login | <img src="./screenShots/login.jpg" alt="login" width="300"/> |
+| Search | <img src="./screenShots/search.jpg" alt="search" width="300"/> |
+| Date Stats | <img src="./screenShots/date.jpg" alt="date" width="300"/> |
+| Bar Chart | <img src="./screenShots/bar.jpg" alt="bar chart" width="300"/> |
+| Pie Chart | <img src="./screenShots/pie.jpg" alt="pie chart" width="300"/> |
+| Meals | <img src="./screenShots/meal.jpg" alt="meals" width="300"/> |
+
+---
+
+## 📄 License  
+
+This is a proprietary project. All rights reserved.  
+
+---
